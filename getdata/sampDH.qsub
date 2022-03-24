@@ -1,0 +1,28 @@
+#!/bin/bash
+
+## Required PBS directives ------------------------------
+#PBS -A AFOSR42572501
+#PBS -N dira9
+#PBS -q standard
+#PBS -l select=01:ncpus=02:mpiprocs=02
+#PBS -l walltime=05:00:00
+#PBS -j oe
+#PBS -m be
+#PBS -M abdo7536@colorado.edu
+
+## Execution Block --------------------------------------
+# Environment setup
+module load cseinit
+module load cse/python3/latest
+module list
+python3 --version
+
+# cd to your scratch directory
+cd /p/work1/abdo7536/thesis2/dir9/
+rm sample_helixa9.py
+
+# add the required input and executable files into the directory
+cp /p/home/abdo7536/turb_Layer/production/analysis/sample_helixa9.py .
+
+## Launch SAM ------------------------------------------
+python3 sample_helixa9.py > dir9.out
