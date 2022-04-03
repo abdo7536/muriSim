@@ -1,27 +1,69 @@
-print("starting...")
+################# Script to sample data on a user defined trajectory from a subvol***.dat file
+################# Author: Dr. Abhiram Doddi
+################# Date Created: 1st April 2022
+################# Last updated: 1st April 2022
+
+##########################################################################################################################################################################
+################# Inputs: All inputs are mandatory
+### Xl = Domain X dimension
+Xl = 3
+### Yl = Domain Y dimension
+Yl = 2
+### Zl = Domain Z dimension
+Zl = 1
+### Nx = Number of points in Domain X dimension
+Nx = 2880
+### Ny = Number of points in Domain Y dimension
+Ny = 1920
+### Nz = Number of points in Domain Z dimension
+Nz = 960
+### numTraj = Number of trajectories to sample
+numTraj = 1
+### locFlg = Flag to control the (X,Y) location for sampling; 1 = choose random (x,y) location for each trajectory; 2 = Uniformly spaced (x,y) location; 3 = Specific (x,y) location
+locFlg = 1
+# NOTE: If locFlg = 3 then manually set the (x,y) location inside the code!!
+
+##########################################################################################################################################################################
+################# All the dependencies to run inbuilt or custom functions that are called within the listed functions below need to be imported beforehand
+### This section imports all the required function
 try:
     import numpy as np
-    print("numpy is installed...")
+    print("numpy module is loaded...")
 except ImportError:
-    print("numpy is not installed")
+    print("numpy module not installed...install numpy and try again")
 try:
     import struct as st
     print("struct is installed...")
 except ImportError:
     print("struct is not installed")  
+try:
+    import time                             
+    print("time module is loaded...")
+except ImportError:
+    print("time module not installed...install numpy and try again")
+try:
+    import glob
+    print("glob module is loaded...")
+except ImportError:
+    print("glob module not installed...install glob and try again")
 
-## define required functions
+##########################################################################################################################################################################
+################# 
+
+##########################################################################################################################################################################
+################# Section containing all the necessary user defined functions
+################# function to generate a list of file name groups
+### Input(s): All inputs are mandatory
+### str = The string name whose file name group needs to be created (including the path to the directory) [type - string]
+### form = the file format (input exactly as it appears in the filenames) [type - string]
+
+### Output(s):
+### onlyfiles = A sorted list of file names of the user defined file extension [type - list of string]
+
+################# Function Definition
 def plname(str,form):
-################# Import required libraries
-    try:
-        import glob
-        print("glob module is installed...")
-    except ImportError:
-        print("glob module not installed...install glob and try again")
-
 ################# Returns list of path names that match the string provided
     onlyfiles = sorted(glob.glob( str + '*.' + form))
-
 ################# Return the function's output variables
     return (onlyfiles)
 
