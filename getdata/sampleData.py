@@ -46,6 +46,11 @@ flNm = '/Users/script_away/Projects/Documents/MURI_modeling/GWBData/subvol*'
 form = 'dat'
 ### flNm = Input file name identifying character string (including the directory location)
 
+################# Function Specific Inputs: All inputs are mandatory
+########## function name: 'trajInd'
+### trajTyp = Synthetic Observation trajectory type; 1 = balloon-like vertical trajectory (descending); 2 = Helical trajectory (descending); 3 = Other trajectory/sampling strategy (descending)
+trajTyp = 1
+
 ##########################################################################################################################################################################
 ################# Call custom function module developed to execute this program
 ### NOTE: This module inturn loads the python inbuilt modules as needed
@@ -63,7 +68,7 @@ Zscal = Nz*eta*resMet               # Scaled Z DNS domain dimension [m]
 Xscal = Zscal*(Xl/Zl)               # Scaled X DNS domain dimension [m]
 Yscal = Zscal*(Yl/Zl)               # Scaled Y DNS domain dimension [m]
 
-### DNS datagrid calculation
+### DNS resolution calculations
 dx = Xl/Nx             # Grid Resolution in X (normalized)
 dy = Yl/Ny             # Grid Resolution in Y (normalized)
 dz = Zl/Nz             # Grid Resolution in Z (normalized)
@@ -71,7 +76,7 @@ dxscal = Xscal/Nx      # Grid Resolution in X (scaled) [m]
 dyscal = Yscal/Nx      # Grid Resolution in Y (scaled) [m]
 dzscal = Zscal/Nx      # Grid Resolution in Z (scaled) [m]
 
-### Calculate the Grid Co-ordinates
+### Grid Co-ordinate calculations
 # NOTE: The data is written at the grid edges i.e. Number of data points = Nx*Ny*Nz specified in sam.inp file
 grid_x = np.zeros(Nx)
 grid_y = np.zeros(Ny)
@@ -86,27 +91,11 @@ grid_xScal[0:Nx] = (-Xscal/2)+(np.linspace(1,Nx,Nx)-1)*dxscal         # Grid poi
 grid_yScal[0:Ny] = (-Yscal/2)+(np.linspace(1,Ny,Ny)-1)*dyscal         # Grid point locations in Y direction (scaled) [m]
 grid_zScal[0:Nz] = (np.linspace(1,Nz,Nz)-1)*dzscal                    # Grid point locations in Z direction (scaled) [m]
 
-## UAS parameters
-uas_srate = 800            # sampling rate of the UAS [Hz]
-uas_speed = 14.5           # How fast the UAS travels horizontally [m/s]
-uas_climb_rate = 2.5       # The rate at which the UAS nominally ascends or descends [m/s]
-dhelix = 100               # choose between 75, 100, 150 [m]
+### Calculate the number datapoints to sample - based on User inputs for the defined observation strategy 
 
-## Guidance from Measurement
-ldepth = 500                # choice between 400-600 [m]
-shear_vel = 8               # no more than 10 [m/s]
-t_meas = ldepth/shear_vel   # calculated based on nominally observed structure characteristics [t]
 
-## Convert UAS parameters in scales of Simulation 
-l_star = (6*h)/ldepth
-vel_star = u/shear_vel
 
-uasinsim_speed = vel_star * uas_speed
-uasinsim_climb_rate = vel_star * uas_climb_rate
-uasinsim_dhelix = l_star * dhelix
-uas_dt = 1/uas_srate
-
-## Calculate tru vertical sampling
+### Calculate vertical sampling
 x_sampl = np.ones(Nz)*(Nx/2)+1
 y_sampl = np.ones(Nz)*(Ny/2)+1
 z_sampl = np.linspace(1,Nz,Nz)

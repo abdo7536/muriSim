@@ -43,4 +43,26 @@ def plname(str,form):
 ################# Return the function's output variables
     return (onlyfiles)
 
+##########################################################################################################################################################################
+################# function to generate X, Y and Z index points associated to sampling strategy chosen by the user
+### Input(s): All inputs are mandatory
+### trajTyp = Synthetic Observation trajectory type; 1 = balloon-like vertical trajectory (descending); 2 = Helical trajectory (descending); 3 = Other trajectory/sampling strategy (descending)
+ 
+### Output(s):
+### x_sampl = X indices for all points on the synthetic trajectory
+### y_sampl = Y indices for all points on the synthetic trajectory
+### z_sampl = Z indices for all points on the synthetic trajectory
+
+################# Function Definition
+def trajInd(trajTyp):
+#################
+    if trajTyp[0] == 1:
     
+    elif trajTyp[0] == 2:
+
+    elif trajTyp[0] == 3:
+
+#################    
+
+################# Return the function's output variables
+    return(x_sampl, y_sampl, z_sampl)
