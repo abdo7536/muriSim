@@ -48,26 +48,8 @@ except ImportError:
     print("glob module not installed...install glob and try again")
 
 ##########################################################################################################################################################################
-################# 
-
-##########################################################################################################################################################################
-################# Section containing all the necessary user defined functions
-################# function to generate a list of file name groups
-### Input(s): All inputs are mandatory
-### str = The string name whose file name group needs to be created (including the path to the directory) [type - string]
-### form = the file format (input exactly as it appears in the filenames) [type - string]
-
-### Output(s):
-### onlyfiles = A sorted list of file names of the user defined file extension [type - list of string]
-
-################# Function Definition
-def plname(str,form):
-################# Returns list of path names that match the string provided
-    onlyfiles = sorted(glob.glob( str + '*.' + form))
-################# Return the function's output variables
-    return (onlyfiles)
-
-## Scale parameters
+################# Calculation Block: Calculate the synthetic observation trajectory based on user inputs
+### Scale parameters
 h = 1                  # Shear depth
 u = 1                  # Shear velocity
 t = h/u                # Shear time scale
@@ -122,6 +104,8 @@ x_sampl = np.ones(Nz)*(Nx/2)+1
 y_sampl = np.ones(Nz)*(Ny/2)+1
 z_sampl = np.linspace(1,Nz,Nz)
 
+##########################################################################################################################################################################
+################# Extraction block
 ## Read required points from file
 pts = Nx*Ny*Nz
 name_list = plname('/p/work1/abdo7536/thesis2b/dir1/subvol1_0','dat')
@@ -216,5 +200,4 @@ for n in range(0,9):
     data = np.column_stack([u,v,w,T,p,t_diss,eps])
 
     np.savetxt(save_fil,data,delimiter=',')
-    print("completed", n)
 
