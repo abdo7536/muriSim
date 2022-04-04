@@ -4,7 +4,7 @@
 ################# Last updated: 1st April 2022
 
 ##########################################################################################################################################################################
-################# Inputs: All inputs are mandatory
+################# General Inputs: All inputs are mandatory
 ### Xl = Domain X dimension
 Xl = 3
 ### Yl = Domain Y dimension
@@ -23,36 +23,68 @@ numTraj = 1
 locFlg = 1
 # NOTE: If locFlg = 3 then manually set the (x,y) location inside the code!!
 
+################# Data Inputs: All inputs are mandatory
+### NOTE: These inputs are required to scale the scale-normalized DNS datasets  
+### epsMeas = TKE dissipation rate [m^3s^-2]
+epsMeas = 4.0e-3
+### nu = Kinematic viscosity [m^2s^-1]
+nu = 4.0e-4
+### resMet = DNS resolution metric ( = grid spacing/ kolmogorov length scale)
+resMet = 1.4413
+### lxGW = GW X component wavelength (unitless/normalized) 
+lxGw = 3
+### lzGW = GW Z component wavelength (unitless/normalized) 
+lzGw = 1
+### aGW = GW amplitude relative to overturning wave amplitude (unitless)
+a = 0.9
+
+################# Function Specific Inputs: All inputs are mandatory
+########## function name: 'lodatsin'
+### flNm = The string name whose file name group needs to be created (including the path to the directory) [type - string]
+flNm = '/Users/script_away/Projects/Documents/MURI_modeling/GWBData/subvol*'
+### form = the file format (input exactly as it appears in the filenames) [type - string]
+form = 'dat'
+### flNm = Input file name identifying character string (including the directory location)
+
 ##########################################################################################################################################################################
-################# All the dependencies to run inbuilt or custom functions that are called within the listed functions below need to be imported beforehand
-### This section imports all the required function
+################# Call custom function module developed to execute this program
+### NOTE: This module inturn loads the python inbuilt modules as needed
 try:
-    import numpy as np
-    print("numpy module is loaded...")
+    from userFns import *
+    print("Program required custom and python module is loaded...")
 except ImportError:
-    print("numpy module not installed...install numpy and try again")
-try:
-    import struct as st
-    print("struct is installed...")
-except ImportError:
-    print("struct is not installed")  
-try:
-    import time                             
-    print("time module is loaded...")
-except ImportError:
-    print("time module not installed...install numpy and try again")
-try:
-    import glob
-    print("glob module is loaded...")
-except ImportError:
-    print("glob module not installed...install glob and try again")
+    print("Custom library not installed.... Install and try again")
 
 ##########################################################################################################################################################################
 ################# Calculation Block: Calculate the synthetic observation trajectory based on user inputs
-### Scale parameters
-h = 1                  # Shear depth
-u = 1                  # Shear velocity
-t = h/u                # Shear time scale
+### Calculate the scale parameters using measurements
+eta = (nu**3/epsMeas)**(1/4)        # Kolmogorov length scale [m]
+Zscal = Nz*eta*resMet               # Scaled Z DNS domain dimension [m]
+Xscal = Zscal*(Xl/Zl)               # Scaled X DNS domain dimension [m]
+Yscal = Zscal*(Yl/Zl)               # Scaled Y DNS domain dimension [m]
+
+### DNS datagrid calculation
+dx = Xl/Nx             # Grid Resolution in X (normalized)
+dy = Yl/Ny             # Grid Resolution in Y (normalized)
+dz = Zl/Nz             # Grid Resolution in Z (normalized)
+dxscal = Xscal/Nx      # Grid Resolution in X (scaled) [m]
+dyscal = Yscal/Nx      # Grid Resolution in Y (scaled) [m]
+dzscal = Zscal/Nx      # Grid Resolution in Z (scaled) [m]
+
+### Calculate the Grid Co-ordinates
+# NOTE: The data is written at the grid edges i.e. Number of data points = Nx*Ny*Nz specified in sam.inp file
+grid_x = np.zeros(Nx)
+grid_y = np.zeros(Ny)
+grid_z = np.zeros(Nz)
+grid_xScal = np.zeros(Nx)
+grid_yScal = np.zeros(Ny)
+grid_zScal = np.zeros(Nz)
+grid_x[0:Nx] = (-Xl/2)+(np.linspace(1,Nx,Nx)-1)*dx         # Grid point locations in X direction (normalized)
+grid_y[0:Ny] = (-Yl/2)+(np.linspace(1,Ny,Ny)-1)*dy         # Grid point locations in Y direction (normalized)
+grid_z[0:Nz] = (np.linspace(1,Nz,Nz)-1)*dz                 # Grid point locations in Z direction (normalized)
+grid_xScal[0:Nx] = (-Xscal/2)+(np.linspace(1,Nx,Nx)-1)*dxscal         # Grid point locations in X direction (scaled) [m]
+grid_yScal[0:Ny] = (-Yscal/2)+(np.linspace(1,Ny,Ny)-1)*dyscal         # Grid point locations in Y direction (scaled) [m]
+grid_zScal[0:Nz] = (np.linspace(1,Nz,Nz)-1)*dzscal                    # Grid point locations in Z direction (scaled) [m]
 
 ## UAS parameters
 uas_srate = 800            # sampling rate of the UAS [Hz]
@@ -74,41 +106,16 @@ uasinsim_climb_rate = vel_star * uas_climb_rate
 uasinsim_dhelix = l_star * dhelix
 uas_dt = 1/uas_srate
 
-## Input variables
-Xl = 13*h                  # Box Size in X
-Yl = 13*h                  # Box Size in Y
-Zl = 39*h                  # Box Size in Z
-Nx = 576                   # Grid Points in X
-Ny = 576                   # Grid Points in Y
-Nz = 1728                  # Grid Points in Z
-
-## Fundamental Calculations
-dx = Xl/Nx             # Grid Resolution in X
-dy = Yl/Ny             # Grid Resolution in Y
-dz = Zl/Nz             # Grid Resolution in Z
-
-## Calculate the Grid Co-ordinates
-grid_x = np.zeros(Nx)
-grid_y = np.zeros(Ny)
-grid_z = np.zeros(Nz)
-grid_x[0:Nx] = (-Xl/2)+(np.linspace(1,Nx,Nx)-1)*dx         # Grid point locations in X direction
-grid_y[0:Ny] = (-Yl/2)+(np.linspace(1,Ny,Ny)-1)*dy         # Grid point locations in Y direction
-grid_z[0:Nz] = (np.linspace(1,Nz,Nz)-1)*dz                 # Grid point locations in Z direction
-
-grid_cent_x = grid_x[0:-1] + dx/2
-grid_cent_y = grid_y[0:-1] + dy
-grid_cent_z = grid_z[0:-1] + dz
-
 ## Calculate tru vertical sampling
 x_sampl = np.ones(Nz)*(Nx/2)+1
 y_sampl = np.ones(Nz)*(Ny/2)+1
 z_sampl = np.linspace(1,Nz,Nz)
 
 ##########################################################################################################################################################################
-################# Extraction block
+################# Data Extraction block
 ## Read required points from file
 pts = Nx*Ny*Nz
-name_list = plname('/p/work1/abdo7536/thesis2b/dir1/subvol1_0','dat')
+name_list = plname(flNm,form)
 for n in range(0,9):
     tp = name_list[n]
     save_fil = tp[0:32] + 'txt_files_tru_vert/' + tp[32:-4] + '.txt'
