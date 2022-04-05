@@ -38,16 +38,16 @@ except ImportError:
 ##########################################################################################################################################################################
 ################# function to generate a list of file name groups
 ### Input(s): All inputs are mandatory
-### str = The string name whose file name group needs to be created (including the path to the directory) [type - string]
+### nm = The string name whose file name group needs to be created (including the path to the directory) [type - string]
 ### form = the file format (input exactly as it appears in the filenames) [type - string]
 
 ### Output(s):
 ### onlyfiles = A sorted list of file names of the user defined file extension [type - list of string]
 
 ################# Function Definition
-def plname(str,form):
+def plname(nm,form):
 ################# Returns list of path names that match the string provided
-    onlyfiles = sorted(glob.glob( str + '*.' + form))
+    onlyfiles = sorted(glob.glob( nm + '*.' + form))
 ################# Return the function's output variables
     return (onlyfiles)
 
@@ -62,18 +62,19 @@ def plname(str,form):
 ### z_sampl = Z indices for all points on the synthetic trajectory
 
 ################# Function Definition
-def trajInd(trajTyp,numTraj,Xscal,Yscal,Zscal):
+def trajInd(trajTyp,Xref,Yref,Nx,Ny,Nz):
 #################
     if trajTyp[0] == 1:         # Balloon-like descent
-        ### Calculate the number of points to sample on each trajectory
-        numSmpls = Zscal/trajTyp[1]
-        ptsTraj = math.floor(Nz/numSmpls)
-        
-    elif trajTyp[0] == 2:       # DH helical descent
-
-    elif trajTyp[0] == 3:       # Other trajectories
-
-#################    
-
+        x_sampl = np.ones(Nz)*Xref
+        y_sampl = np.ones(Nz)*Yref
+        z_sampl = np.linspace(Nz,1,Nz)
+    elif trajTyp[0] == 2:       # DH helical descent (NOT WORKING CURRENTLY)
+        x_sampl = np.ones(Nz)
+        y_sampl = np.ones(Nz)
+        z_sampl = np.ones(Nz)
+    elif trajTyp[0] == 3:       # Other trajectories (NOT WORKING CURRENTLY)
+        x_sampl = np.ones(Nz)
+        y_sampl = np.ones(Nz)
+        z_sampl = np.ones(Nz)
 ################# Return the function's output variables
     return(x_sampl, y_sampl, z_sampl)

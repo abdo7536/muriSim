@@ -18,9 +18,11 @@ Ny = 1920
 ### Nz = Number of points in Domain Z dimension
 Nz = 960
 ### numTraj = Number of trajectories to sample
-numTraj = 1
+numTraj = 10
 ### locFlg = Flag to control the (X,Y) location for sampling; 1 = choose random (x,y) location for each trajectory; 2 = Specific (x,y) location (DEFAULT set to X/2, Y/2 location)
 locFlg = 1
+### datVar = The data variable to be stored; NOTE: This will only be used to name the output filename
+datVar = 'U'
 
 ################# Data Inputs: All inputs are mandatory
 ### NOTE: These inputs are required to scale the scale-normalized DNS datasets  
@@ -40,7 +42,7 @@ a = 0.9
 ################# Function Specific Inputs: All inputs are mandatory
 ########## function name: 'lodatsin'
 ### flNm = The string name whose file name group needs to be created (including the path to the directory) [type - string]
-flNm = '/Users/script_away/Projects/Documents/MURI_modeling/GWBData/subvol*'
+flNm = '/Users/script_away/Projects/Documents/MURI_modeling/GWBData/subvol' + datVar + '*'
 ### form = the file format (input exactly as it appears in the filenames) [type - string]
 form = 'dat'
 ### flNm = Input file name identifying character string (including the directory location)
@@ -48,7 +50,7 @@ form = 'dat'
 ################# Function Specific Inputs: All inputs are mandatory
 ########## function name: 'trajInd'
 ### trajTyp = Synthetic Observation trajectory type; 1 = balloon-like vertical trajectory (descending); 2 = Helical trajectory (descending); 3 = Other trajectory/sampling strategy (descending)
-trajTyp = [1,2.5,]
+trajTyp = [1]                   # Example input for Balloon-like Trajectory
 
 ##########################################################################################################################################################################
 ################# Call custom function module developed to execute this program
@@ -105,30 +107,22 @@ elif locFlg == 2:         # Manually chosen (X,Y) reference co-ordinates at Doma
 ### Loop over the number of trajectories
 for i in range(0,numTraj):
     ### Call the function to generate each trajectory
-    [Xtr,Ytr,Ztr] = trajInd(trajTyp,Xref,Yref)
-    TrX[i,:] = Xtr
-    TrY[i,:] = Ytr
-    TrZ[i,:] = Ztr
-### Calculate vertical sampling
-x_sampl = np.ones(Nz)*(Nx/2)+1
-y_sampl = np.ones(Nz)*(Ny/2)+1
-z_sampl = np.linspace(1,Nz,Nz)
+    [Xtr,Ytr,Ztr] = trajInd(trajTyp,Xref[i],Yref[i],Nx,Ny,Nz)
+    TrX.append(Xtr)
+    TrY.append(Ytr)
+    TrZ.append(Ztr)
 
 ##########################################################################################################################################################################
 ################# Data Extraction block
-## Read required points from file
-pts = Nx*Ny*Nz
-name_list = plname(flNm,form)
-for n in range(0,9):
-    tp = name_list[n]
-    save_fil = tp[0:32] + 'txt_files_tru_vert/' + tp[32:-4] + '.txt'
-    u = np.zeros(len(x_sampl))
-    v = np.zeros(len(x_sampl))
-    w = np.zeros(len(x_sampl))
-    T = np.zeros(len(x_sampl))
-    p = np.zeros(len(x_sampl))
-    t_diss = np.zeros(len(x_sampl))
-    eps = np.zeros(len(x_sampl))
+### List the datafiles in the operation directory
+filNms = plname(flNm,form)
+pts = Nx*Ny*Nz                  # The number of data points in each 3D dataset
+### Read required points from file: Loop over the number of files
+for i in range(0,len(filNms)):
+    savenm = filNms[i][:-18] + datVar + filNms[i][-11:-4] + '.txt'
+    tmpVar = np.zeros(numTraj,np.shape(TrX)[1])
+    for j in range(0,len(filNms)):
+        for k in range(0,len(filNms)):
 
     with open(name_list[n],'br') as file:
         for i in range(0,len(x_sampl)):
@@ -141,73 +135,8 @@ for n in range(0,9):
             b=file.read(4)  
             u[i] = np.array(list(st.unpack('f', b)))
 
-    with open(name_list[n],'br') as file:
-        for i in range(0,len(x_sampl)):
-            # read v
-            fld_v = 2
-            pt_jmp = ((z_sampl[i]-1)*Nx*Ny)+((y_sampl[i]-1)*Nx)+(x_sampl[i]-1)+((fld_v-1)*pts)
-            byt_jmp = int(pt_jmp*4)
-            file.seek(byt_jmp)
-            tl_v = file.tell()
-            b=file.read(4)  
-            v[i] = np.array(list(st.unpack('f', b)))
-
-    with open(name_list[n],'br') as file:
-        for i in range(0,len(x_sampl)):
-            # read w
-            fld_w = 3
-            pt_jmp = ((z_sampl[i]-1)*Nx*Ny)+((y_sampl[i]-1)*Nx)+(x_sampl[i]-1)+((fld_w-1)*pts)
-            byt_jmp = int(pt_jmp*4)
-            file.seek(byt_jmp)
-            tl_w = file.tell()
-            b=file.read(4)  
-            w[i] = np.array(list(st.unpack('f', b)))
-
-    with open(name_list[n],'br') as file:
-        for i in range(0,len(x_sampl)):
-            # read T
-            fld_T = 4
-            pt_jmp = ((z_sampl[i]-1)*Nx*Ny)+((y_sampl[i]-1)*Nx)+(x_sampl[i]-1)+((fld_T-1)*pts)
-            byt_jmp = int(pt_jmp*4)
-            file.seek(byt_jmp)
-            tl_T = file.tell()
-            b=file.read(4)  
-            T[i] = np.array(list(st.unpack('f', b)))
-
-    with open(name_list[n],'br') as file:
-        for i in range(0,len(x_sampl)):
-            # read p
-            fld_p = 5
-            pt_jmp = ((z_sampl[i]-1)*Nx*Ny)+((y_sampl[i]-1)*Nx)+(x_sampl[i]-1)+((fld_p-1)*pts)
-            byt_jmp = int(pt_jmp*4)
-            file.seek(byt_jmp)
-            tl_p = file.tell()
-            b=file.read(4)  
-            p[i] = np.array(list(st.unpack('f', b)))
-
-    with open(name_list[n],'br') as file:
-        for i in range(0,len(x_sampl)):
-            # read t_diss
-            fld_tdiss = 6
-            pt_jmp = ((z_sampl[i]-1)*Nx*Ny)+((y_sampl[i]-1)*Nx)+(x_sampl[i]-1)+((fld_tdiss-1)*pts)
-            byt_jmp = int(pt_jmp*4)
-            file.seek(byt_jmp)
-            tl_tdiss = file.tell()
-            b=file.read(4)  
-            t_diss[i] = np.array(list(st.unpack('f', b)))
-
-    with open(name_list[n],'br') as file:
-        for i in range(0,len(x_sampl)):
-            # read eps
-            fld_eps = 7
-            pt_jmp = ((z_sampl[i]-1)*Nx*Ny)+((y_sampl[i]-1)*Nx)+(x_sampl[i]-1)+((fld_eps-1)*pts)
-            byt_jmp = int(pt_jmp*4)
-            file.seek(byt_jmp)
-            tl_wps = file.tell()
-            b=file.read(4)  
-            eps[i] = np.array(list(st.unpack('f', b)))
-
     data = np.column_stack([u,v,w,T,p,t_diss,eps])
 
     np.savetxt(save_fil,data,delimiter=',')
 
+        '''
