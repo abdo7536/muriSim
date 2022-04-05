@@ -116,27 +116,16 @@ for i in range(0,numTraj):
 ################# Data Extraction block
 ### List the datafiles in the operation directory
 filNms = plname(flNm,form)
-pts = Nx*Ny*Nz                  # The number of data points in each 3D dataset
 ### Read required points from file: Loop over the number of files
 for i in range(0,len(filNms)):
+    ### create a savename
     savenm = filNms[i][:-18] + datVar + filNms[i][-11:-4] + '.txt'
     tmpVar = np.zeros(numTraj,np.shape(TrX)[1])
-    for j in range(0,len(filNms)):
-        for k in range(0,len(filNms)):
-
-    with open(name_list[n],'br') as file:
-        for i in range(0,len(x_sampl)):
-            # read u
-            fld_u = 1
-            pt_jmp = ((z_sampl[i]-1)*Nx*Ny)+((y_sampl[i]-1)*Nx)+(x_sampl[i]-1)+((fld_u-1)*pts)
-            byt_jmp = int(pt_jmp*4)
-            file.seek(byt_jmp)
-            tl_u = file.tell()
-            b=file.read(4)  
-            u[i] = np.array(list(st.unpack('f', b)))
-
-    data = np.column_stack([u,v,w,T,p,t_diss,eps])
-
-    np.savetxt(save_fil,data,delimiter=',')
-
-        '''
+    ### Create a temporary variable to store all extracted data points on the trajectory
+    ### Open the .dat data file
+    with open(filNms[i],'br') as fl:
+        for j in range(0,len(numTraj)):
+            for k in range(0,np.shape(TrX)[1]):    
+                tmpVar[j][k] = datGet(TrX[j][k],TrY[j][k],TrZ[j][k],Nx,Ny,Nz)
+    ### save as textfile
+    np.savetxt(save_fil,tmpVar,delimiter=',')

@@ -55,7 +55,12 @@ def plname(nm,form):
 ################# function to generate X, Y and Z index points associated to sampling strategy chosen by the user
 ### Input(s): All inputs are mandatory
 ### trajTyp = Synthetic Observation trajectory type; 1 = balloon-like vertical trajectory (descending); 2 = Helical trajectory (descending); 3 = Other trajectory/sampling strategy (descending)
- 
+### Xref = User defined reference points in X
+### Yref = User defined reference points in Y
+### Nx = Number of wavenumbers/grid points in X
+### Ny = Number of wavenumbers/grid points in Y
+### Nz = Number of wavenumbers/grid points in Z
+
 ### Output(s):
 ### x_sampl = X indices for all points on the synthetic trajectory
 ### y_sampl = Y indices for all points on the synthetic trajectory
@@ -63,7 +68,7 @@ def plname(nm,form):
 
 ################# Function Definition
 def trajInd(trajTyp,Xref,Yref,Nx,Ny,Nz):
-#################
+################# Check what trajectory is defined 
     if trajTyp[0] == 1:         # Balloon-like descent
         x_sampl = np.ones(Nz)*Xref
         y_sampl = np.ones(Nz)*Yref
@@ -78,3 +83,28 @@ def trajInd(trajTyp,Xref,Yref,Nx,Ny,Nz):
         z_sampl = np.ones(Nz)
 ################# Return the function's output variables
     return(x_sampl, y_sampl, z_sampl)
+
+##########################################################################################################################################################################
+################# function to get bytes of data corresponding to user specified data point in a 3D DNS data field
+### Input(s): All inputs are mandatory
+### TrX = The X index points on the trajectory
+### TrY = The Y index points on the trajectory
+### TrZ = The Z index points on the trajectory
+### Nx = Number of wavenumbers/grid points in X
+### Ny = Number of wavenumbers/grid points in Y
+### Nz = Number of wavenumbers/grid points in Z
+
+### Output(s):
+### dat = The output data point (signed float)
+
+def datGet(TrX,TrY,TrZ,Nx,Ny,Nz):
+    fldIdent = 1
+    pts = Nx*Ny*Nz                  # The number of data points in each 3D dataset
+    pt_jmp = ((TrZ-1)*Nx*Ny)+((TrY-1)*Nx)+(TrX-1)+((fldIdent-1)*pts)
+    byt_jmp = int(pt_jmp*4)
+    fl.seek(byt_jmp)
+    tl_u = fl.tell()
+    b=fl.read(4)
+    dat = np.array(list(st.unpack('f', b)))
+################# return the output data point
+    return(dat)
