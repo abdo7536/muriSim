@@ -19,9 +19,8 @@ Ny = 1920
 Nz = 960
 ### numTraj = Number of trajectories to sample
 numTraj = 1
-### locFlg = Flag to control the (X,Y) location for sampling; 1 = choose random (x,y) location for each trajectory; 2 = Uniformly spaced (x,y) location; 3 = Specific (x,y) location
+### locFlg = Flag to control the (X,Y) location for sampling; 1 = choose random (x,y) location for each trajectory; 2 = Specific (x,y) location (DEFAULT set to X/2, Y/2 location)
 locFlg = 1
-# NOTE: If locFlg = 3 then manually set the (x,y) location inside the code!!
 
 ################# Data Inputs: All inputs are mandatory
 ### NOTE: These inputs are required to scale the scale-normalized DNS datasets  
@@ -49,7 +48,7 @@ form = 'dat'
 ################# Function Specific Inputs: All inputs are mandatory
 ########## function name: 'trajInd'
 ### trajTyp = Synthetic Observation trajectory type; 1 = balloon-like vertical trajectory (descending); 2 = Helical trajectory (descending); 3 = Other trajectory/sampling strategy (descending)
-trajTyp = 1
+trajTyp = [1,2.5,]
 
 ##########################################################################################################################################################################
 ################# Call custom function module developed to execute this program
@@ -62,6 +61,10 @@ except ImportError:
 
 ##########################################################################################################################################################################
 ################# Calculation Block: Calculate the synthetic observation trajectory based on user inputs
+### Create required arrays (empty) to store synthetic trajectory data points
+TrX = []
+TrY = []
+TrZ = []
 ### Calculate the scale parameters using measurements
 eta = (nu**3/epsMeas)**(1/4)        # Kolmogorov length scale [m]
 Zscal = Nz*eta*resMet               # Scaled Z DNS domain dimension [m]
@@ -92,9 +95,20 @@ grid_yScal[0:Ny] = (-Yscal/2)+(np.linspace(1,Ny,Ny)-1)*dyscal         # Grid poi
 grid_zScal[0:Nz] = (np.linspace(1,Nz,Nz)-1)*dzscal                    # Grid point locations in Z direction (scaled) [m]
 
 ### Calculate the number datapoints to sample - based on User inputs for the defined observation strategy 
-
-
-
+### Get X,Y reference points
+if locFlg == 1:         # Pick random, non-repeating locations
+    Xref = random.sample(range(Nx),numTraj)
+    Yref = random.sample(range(Ny),numTraj)
+elif locFlg == 2:         # Manually chosen (X,Y) reference co-ordinates at Domain X,Y centre
+    Xref = np.ones(numTraj)*Nx/2
+    Yref = np.ones(numTraj)*Ny/2
+### Loop over the number of trajectories
+for i in range(0,numTraj):
+    ### Call the function to generate each trajectory
+    [Xtr,Ytr,Ztr] = trajInd(trajTyp,Xref,Yref)
+    TrX[i,:] = Xtr
+    TrY[i,:] = Ytr
+    TrZ[i,:] = Ztr
 ### Calculate vertical sampling
 x_sampl = np.ones(Nz)*(Nx/2)+1
 y_sampl = np.ones(Nz)*(Ny/2)+1

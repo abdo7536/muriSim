@@ -11,6 +11,11 @@ try:
 except ImportError:
     print("numpy module not installed...install numpy and try again")
 try:
+    import math
+    print("math module is loaded...")
+except ImportError:
+    print("math module not installed...install math and try again")
+try:
     import struct as st
     print("struct is installed...")
 except ImportError:
@@ -25,7 +30,10 @@ try:
     print("glob module is loaded...")
 except ImportError:
     print("glob module not installed...install glob and try again")
-
+try:
+    import random
+except ImportError:
+    print("import module not installed...install random and try again")
 
 ##########################################################################################################################################################################
 ################# function to generate a list of file name groups
@@ -54,13 +62,16 @@ def plname(str,form):
 ### z_sampl = Z indices for all points on the synthetic trajectory
 
 ################# Function Definition
-def trajInd(trajTyp):
+def trajInd(trajTyp,numTraj,Xscal,Yscal,Zscal):
 #################
-    if trajTyp[0] == 1:
-    
-    elif trajTyp[0] == 2:
+    if trajTyp[0] == 1:         # Balloon-like descent
+        ### Calculate the number of points to sample on each trajectory
+        numSmpls = Zscal/trajTyp[1]
+        ptsTraj = math.floor(Nz/numSmpls)
+        
+    elif trajTyp[0] == 2:       # DH helical descent
 
-    elif trajTyp[0] == 3:
+    elif trajTyp[0] == 3:       # Other trajectories
 
 #################    
 
