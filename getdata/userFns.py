@@ -93,11 +93,12 @@ def trajInd(trajTyp,Xref,Yref,Nx,Ny,Nz):
 ### Nx = Number of wavenumbers/grid points in X
 ### Ny = Number of wavenumbers/grid points in Y
 ### Nz = Number of wavenumbers/grid points in Z
+### fl = The structrue which holds all the data in a file
 
 ### Output(s):
 ### dat = The output data point (signed float)
 
-def datGet(TrX,TrY,TrZ,Nx,Ny,Nz):
+def datGet(TrX,TrY,TrZ,Nx,Ny,Nz,fl):
     fldIdent = 1
     pts = Nx*Ny*Nz                  # The number of data points in each 3D dataset
     pt_jmp = ((TrZ-1)*Nx*Ny)+((TrY-1)*Nx)+(TrX-1)+((fldIdent-1)*pts)
