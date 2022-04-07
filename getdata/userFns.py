@@ -60,6 +60,7 @@ def plname(nm,form):
 ### Nx = Number of wavenumbers/grid points in X
 ### Ny = Number of wavenumbers/grid points in Y
 ### Nz = Number of wavenumbers/grid points in Z
+### smplPts = The number of points to sample for each trajectory
 
 ### Output(s):
 ### x_sampl = X indices for all points on the synthetic trajectory
@@ -67,20 +68,50 @@ def plname(nm,form):
 ### z_sampl = Z indices for all points on the synthetic trajectory
 
 ################# Function Definition
-def trajInd(trajTyp,Xref,Yref,Nx,Ny,Nz):
+def trajInd(trajTyp,Xref,Yref,Nx,Ny,Nz,smplPts):
 ################# Check what trajectory is defined 
     if trajTyp[0] == 1:         # Balloon-like descent
-        x_sampl = np.ones(Nz)*Xref
-        y_sampl = np.ones(Nz)*Yref
-        z_sampl = np.linspace(Nz,1,Nz)
-    elif trajTyp[0] == 2:       # DH helical descent (NOT WORKING CURRENTLY)
-        x_sampl = np.ones(Nz)
-        y_sampl = np.ones(Nz)
-        z_sampl = np.ones(Nz)
-    elif trajTyp[0] == 3:       # Other trajectories (NOT WORKING CURRENTLY)
-        x_sampl = np.ones(Nz)
-        y_sampl = np.ones(Nz)
-        z_sampl = np.ones(Nz)
+        x_sampl = np.ones(smplPts)*Xref
+        y_sampl = np.ones(smplPts)*Yref
+        z_sampl = np.linspace(smplPts,1,smplPts)
+    elif trajTyp[0] == 2:       # Hrizontal trajectory in X
+        x_sampl = []
+        y_sampl = np.ones(smplPts)*Yref
+        z_sampl = []
+        ### the X indices only need to be grabbed once
+        tmpX = np.linspace(Xref-(trajTyp[2]/2),Xref+(trajTyp[2]/2)-1,num=trajTyp[2])
+        ### the Z indices for the X trajectory are computed using AP
+        tmpZ = (trajTyp[2]/2) + np.linspace(0,trajTyp[1]-1,trajTyp[1])*trajTyp[2]
+        for i in range(0,trajTyp[1]):
+            x_sampl.append(tmpX)
+            z_sampl.append(np.ones(len(tmpX))*tmpZ[i])
+        x_sampl = np.reshape(x_sampl,(1,np.shape(x_sampl)[0]*np.shape(x_sampl)[1]))
+        y_sampl = np.reshape(y_sampl,(1,len(y_sampl)))
+        z_sampl = np.reshape(z_sampl,(1,np.shape(z_sampl)[0]*np.shape(z_sampl)[1]))
+    elif trajTyp[0] == 3:       # Hrizontal trajectory in Y
+        x_sampl = np.ones(smplPts)*Xref
+        y_sampl = []
+        z_sampl = []
+        ### the Y indices only need to be grabbed once
+        tmpY = np.linspace(Yref-(trajTyp[2]/2),Yref+(trajTyp[2]/2)-1,num=trajTyp[2])
+        ### the Z indices for the X trajectory are computed using AP
+        tmpZ = (trajTyp[2]/2) + np.linspace(0,trajTyp[1]-1,trajTyp[1])*trajTyp[2]
+        for i in range(0,trajTyp[1]):
+            y_sampl.append()
+            z_sampl.append(np.ones(len(tmpX))*tmpZ[i])
+        x_sampl = np.reshape(x_sampl,(1,len(x_sampl)))
+        y_sampl = np.reshape(y_sampl,(1,np.shape(y_sampl)[0]*np.shape(y_sampl)[1]))
+        z_sampl = np.reshape(z_sampl,(1,np.shape(z_sampl)[0]*np.shape(z_sampl)[1]))
+################# Account for periodicity and wrap the indices before returning the arrays of indices
+    for i in range(0,len(x_sampl)):
+        if x_sampl[0][i] > Nx:
+            x_sampl[0][i] = x_sampl[0][i]-Nx
+        elif x_sampl[0][i] < 1:
+            x_sampl[0][i] = x_sampl[0][i]+Nx
+        if y_sampl[0][i] > Ny:
+            y_sampl[0][i] = y_sampl[0][i]-Ny
+        elif y_sampl[0][i] < 1:
+            y_sampl[0][i] = y_sampl[0][i]+Ny
 ################# Return the function's output variables
     return(x_sampl, y_sampl, z_sampl)
 

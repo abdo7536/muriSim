@@ -21,11 +21,11 @@ Nz = 960
 numTraj = 1
 ### locFlg = Flag to control the (X,Y) location for sampling; 1 = choose random (x,y) location for each trajectory; 2 = Specific (x,y) location (DEFAULT set to X/2, Y/2 location)
 locFlg = 1
-### datVar = The data variable to be stored; NOTE: This will only be used to name the output filename
+### datVar = The data variable to be stored; NOTE: This is the variable extracted from the DNS 3D datafield and stored at the user defined destination/directory
 datVar = 'U'
-### trajDir = The direction in which the synthetic observer traverses
-trajDir = 'z'
- 
+### trajDir = The direction in which the synthetic observer traverses; NOTE: choice of X, Y and Z directions of synthetic observation traverse; NOTE: ONLY USED FOR NAMING THE FILES
+trajDir = 'x'
+
 ################# Data Inputs: All inputs are mandatory
 ### NOTE: These inputs are required to scale the scale-normalized DNS datasets  
 ### epsMeas = TKE dissipation rate [m^3s^-2]
@@ -34,12 +34,8 @@ epsMeas = 4.0e-3
 nu = 4.0e-4
 ### resMet = DNS resolution metric ( = grid spacing/ kolmogorov length scale)
 resMet = 1.4413
-### lxGW = GW X component wavelength (unitless/normalized) 
-lxGw = 3
-### lzGW = GW Z component wavelength (unitless/normalized) 
-lzGw = 1
-### aGW = GW amplitude relative to overturning wave amplitude (unitless)
-a = 0.9
+### balRt = HYFLITS balloon descent rate [m/s]
+balRt = 2.5
 
 ################# Function Specific Inputs: All inputs are mandatory
 ########## function name: 'lodatsin'
@@ -51,8 +47,8 @@ form = 'dat'
 
 ################# Function Specific Inputs: All inputs are mandatory
 ########## function name: 'trajInd'
-### trajTyp = Synthetic Observation trajectory type; 1 = balloon-like vertical trajectory (descending); 2 = Helical trajectory (descending); 3 = Other trajectory/sampling strategy (descending)
-trajTyp = [1]                   # Example input for Balloon-like Trajectory
+### trajTyp = Synthetic Observation trajectory type; 1 = balloon-like vertical trajectory (descending); 2 = Horizontal Sampling in X; 3 = Horizontal Sampling in Y
+trajTyp = [2]
 
 ##########################################################################################################################################################################
 ################# Call custom function module developed to execute this program
@@ -64,7 +60,7 @@ except ImportError:
     print("Custom library not installed.... Install and try again")
 
 ##########################################################################################################################################################################
-################# Calculation Block: Calculate the synthetic observation trajectory based on user inputs
+################# Calculation Block: Calculate the DNS datafield scaling and extract the 3D meshgrid
 ### Create required arrays (empty) to store synthetic trajectory data points
 TrX = []
 TrY = []
@@ -98,6 +94,11 @@ grid_xScal[0][0:Nx] = (-Xscal/2)+(np.linspace(1,Nx,Nx)-1)*dxscal         # Grid 
 grid_yScal[0][0:Ny] = (-Yscal/2)+(np.linspace(1,Ny,Ny)-1)*dyscal         # Grid point locations in Y direction (scaled) [m]
 grid_zScal[0][0:Nz] = (np.linspace(1,Nz,Nz)-1)*dzscal                    # Grid point locations in Z direction (scaled) [m]
 
+### Create a meshgrid (The meshgrid - [X,Y,Z] grid points - should be exported in the File)
+#[Xgrid,Ygrid,Zgrid] = np.meshgrid(grid_xScal,grid_yScal,grid_zScal)
+
+##########################################################################################################################################################################
+################# Trajectory points calculation block
 ### Calculate the number datapoints to sample - based on User inputs for the defined observation strategy 
 ### Get X,Y reference points
 if locFlg == 1:         # Pick random, non-repeating locations
@@ -106,10 +107,20 @@ if locFlg == 1:         # Pick random, non-repeating locations
 elif locFlg == 2:         # Manually chosen (X,Y) reference co-ordinates at Domain X,Y centre
     Xref = np.ones(numTraj)*Nx/2
     Yref = np.ones(numTraj)*Ny/2
+
+### Compute interval sets in case of horizontal sampling trajectories
+if trajTyp[0] != 1:
+    trajTyp.append(math.floor(Zscal/balRt))         # calculate the maximum number of (full) intervals in one single descent through the DNS datafield [integer]
+    trajTyp.append(math.floor(balRt/dzscal))        # calculate the maximum number of grid points per each interval
+    smplPts = trajTyp[1]*trajTyp[2]                 # Compute the number of points to sample from the (scaled) DNS dataset
+else:
+    smplPts = Nz                                    # Compute the number of points to sample from the (scaled) DNS dataset
+
 ### Loop over the number of trajectories
 for i in range(0,numTraj):
     ### Call the function to generate each trajectory
-    [Xtr,Ytr,Ztr] = trajInd(trajTyp,Xref[i],Yref[i],Nx,Ny,Nz)
+    [Xtr,Ytr,Ztr] = trajInd(trajTyp,Xref[i],Yref[i],Nx,Ny,Nz,smplPts)
+    print(Xtr>Nx, Xtr<1)
     TrX.append(Xtr)
     TrY.append(Ytr)
     TrZ.append(Ztr)
