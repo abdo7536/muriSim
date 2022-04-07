@@ -80,8 +80,8 @@ dx = Xl/Nx             # Grid Resolution in X (normalized)
 dy = Yl/Ny             # Grid Resolution in Y (normalized)
 dz = Zl/Nz             # Grid Resolution in Z (normalized)
 dxscal = Xscal/Nx      # Grid Resolution in X (scaled) [m]
-dyscal = Yscal/Nx      # Grid Resolution in Y (scaled) [m]
-dzscal = Zscal/Nx      # Grid Resolution in Z (scaled) [m]
+dyscal = Yscal/Ny      # Grid Resolution in Y (scaled) [m]
+dzscal = Zscal/Nz      # Grid Resolution in Z (scaled) [m]
 
 ### Grid Co-ordinate calculations
 # NOTE: The data is written at the grid edges i.e. Number of data points = Nx*Ny*Nz specified in sam.inp file
