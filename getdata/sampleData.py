@@ -120,10 +120,12 @@ else:
 for i in range(0,numTraj):
     ### Call the function to generate each trajectory
     [Xtr,Ytr,Ztr] = trajInd(trajTyp,Xref[i],Yref[i],Nx,Ny,Nz,smplPts)
-    print(Xtr>Nx, Xtr<1)
-    TrX.append(Xtr)
-    TrY.append(Ytr)
-    TrZ.append(Ztr)
+    Xtmp = Xtr[0]
+    Ytmp = Ytr[0]
+    Ztmp = Ztr[0]
+    TrX.append(Xtmp)
+    TrY.append(Ytmp)
+    TrZ.append(Ztmp)
 
 ##########################################################################################################################################################################
 ################# Data Extraction block
@@ -144,6 +146,7 @@ for i in range(0,len(filNms)):
     ### Create a table containing the extracted data and the grid centre co-ordinates in Z
     strct1 = np.transpose(tmpVar)
     strct2 = np.transpose(grid_zScal)
+    print(np.shape(strct1), np.shape(strct2))
     dataWrit = np.concatenate((strct1, strct2), 1)
     ### save as textfile
     np.savetxt(savenm,dataWrit,delimiter=',')
