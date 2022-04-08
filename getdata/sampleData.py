@@ -61,7 +61,7 @@ except ImportError:
 
 ##########################################################################################################################################################################
 ################# Calculation Block: Calculate the DNS datafield scaling and extract the 3D meshgrid
-### Create required arrays (empty) to store synthetic trajectory data points
+### Create required arrays (empty) to store synthetic trajectory data points and the meshgrid data points
 TrX = []
 TrY = []
 TrZ = []
@@ -95,7 +95,7 @@ grid_yScal[0][0:Ny] = (-Yscal/2)+(np.linspace(1,Ny,Ny)-1)*dyscal         # Grid 
 grid_zScal[0][0:Nz] = (np.linspace(1,Nz,Nz)-1)*dzscal                    # Grid point locations in Z direction (scaled) [m]
 
 ### Create a meshgrid (The meshgrid - [X,Y,Z] grid points - should be exported in the File)
-#[Xgrid,Ygrid,Zgrid] = np.meshgrid(grid_xScal,grid_yScal,grid_zScal)
+[Xgrid,Ygrid,Zgrid] = np.meshgrid(grid_xScal,grid_yScal,grid_zScal)
 
 ##########################################################################################################################################################################
 ################# Trajectory points calculation block
@@ -120,12 +120,9 @@ else:
 for i in range(0,numTraj):
     ### Call the function to generate each trajectory
     [Xtr,Ytr,Ztr] = trajInd(trajTyp,Xref[i],Yref[i],Nx,Ny,Nz,smplPts)
-    Xtmp = Xtr[0]
-    Ytmp = Ytr[0]
-    Ztmp = Ztr[0]
-    TrX.append(Xtmp)
-    TrY.append(Ytmp)
-    TrZ.append(Ztmp)
+    TrX.append(Xtr[0])
+    TrY.append(Ytr[0])
+    TrZ.append(Ztr[0])
 
 ##########################################################################################################################################################################
 ################# Data Extraction block
@@ -133,20 +130,32 @@ for i in range(0,numTraj):
 filNms = plname(flNm,form)
 ### Read required points from file: Loop over the number of files
 for i in range(0,len(filNms)):
-    ### create a savename
-    savenm = filNms[i][:-18] + datVar + trajDir + filNms[i][-11:-4] + '.txt'
+    ### Initialize arrays to store the trajectory data and grid data
     tmpVar = np.zeros((numTraj,np.shape(TrX)[1]))
+    GrdX = np.zeros((numTraj,np.shape(TrX)[1]))
+    GrdY = np.zeros((numTraj,np.shape(TrY)[1]))
+    GrdZ = np.zeros((numTraj,np.shape(TrZ)[1]))
     ### Create a temporary variable to store all extracted data points on the trajectory
     ### Open the .dat data file
     with open(filNms[i],'br') as fl:
         for j in range(0,numTraj):
             for k in range(0,np.shape(TrX)[1]):    
                 tmpVar[j][k] = datGet(TrX[j][k],TrY[j][k],TrZ[j][k],Nx,Ny,Nz,fl)
-
-    ### Create a table containing the extracted data and the grid centre co-ordinates in Z
-    strct1 = np.transpose(tmpVar)
-    strct2 = np.transpose(grid_zScal)
-    print(np.shape(strct1), np.shape(strct2))
-    dataWrit = np.concatenate((strct1, strct2), 1)
-    ### save as textfile
-    np.savetxt(savenm,dataWrit,delimiter=',')
+                GrdX[j][k] = Xgrid[TrX[j][k]]
+                GrdY[j][k] = Ygrid[TrY[j][k]]
+                GrdZ[j][k] = Zgrid[TrZ[j][k]]
+        ### Create a table containing the extracted data and the grid centre co-ordinates in Z
+        strct1 = np.transpose(tmpVar)
+        strct2 = np.transpose(GrdX)
+        strct3 = np.transpose(GrdY)
+        strct4 = np.transpose(GrdZ)
+        ### create a savename
+        saveDat = filNms[i][:-18] + datVar + trajDir + '_' + "{:04d}".format(j) + filNms[i][-11:-4] + '.txt'
+        saveGX = filNms[i][:-18] + 'GridX' + trajDir + '_' + "{:04d}".format(j) + filNms[i][-11:-4] + '.txt'
+        saveGY = filNms[i][:-18] + 'GridY' + trajDir + '_' + "{:04d}".format(j) + filNms[i][-11:-4] + '.txt'
+        saveGZ = filNms[i][:-18] + 'GridZ' + trajDir + '_' + "{:04d}".format(j) + filNms[i][-11:-4] + '.txt'
+        ### save as textfile
+        np.savetxt(saveDat,strct1,delimiter=',')
+        np.savetxt(saveGX,strct1,delimiter=',')
+        np.savetxt(saveGY,strct1,delimiter=',')
+        np.savetxt(saveGZ,strct1,delimiter=',')
