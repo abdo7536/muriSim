@@ -150,12 +150,12 @@ for i in range(0,len(filNms)):
         strct3 = np.transpose(GrdY)
         strct4 = np.transpose(GrdZ)
         ### create a savename
-        saveDat = filNms[i][:-18] + datVar + trajDir + '_' + "{:04d}".format(j) + filNms[i][-11:-4] + '.txt'
-        saveGX = filNms[i][:-18] + 'GridX' + trajDir + '_' + "{:04d}".format(j) + filNms[i][-11:-4] + '.txt'
-        saveGY = filNms[i][:-18] + 'GridY' + trajDir + '_' + "{:04d}".format(j) + filNms[i][-11:-4] + '.txt'
-        saveGZ = filNms[i][:-18] + 'GridZ' + trajDir + '_' + "{:04d}".format(j) + filNms[i][-11:-4] + '.txt'
+        saveDat = filNms[i][:-18] + datVar + trajDir + filNms[i][-11:-4] + '.txt'
+        saveGX = filNms[i][:-18] + 'GridX' + datVar + trajDir + filNms[i][-11:-4] + '.txt'
+        saveGY = filNms[i][:-18] + 'GridY' + datVar + trajDir + filNms[i][-11:-4] + '.txt'
+        saveGZ = filNms[i][:-18] + 'GridZ' + datVar + trajDir + filNms[i][-11:-4] + '.txt'
         ### save as textfile
         np.savetxt(saveDat,strct1,delimiter=',')
-        np.savetxt(saveGX,strct1,delimiter=',')
-        np.savetxt(saveGY,strct1,delimiter=',')
-        np.savetxt(saveGZ,strct1,delimiter=',')
+        np.savetxt(saveGX,strct2,delimiter=',')
+        np.savetxt(saveGY,strct3,delimiter=',')
+        np.savetxt(saveGZ,strct4,delimiter=',')
