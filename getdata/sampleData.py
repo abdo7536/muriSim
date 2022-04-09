@@ -121,8 +121,15 @@ elif locFlg == 2:         # Manually chosen (X,Y) reference co-ordinates at Doma
     refFlNm = dirTry + 'refPts.txt'
     np.savetxt(refFlNm,strctRef,delimiter=',')
 elif locFlg == 3:         # Read (X,Y) reference co-ordinates from a text file
-    with open('refPts.txt') as da:
+    refFlNm = dirTry + 'refPts.txt'
+    Xref = []
+    Yref = []
+    with open(refFlNm) as da:
         refPts = da.readlines()
+        for i in range(0,len(refPts)):
+            lnRef = refPts[i]
+            Xref[i] = int(lnRef[0:24])
+            Yref[i] = int(lnRef[26:])
 
 ### Compute interval sets in case of horizontal sampling trajectories
 if trajTyp[0] != 1:
