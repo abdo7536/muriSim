@@ -89,16 +89,16 @@ def trajInd(trajTyp,Xref,Yref,Nx,Ny,Nz,smplPts):
         y_sampl = np.reshape(y_sampl,(1,len(y_sampl)))
         z_sampl = np.reshape(z_sampl,(1,np.shape(z_sampl)[0]*np.shape(z_sampl)[1]))
     elif trajTyp[0] == 3:       # Hrizontal trajectory in Y
-        x_sampl = np.ones(smplPts)*Xref
+        x_sampl = np.ones(smplPts)*Yref
         y_sampl = []
         z_sampl = []
         ### the Y indices only need to be grabbed once
         tmpY = np.linspace(Yref-(trajTyp[2]/2),Yref+(trajTyp[2]/2)-1,num=trajTyp[2])
-        ### the Z indices for the X trajectory are computed using AP
+        ### the Z indices for the Y trajectory are computed using AP
         tmpZ = (trajTyp[2]/2) + np.linspace(0,trajTyp[1]-1,trajTyp[1])*trajTyp[2]
         for i in range(0,trajTyp[1]):
-            y_sampl.append()
-            z_sampl.append(np.ones(len(tmpX))*tmpZ[i])
+            y_sampl.append(tmpY)
+            z_sampl.append(np.ones(len(tmpY))*tmpZ[i])
         x_sampl = np.reshape(x_sampl,(1,len(x_sampl)))
         y_sampl = np.reshape(y_sampl,(1,np.shape(y_sampl)[0]*np.shape(y_sampl)[1]))
         z_sampl = np.reshape(z_sampl,(1,np.shape(z_sampl)[0]*np.shape(z_sampl)[1]))
