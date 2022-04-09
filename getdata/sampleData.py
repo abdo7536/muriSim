@@ -102,11 +102,24 @@ grid_zScal[0][0:Nz] = (np.linspace(1,Nz,Nz)-1)*dzscal                    # Grid 
 ### Calculate the number datapoints to sample - based on User inputs for the defined observation strategy 
 ### Get X,Y reference points
 if locFlg == 1:         # Pick random, non-repeating locations
-    Xref = random.sample(range(Nx),numTraj)
-    Yref = random.sample(range(Ny),numTraj)
+    tmpXref = random.sample(range(Nx),numTraj)
+    tmpYref = random.sample(range(Ny),numTraj)
+    Xref = np.transpose(np.reshape(Xref,(1,len(Xref))))
+    Yref = np.transpose(np.reshape(Yref,(1,len(Yref))))
+    strctRef = np.column_stack((Xref,Yref))
+    refFlNm = filNms[i][:-18] + 'refPts.txt'
+    np.savetxt(refFlNm,strctRef,delimiter=',')
 elif locFlg == 2:         # Manually chosen (X,Y) reference co-ordinates at Domain X,Y centre
-    Xref = np.ones(numTraj)*Nx/2
-    Yref = np.ones(numTraj)*Ny/2
+    tmpXref = np.ones(numTraj)*Nx/2
+    tmpYref = np.ones(numTraj)*Ny/2
+    Xref = np.transpose(np.reshape(Xref,(1,len(Xref))))
+    Yref = np.transpose(np.reshape(Yref,(1,len(Yref))))
+    strctRef = np.column_stack((Xref,Yref))
+    refFlNm = filNms[i][:-18] + 'refPts.txt'
+    np.savetxt(refFlNm,strctRef,delimiter=',')
+elif locFlg == 3:         # Read (X,Y) reference co-ordinates from a text file
+    with open('refPts.txt') as da:
+        refPts = da.readlines()
 
 ### Compute interval sets in case of horizontal sampling trajectories
 if trajTyp[0] != 1:
