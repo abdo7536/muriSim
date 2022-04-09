@@ -18,13 +18,13 @@ Ny = 1920
 ### Nz = Number of points in Domain Z dimension
 Nz = 960
 ### numTraj = Number of trajectories to sample
-numTraj = 1
+numTraj = 50
 ### locFlg = Flag to control the (X,Y) location for sampling; 1 = choose random (x,y) location for each trajectory; 2 = Specific (x,y) location (DEFAULT set to X/2, Y/2 location)
 locFlg = 1
 ### datVar = The data variable to be stored; NOTE: This is the variable extracted from the DNS 3D datafield and stored at the user defined destination/directory
-datVar = 'U'
+datVar = 'V'
 ### trajDir = The direction in which the synthetic observer traverses; NOTE: choice of X, Y and Z directions of synthetic observation traverse; NOTE: ONLY USED FOR NAMING THE FILES
-trajDir = 'x'
+trajDir = 'y'
 
 ################# Data Inputs: All inputs are mandatory
 ### NOTE: These inputs are required to scale the scale-normalized DNS datasets  
@@ -95,7 +95,7 @@ grid_yScal[0][0:Ny] = (-Yscal/2)+(np.linspace(1,Ny,Ny)-1)*dyscal         # Grid 
 grid_zScal[0][0:Nz] = (np.linspace(1,Nz,Nz)-1)*dzscal                    # Grid point locations in Z direction (scaled) [m]
 
 ### Create a meshgrid (The meshgrid - [X,Y,Z] grid points - should be exported in the File)
-[Xgrid,Ygrid,Zgrid] = np.meshgrid(grid_xScal,grid_yScal,grid_zScal)
+[Ygrid,Xgrid,Zgrid] = np.meshgrid(grid_yScal,grid_xScal,grid_zScal)
 
 ##########################################################################################################################################################################
 ################# Trajectory points calculation block
@@ -150,10 +150,10 @@ for i in range(0,len(filNms)):
         strct3 = np.transpose(GrdY)
         strct4 = np.transpose(GrdZ)
         ### create a savename
-        saveDat = filNms[i][:-18] + datVar + trajDir + filNms[i][-11:-4] + '.txt'
-        saveGX = filNms[i][:-18] + 'GridX' + datVar + trajDir + filNms[i][-11:-4] + '.txt'
-        saveGY = filNms[i][:-18] + 'GridY' + datVar + trajDir + filNms[i][-11:-4] + '.txt'
-        saveGZ = filNms[i][:-18] + 'GridZ' + datVar + trajDir + filNms[i][-11:-4] + '.txt'
+        saveDat = filNms[i][:-18] + datVar + trajDir + "{:06d}".format(numTraj) + filNms[i][-11:-4] + '.txt'
+        saveGX = filNms[i][:-18] + 'GridX' + datVar + trajDir + "{:06d}".format(numTraj) + filNms[i][-11:-4] + '.txt'
+        saveGY = filNms[i][:-18] + 'GridY' + datVar + trajDir + "{:06d}".format(numTraj) + filNms[i][-11:-4] + '.txt'
+        saveGZ = filNms[i][:-18] + 'GridZ' + datVar + trajDir + "{:06d}".format(numTraj) + filNms[i][-11:-4] + '.txt'
         ### save as textfile
         np.savetxt(saveDat,strct1,delimiter=',')
         np.savetxt(saveGX,strct2,delimiter=',')
