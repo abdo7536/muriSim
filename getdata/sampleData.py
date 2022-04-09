@@ -18,9 +18,9 @@ Ny = 1920
 ### Nz = Number of points in Domain Z dimension
 Nz = 960
 ### numTraj = Number of trajectories to sample
-numTraj = 10
-### locFlg = Flag to control the (X,Y) location for sampling; 1 = choose random (x,y) location for each trajectory; 2 = Specific (x,y) location (DEFAULT set to X/2, Y/2 location)
-locFlg = 1
+numTraj = 100
+### locFlg = Flag to control the (X,Y) location for sampling; 1 = choose random (x,y) location for each trajectory; 2 = Specific (x,y) location (DEFAULT set to X/2, Y/2 location); 3 = Read X,Y reference co-ordinates for each trajectory from a .txt file
+locFlg = 3
 ### datVar = The data variable to be stored; NOTE: This is the variable extracted from the DNS 3D datafield and stored at the user defined destination/directory
 datVar = 'V'
 ### trajDir = The direction in which the synthetic observer traverses; NOTE: choice of X, Y and Z directions of synthetic observation traverse; NOTE: ONLY USED FOR NAMING THE FILES
@@ -48,7 +48,7 @@ form = 'dat'
 ################# Function Specific Inputs: All inputs are mandatory
 ########## function name: 'trajInd'
 ### trajTyp = Synthetic Observation trajectory type; 1 = balloon-like vertical trajectory (descending); 2 = Horizontal Sampling in X; 3 = Horizontal Sampling in Y
-trajTyp = [2]
+trajTyp = [3]
 
 ##########################################################################################################################################################################
 ################# Call custom function module developed to execute this program
@@ -122,22 +122,20 @@ elif locFlg == 2:         # Manually chosen (X,Y) reference co-ordinates at Doma
     np.savetxt(refFlNm,strctRef,delimiter=',')
 elif locFlg == 3:         # Read (X,Y) reference co-ordinates from a text file
     refFlNm = dirTry + 'refPts.txt'
-    Xref = []
-    Yref = []
     with open(refFlNm) as da:
         refPts = da.readlines()
+        Xref = np.zeros((len(refPts),1))
+       	Yref = np.zeros((len(refPts),1))
         for i in range(0,len(refPts)):
             lnRef = refPts[i]
-            Xref[i] = int(lnRef[0:24])
-            Yref[i] = int(lnRef[26:])
+            Xref[i] = int(float(lnRef[0:24]))
+            Yref[i] = int(float(lnRef[26:]))
 
 ### Compute interval sets in case of horizontal sampling trajectories
-if trajTyp[0] != 1:
-    trajTyp.append(math.floor(Zscal/balRt))         # calculate the maximum number of (full) intervals in one single descent through the DNS datafield [integer]
-    trajTyp.append(math.floor(balRt/dzscal))        # calculate the maximum number of grid points per each interval
-    smplPts = trajTyp[1]*trajTyp[2]                 # Compute the number of points to sample from the (scaled) DNS dataset
-else:
-    smplPts = Nz                                    # Compute the number of points to sample from the (scaled) DNS dataset
+trajTyp.append(math.floor(Zscal/balRt))         # calculate the maximum number of (full) intervals in one single descent through the DNS datafield [integer]
+trajTyp.append(math.floor(balRt/dzscal))        # calculate the maximum number of grid points per each interval
+smplPts = trajTyp[1]*trajTyp[2]                 # Compute the number of points to sample from the (scaled) DNS dataset
+
 
 ### Loop over the number of trajectories
 for i in range(0,numTraj):

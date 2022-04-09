@@ -5,7 +5,7 @@
 #PBS -N GWBsamplTst
 #PBS -q debug
 #PBS -l select=01:ncpus=01:mpiprocs=01
-#PBS -l walltime=00:03:00
+#PBS -l walltime=00:10:00
 #PBS -j oe
 #PBS -m be
 #PBS -M abdo7536@colorado.edu

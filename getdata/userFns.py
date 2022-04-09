@@ -74,9 +74,12 @@ def trajInd(trajTyp,Xref,Yref,Nx,Ny,Nz,smplPts):
         x_sampl = np.ones(smplPts)*Xref
         y_sampl = np.ones(smplPts)*Yref
         z_sampl = np.linspace(smplPts,1,smplPts)
-        x_sampl = np.reshape(x_sampl,(1,np.shape(x_sampl)[0]*np.shape(x_sampl)[1]))
+        x_sampl = np.reshape(x_sampl,(1,np.shape(x_sampl)[0]))
         y_sampl = np.reshape(y_sampl,(1,len(y_sampl)))
-        z_sampl = np.reshape(z_sampl,(1,np.shape(z_sampl)[0]*np.shape(z_sampl)[1]))
+        z_sampl = np.reshape(z_sampl,(1,np.shape(z_sampl)[0]))
+        print(np.shape(x_sampl))
+       	print(np.shape(y_sampl))
+       	print(np.shape(z_sampl))
     elif trajTyp[0] == 2:       # Hrizontal trajectory in X
         x_sampl = []
         y_sampl = np.ones(smplPts)*Yref
