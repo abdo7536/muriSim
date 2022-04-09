@@ -18,7 +18,7 @@ Ny = 1920
 ### Nz = Number of points in Domain Z dimension
 Nz = 960
 ### numTraj = Number of trajectories to sample
-numTraj = 50
+numTraj = 10
 ### locFlg = Flag to control the (X,Y) location for sampling; 1 = choose random (x,y) location for each trajectory; 2 = Specific (x,y) location (DEFAULT set to X/2, Y/2 location)
 locFlg = 1
 ### datVar = The data variable to be stored; NOTE: This is the variable extracted from the DNS 3D datafield and stored at the user defined destination/directory
@@ -99,23 +99,26 @@ grid_zScal[0][0:Nz] = (np.linspace(1,Nz,Nz)-1)*dzscal                    # Grid 
 
 ##########################################################################################################################################################################
 ################# Trajectory points calculation block
+### List the datafiles in the operation directory
+filNms = plname(flNm,form)
+dirTry = filNms[0][:-18]
 ### Calculate the number datapoints to sample - based on User inputs for the defined observation strategy 
 ### Get X,Y reference points
 if locFlg == 1:         # Pick random, non-repeating locations
     tmpXref = random.sample(range(Nx),numTraj)
     tmpYref = random.sample(range(Ny),numTraj)
-    Xref = np.transpose(np.reshape(Xref,(1,len(Xref))))
-    Yref = np.transpose(np.reshape(Yref,(1,len(Yref))))
+    Xref = np.transpose(np.reshape(tmpXref,(1,len(tmpXref))))
+    Yref = np.transpose(np.reshape(tmpYref,(1,len(tmpYref))))
     strctRef = np.column_stack((Xref,Yref))
-    refFlNm = filNms[i][:-18] + 'refPts.txt'
+    refFlNm = dirTry + 'refPts.txt'
     np.savetxt(refFlNm,strctRef,delimiter=',')
 elif locFlg == 2:         # Manually chosen (X,Y) reference co-ordinates at Domain X,Y centre
     tmpXref = np.ones(numTraj)*Nx/2
     tmpYref = np.ones(numTraj)*Ny/2
-    Xref = np.transpose(np.reshape(Xref,(1,len(Xref))))
-    Yref = np.transpose(np.reshape(Yref,(1,len(Yref))))
+    Xref = np.transpose(np.reshape(tmpXref,(1,len(tmpXref))))
+    Yref = np.transpose(np.reshape(tmpYref,(1,len(tmpYref))))
     strctRef = np.column_stack((Xref,Yref))
-    refFlNm = filNms[i][:-18] + 'refPts.txt'
+    refFlNm = dirTry + 'refPts.txt'
     np.savetxt(refFlNm,strctRef,delimiter=',')
 elif locFlg == 3:         # Read (X,Y) reference co-ordinates from a text file
     with open('refPts.txt') as da:
@@ -139,8 +142,6 @@ for i in range(0,numTraj):
 
 ##########################################################################################################################################################################
 ################# Data Extraction block
-### List the datafiles in the operation directory
-filNms = plname(flNm,form)
 ### Read required points from file: Loop over the number of files
 for i in range(0,len(filNms)):
     ### Initialize arrays to store the trajectory data and grid data
