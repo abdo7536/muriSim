@@ -112,6 +112,8 @@ def trajInd(trajTyp,Xref,Yref,Nx,Ny,Nz,smplPts):
             y_sampl[0][i] = y_sampl[0][i]-Ny
         elif y_sampl[0][i] < 1:
             y_sampl[0][i] = y_sampl[0][i]+Ny
+    print(x_sampl)
+    print(y_sampl)
 ################# Return the function's output variables
     return(x_sampl, y_sampl, z_sampl)
 

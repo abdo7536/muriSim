@@ -141,9 +141,9 @@ for i in range(0,len(filNms)):
         for j in range(0,numTraj):
             for k in range(0,np.shape(TrX)[1]):    
                 tmpVar[j][k] = datGet(TrX[j][k],TrY[j][k],TrZ[j][k],Nx,Ny,Nz,fl)
-                GrdX[j][k] = Xgrid[TrX[j][k]]
-                GrdY[j][k] = Ygrid[TrY[j][k]]
-                GrdZ[j][k] = Zgrid[TrZ[j][k]]
+                GrdX[j][k] = Xgrid[int(TrX[j][k])][int(TrY[j][k])][int(TrZ[j][k])]
+                GrdY[j][k] = Ygrid[int(TrX[j][k])][int(TrY[j][k])][int(TrZ[j][k])]
+                GrdZ[j][k] = Zgrid[int(TrX[j][k])][int(TrY[j][k])][int(TrZ[j][k])]
         ### Create a table containing the extracted data and the grid centre co-ordinates in Z
         strct1 = np.transpose(tmpVar)
         strct2 = np.transpose(GrdX)
