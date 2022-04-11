@@ -92,7 +92,7 @@ def trajInd(trajTyp,Xref,Yref,Nx,Ny,Nz,smplPts):
         y_sampl = np.reshape(y_sampl,(1,len(y_sampl)))
         z_sampl = np.reshape(z_sampl,(1,np.shape(z_sampl)[0]*np.shape(z_sampl)[1]))
     elif trajTyp[0] == 3:       # Hrizontal trajectory in Y
-        x_sampl = np.ones(smplPts)*Yref
+        x_sampl = np.ones(smplPts)*Xref
         y_sampl = []
         z_sampl = []
         ### the Y indices only need to be grabbed once
