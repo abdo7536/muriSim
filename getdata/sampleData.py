@@ -22,7 +22,7 @@ numTraj = 100
 ### locFlg = Flag to control the (X,Y) location for sampling; 1 = choose random (x,y) location for each trajectory; 2 = Specific (x,y) location (DEFAULT set to X/2, Y/2 location); 3 = Read X,Y reference co-ordinates for each trajectory from a .txt file
 locFlg = 3
 ### datVar = The data variable to be stored; NOTE: This is the variable extracted from the DNS 3D datafield and stored at the user defined destination/directory
-datVar = 'E'
+datVar = 'V'
 ### trajDir = The direction in which the synthetic observer traverses; NOTE: choice of X, Y and Z directions of synthetic observation traverse; NOTE: ONLY USED FOR NAMING THE FILES
 trajDir = 'y'
 
