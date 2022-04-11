@@ -22,7 +22,7 @@ numTraj = 100
 ### locFlg = Flag to control the (X,Y) location for sampling; 1 = choose random (x,y) location for each trajectory; 2 = Specific (x,y) location (DEFAULT set to X/2, Y/2 location); 3 = Read X,Y reference co-ordinates for each trajectory from a .txt file
 locFlg = 3
 ### datVar = The data variable to be stored; NOTE: This is the variable extracted from the DNS 3D datafield and stored at the user defined destination/directory
-datVar = 'V'
+datVar = 'E'
 ### trajDir = The direction in which the synthetic observer traverses; NOTE: choice of X, Y and Z directions of synthetic observation traverse; NOTE: ONLY USED FOR NAMING THE FILES
 trajDir = 'y'
 
@@ -105,8 +105,8 @@ dirTry = filNms[0][:-18]
 ### Calculate the number datapoints to sample - based on User inputs for the defined observation strategy 
 ### Get X,Y reference points
 if locFlg == 1:         # Pick random, non-repeating locations
-    tmpXref = random.sample(range(Nx),numTraj)
-    tmpYref = random.sample(range(Ny),numTraj)
+    tmpXref = random.sample(range(1,Nx),numTraj)
+    tmpYref = random.sample(range(1,Ny),numTraj)
     Xref = np.transpose(np.reshape(tmpXref,(1,len(tmpXref))))
     Yref = np.transpose(np.reshape(tmpYref,(1,len(tmpYref))))
     strctRef = np.column_stack((Xref,Yref))
