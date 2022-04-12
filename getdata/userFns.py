@@ -84,7 +84,7 @@ def trajInd(trajTyp,Xref,Yref,Nx,Ny,Nz,smplPts):
         ### the X indices only need to be grabbed once
         tmpX = np.linspace(Xref-(trajTyp[2]/2),Xref+(trajTyp[2]/2)-1,num=trajTyp[2])
         ### the Z indices for the X trajectory are computed using AP
-        tmpZ = (trajTyp[2]/2) + np.linspace(0,trajTyp[1]-1,trajTyp[1])*trajTyp[2]
+        tmpZ = ((Nz-trajTyp[2]/2)) + np.linspace(0,trajTyp[1]-1,trajTyp[1])*-trajTyp[2]
         for i in range(0,trajTyp[1]):
             x_sampl.append(tmpX)
             z_sampl.append(np.ones(len(tmpX))*tmpZ[i])
@@ -98,7 +98,7 @@ def trajInd(trajTyp,Xref,Yref,Nx,Ny,Nz,smplPts):
         ### the Y indices only need to be grabbed once
         tmpY = np.linspace(Yref-(trajTyp[2]/2),Yref+(trajTyp[2]/2)-1,num=trajTyp[2])
         ### the Z indices for the Y trajectory are computed using AP
-        tmpZ = (trajTyp[2]/2) + np.linspace(0,trajTyp[1]-1,trajTyp[1])*trajTyp[2]
+        tmpZ = ((Nz-trajTyp[2]/2)) + np.linspace(0,trajTyp[1]-1,trajTyp[1])*-trajTyp[2]
         for i in range(0,trajTyp[1]):
             y_sampl.append(tmpY)
             z_sampl.append(np.ones(len(tmpY))*tmpZ[i])
