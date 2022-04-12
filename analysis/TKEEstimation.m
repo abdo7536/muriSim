@@ -839,25 +839,27 @@ end
 
 %% Plot the profiles
 % Loop over all profiles for plotting
+Epslims = [-8 0];
 for i = 1:1:numTraj
     pt = i;
     figure(i)
     clf
-    subplot(1,3,1)
-    plot(log10(mTrEx(:,pt)),mTrGzEx(:,pt),'r')
+    subplot(1,5,1)
+    plot(log10(mTrEx(:,pt)),mTrGzEx(:,pt),'k')
     hold on
-    plot(log_Uepsilon_k(:,pt),mTrGzUx(:,pt),'b')
-    plot(log_Uepsilon_u(:,pt),mTrGzUx(:,pt),'--b')
-    plot(log_Uepsilon_l(:,pt),mTrGzUx(:,pt),'--b')
+    plot(log_Uepsilon_k(:,pt),mTrGzUx(:,pt),'r')
+    plot(log_Uepsilon_u(:,pt),mTrGzUx(:,pt),'--r')
+    plot(log_Uepsilon_l(:,pt),mTrGzUx(:,pt),'--r')
     legend('Ex','Ux')
     xlabel('\epsilon')
     ylabel('height')
     grid on
     grid Minor
-    xlim([-10 2])
+    xlim([Epslims(1) Epslims(2)])
     ylim([0 16])
-    subplot(1,3,2)
-    plot(log10(mTrEy(:,pt)),mTrGzEy(:,pt),'r')
+    a_1=title(['Ux and Ex comparison, Trajectory = ',num2str(i)]);
+    subplot(1,5,2)
+    plot(log10(mTrEy(:,pt)),mTrGzEy(:,pt),'k')
     hold on
     plot(log_Vepsilon_k(:,pt),mTrGzVy(:,pt),'b')
     plot(log_Vepsilon_u(:,pt),mTrGzUx(:,pt),'--b')
@@ -867,22 +869,56 @@ for i = 1:1:numTraj
     ylabel('height')
     grid on
     grid Minor
-    xlim([-10 2])
+    xlim([Epslims(1) Epslims(2)])
     ylim([0 16])
-    a_1=title(['Ux, Vy,Wz, Ex, Ey, Ez comparison, Trajectory = ',num2str(i)]);
-    subplot(1,3,3)
-    plot(log10(mTrEz(:,pt)),mTrGzEz(:,pt),'r')
+    a_1=title(['Vy and Ey comparison, Trajectory = ',num2str(i)]);
+    subplot(1,5,3)
+    plot(log10(mTrEz(:,pt)),mTrGzEz(:,pt),'k')
     hold on
-    plot(log_Wepsilon_k(:,pt),mTrGzWz(:,pt),'b')
-    plot(log_Wepsilon_u(:,pt),mTrGzUx(:,pt),'--b')
-    plot(log_Wepsilon_l(:,pt),mTrGzUx(:,pt),'--b')
+    plot(log_Wepsilon_k(:,pt),mTrGzWz(:,pt),'m')
+    plot(log_Wepsilon_u(:,pt),mTrGzUx(:,pt),'--m')
+    plot(log_Wepsilon_l(:,pt),mTrGzUx(:,pt),'--m')
     legend('Ez','Wz')
     xlabel('\epsilon')
     ylabel('height')
     grid on
     grid Minor
-    xlim([-10 2])
+    xlim([Epslims(1) Epslims(2)])
     ylim([0 16])
+    a_1=title(['Wz and Ez comparison, Trajectory = ',num2str(i)]);
+    subplot(1,5,4)
+    plot(log10(mTrEx(:,pt)),mTrGzEx(:,pt),'r')
+    hold on
+    plot(log10(mTrEy(:,pt)),mTrGzEy(:,pt),'b')
+    plot(log10(mTrEz(:,pt)),mTrGzEz(:,pt),'m')
+    legend('Ex','Ey','Ez')
+    xlabel('DNS \epsilon')
+    ylabel('height')
+    grid on
+    grid Minor
+    xlim([Epslims(1) Epslims(2)])
+    ylim([0 16])
+    a_1=title(['Ex, Ey, Ez comparison, Trajectory = ',num2str(i)]);
+    subplot(1,5,5)
+    plot(log_Uepsilon_k(:,pt),mTrGzUx(:,pt),'r')
+    hold on
+    plot(log_Vepsilon_k(:,pt),mTrGzVy(:,pt),'b')
+    plot(log_Wepsilon_k(:,pt),mTrGzWz(:,pt),'m')
+    plot(log_Uepsilon_u(:,pt),mTrGzUx(:,pt),'--r')
+    plot(log_Uepsilon_l(:,pt),mTrGzUx(:,pt),'--r')
+    plot(log_Vepsilon_u(:,pt),mTrGzUx(:,pt),'--b')
+    plot(log_Vepsilon_l(:,pt),mTrGzUx(:,pt),'--b')
+    plot(log_Wepsilon_u(:,pt),mTrGzUx(:,pt),'--m')
+    plot(log_Wepsilon_l(:,pt),mTrGzUx(:,pt),'--m')
+    legend('Ux','Vy','Wz')
+    xlabel('Spectral \epsilon')
+    ylabel('height')
+    grid on
+    grid Minor
+    xlim([Epslims(1) Epslims(2)])
+    ylim([0 16])
+    a_1=title(['Ux, Vy, Wz comparison, Trajectory = ',num2str(i)]);
+    set(gcf, 'Position',[100, 100, 1800, 900])
     if saSp == 1
         cd(dirtry) 
         savefig(['Tr',num2str(i),'_comp.fig'])
