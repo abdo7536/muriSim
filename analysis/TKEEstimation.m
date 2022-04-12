@@ -820,15 +820,42 @@ for i = 1:1:numTraj
 end
 
 %% Plot the profiles
+% Loop over all profiles for plotting
+pt = 20;
 figure(1)
 clf
-plot(log_Uepsilon_k(:,10),mTrGzUx(:,10))
+subplot(1,3,1)
+plot(log_Uepsilon_k(:,pt),mTrGzUx(:,pt))
 hold on
-plot(log_Vepsilon_k(:,10),mTrGzVy(:,10))
-plot(log_Wepsilon_k(:,10),mTrGzWz(:,10))
-plot(log10(mTrEx(:,10)),mTrGzEx(:,10))
-plot(log10(mTrEy(:,10)),mTrGzEy(:,10))
-plot(log10(mTrEz(:,10)),mTrGzEz(:,10))
-legend('Ux','Vy','Wz','Ex','Ey','Ez')
+plot(log10(mTrEx(:,pt)),mTrGzEx(:,pt))
+legend('Ux','Ex')
+xlabel('\epsilon')
+ylabel('height [m]')
+grid on
+grid Minor
+xlim([-10 2])
+ylim([0 16])
+subplot(1,3,2)
+plot(log_Vepsilon_k(:,pt),mTrGzVy(:,pt))
+hold on
+plot(log10(mTrEy(:,pt)),mTrGzEy(:,pt))
+legend('Vy','Ey')
+xlabel('\epsilon')
+ylabel('height [m]')
+grid on
+grid Minor
+xlim([-10 2])
+ylim([0 16])
+subplot(1,3,3)
+plot(log_Wepsilon_k(:,pt),mTrGzWz(:,pt))
+hold on
+plot(log10(mTrEz(:,pt)),mTrGzEz(:,pt))
+legend('Wz','Ez')
+xlabel('\epsilon')
+ylabel('height [m]')
+grid on
+grid Minor
+xlim([-10 2])
+ylim([0 16])
 
 %% Save output data, figures, spectra
