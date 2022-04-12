@@ -844,10 +844,12 @@ for i = 1:1:numTraj
     figure(i)
     clf
     subplot(1,3,1)
-    plot(log_Uepsilon_k(:,pt),mTrGzUx(:,pt))
+    plot(log10(mTrEx(:,pt)),mTrGzEx(:,pt),'r')
     hold on
-    plot(log10(mTrEx(:,pt)),mTrGzEx(:,pt))
-    legend('Ux','Ex')
+    plot(log_Uepsilon_k(:,pt),mTrGzUx(:,pt),'b')
+    plot(log_Uepsilon_u(:,pt),mTrGzUx(:,pt),'--b')
+    plot(log_Uepsilon_l(:,pt),mTrGzUx(:,pt),'--b')
+    legend('Ex','Ux')
     xlabel('\epsilon')
     ylabel('height')
     grid on
@@ -855,10 +857,12 @@ for i = 1:1:numTraj
     xlim([-10 2])
     ylim([0 16])
     subplot(1,3,2)
-    plot(log_Vepsilon_k(:,pt),mTrGzVy(:,pt))
+    plot(log10(mTrEy(:,pt)),mTrGzEy(:,pt),'r')
     hold on
-    plot(log10(mTrEy(:,pt)),mTrGzEy(:,pt))
-    legend('Vy','Ey')
+    plot(log_Vepsilon_k(:,pt),mTrGzVy(:,pt),'b')
+    plot(log_Vepsilon_u(:,pt),mTrGzUx(:,pt),'--b')
+    plot(log_Vepsilon_l(:,pt),mTrGzUx(:,pt),'--b')
+    legend('Ey','Vy')
     xlabel('\epsilon')
     ylabel('height')
     grid on
@@ -867,10 +871,12 @@ for i = 1:1:numTraj
     ylim([0 16])
     a_1=title(['Ux, Vy,Wz, Ex, Ey, Ez comparison, Trajectory = ',num2str(i)]);
     subplot(1,3,3)
-    plot(log_Wepsilon_k(:,pt),mTrGzWz(:,pt))
+    plot(log10(mTrEz(:,pt)),mTrGzEz(:,pt),'r')
     hold on
-    plot(log10(mTrEz(:,pt)),mTrGzEz(:,pt))
-    legend('Wz','Ez')
+    plot(log_Wepsilon_k(:,pt),mTrGzWz(:,pt),'b')
+    plot(log_Wepsilon_u(:,pt),mTrGzUx(:,pt),'--b')
+    plot(log_Wepsilon_l(:,pt),mTrGzUx(:,pt),'--b')
+    legend('Ez','Wz')
     xlabel('\epsilon')
     ylabel('height')
     grid on
