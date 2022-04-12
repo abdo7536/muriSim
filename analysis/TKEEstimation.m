@@ -21,7 +21,10 @@ epsMeas = 4.0e-3;   % epsMeas = TKE dissipation rate [m^3s^-2]
 nu = 4.0e-4;        % nu = Kinematic viscosity [m^2s^-1]
 resMet = 1.4413;    % resMet = DNS resolution metric ( = grid spacing/ kolmogorov length scale)
 balRt = 2.5;        % balRt = HYFLITS balloon descent rate [m/s]
-dirtry = '/Users/script_away/Projects/Documents/MURI_modeling/GWBData/analysis/';
+%dirtry = '/Users/script_away/Projects/Documents/MURI_modeling/GWBData/analysis/';
+dirtry = '/Users/script/Projects/Documents/MURI_modeling/GWBData/analysis/';
+exectry = pwd;
+saSp = 1;
 % Plot Inputs: All inputs are mandatory
 ftsz = 22;
 
@@ -357,6 +360,11 @@ for i = 1:1:numTraj
     log_Uepsilon_d(:,i) = 3/2*UTrlog_pwp_ks_avg(:,i);
     log_Uepsilon_u(:,i) = log_Uepsilon_k(:,i) + log_Uepsilon_d(:,i);
     log_Uepsilon_l(:,i) = log_Uepsilon_k(:,i) - log_Uepsilon_d(:,i);
+    
+    % Variables to store for plotting spectra
+    UppdfPlt(:,:,i) = Uppsd;
+    UTrlog_ppsd_avg(:,:,i) = Ulog_ppsd_avg;
+    Uusd_inds(:,i) = Uk_inds_pit;
 end
 
 %% Loop over V trajectories (includes averaging of TKE DNS)
@@ -587,6 +595,11 @@ for i = 1:1:numTraj
     log_Vepsilon_d(:,i) = 3/2*VTrlog_pwp_ks_avg(:,i);
     log_Vepsilon_u(:,i) = log_Vepsilon_k(:,i) + log_Vepsilon_d(:,i);
     log_Vepsilon_l(:,i) = log_Vepsilon_k(:,i) - log_Vepsilon_d(:,i);
+    
+    % Variables to store for plotting spectra
+    VppdfPlt(:,:,i) = Vppsd;
+    VTrlog_ppsd_avg(:,:,i) = Vlog_ppsd_avg;
+    Vusd_inds(:,i) = Vk_inds_pit;
 end
 
 %% Loop over W trajectories (includes averaging of TKE DNS)
@@ -817,45 +830,135 @@ for i = 1:1:numTraj
     log_Wepsilon_d(:,i) = 3/2*WTrlog_pwp_ks_avg(:,i);
     log_Wepsilon_u(:,i) = log_Wepsilon_k(:,i) + log_Wepsilon_d(:,i);
     log_Wepsilon_l(:,i) = log_Wepsilon_k(:,i) - log_Wepsilon_d(:,i);
+    
+    % Variables to store for plotting spectra
+    WppdfPlt(:,:,i) = Wppsd;
+    WTrlog_ppsd_avg(:,:,i) = Wlog_ppsd_avg;
+    Wusd_inds(:,i) = Wk_inds_pit;
 end
 
 %% Plot the profiles
 % Loop over all profiles for plotting
-pt = 20;
-figure(1)
-clf
-subplot(1,3,1)
-plot(log_Uepsilon_k(:,pt),mTrGzUx(:,pt))
-hold on
-plot(log10(mTrEx(:,pt)),mTrGzEx(:,pt))
-legend('Ux','Ex')
-xlabel('\epsilon')
-ylabel('height [m]')
-grid on
-grid Minor
-xlim([-10 2])
-ylim([0 16])
-subplot(1,3,2)
-plot(log_Vepsilon_k(:,pt),mTrGzVy(:,pt))
-hold on
-plot(log10(mTrEy(:,pt)),mTrGzEy(:,pt))
-legend('Vy','Ey')
-xlabel('\epsilon')
-ylabel('height [m]')
-grid on
-grid Minor
-xlim([-10 2])
-ylim([0 16])
-subplot(1,3,3)
-plot(log_Wepsilon_k(:,pt),mTrGzWz(:,pt))
-hold on
-plot(log10(mTrEz(:,pt)),mTrGzEz(:,pt))
-legend('Wz','Ez')
-xlabel('\epsilon')
-ylabel('height [m]')
-grid on
-grid Minor
-xlim([-10 2])
-ylim([0 16])
+for i = 1:1:numTraj
+    pt = i;
+    figure(i)
+    clf
+    subplot(1,3,1)
+    plot(log_Uepsilon_k(:,pt),mTrGzUx(:,pt))
+    hold on
+    plot(log10(mTrEx(:,pt)),mTrGzEx(:,pt))
+    legend('Ux','Ex')
+    xlabel('\epsilon')
+    ylabel('height')
+    grid on
+    grid Minor
+    xlim([-10 2])
+    ylim([0 16])
+    subplot(1,3,2)
+    plot(log_Vepsilon_k(:,pt),mTrGzVy(:,pt))
+    hold on
+    plot(log10(mTrEy(:,pt)),mTrGzEy(:,pt))
+    legend('Vy','Ey')
+    xlabel('\epsilon')
+    ylabel('height')
+    grid on
+    grid Minor
+    xlim([-10 2])
+    ylim([0 16])
+    a_1=title(['Ux, Vy,Wz, Ex, Ey, Ez comparison, Trajectory = ',num2str(i)]);
+    subplot(1,3,3)
+    plot(log_Wepsilon_k(:,pt),mTrGzWz(:,pt))
+    hold on
+    plot(log10(mTrEz(:,pt)),mTrGzEz(:,pt))
+    legend('Wz','Ez')
+    xlabel('\epsilon')
+    ylabel('height')
+    grid on
+    grid Minor
+    xlim([-10 2])
+    ylim([0 16])
+    if saSp == 1
+        cd(dirtry) 
+        savefig(['Tr',num2str(i),'_comp.fig'])
+        cd(exectry)
+    end
+    close all
+end
 
+% Plot spectra
+for i = 1:1:numTraj
+    for j = 1:1:numInts
+        figure(i)
+        clf
+        semilogx(freq,log10(abs(UppdfPlt(:,j,i))),'b','LineWidth',2)
+        hold on
+        semilogx(freq,UTrlog_pwp_k_avg(j,i)+log10(freq.^(-5/3)),'k','LineWidth',2)
+        semilogx(f_nth_dec,UTrlog_ppsd_avg(:,j,i),'r*','LineWidth',4)
+        semilogx(f_nth_dec(Uusd_inds{j,i}),UTrlog_ppsd_avg(Uusd_inds{j,i},j,i),'go','LineWidth',2)
+        semilogx(freq,(UTrlog_pwp_k_avg(j,i)+UTrlog_pwp_ks_avg(j,i))+ log10(freq.^(-5/3)),'k--','LineWidth',1)
+        semilogx(freq,(UTrlog_pwp_k_avg(j,i)-UTrlog_pwp_ks_avg(j,i))+ log10(freq.^(-5/3)),'k--','LineWidth',1) 
+        legend('power spectrum','-5/3 fit line','points from bin. avg spectrum','points used in fitting', 'error bars','Location','SouthWest')
+        axis([freq(1) freq(end) -15 0])
+        xlabel('F')
+        ylabel('Ux PSD')
+        a_1=title(['Ux Spectra, Trajectory = ',num2str(i), ', Height = ', num2str(mTrGzUx(j,i))]);
+        grid on
+        if saSp == 1
+            cd(dirtry) 
+            savefig(['Ux_Tr',num2str(i),'_Ht',num2str(mTrGzUx(j,i)),'.fig'])
+            cd(exectry)
+        end
+        close all
+    end
+end
+for i = 1:1:numTraj
+    for j = 1:1:numInts
+        figure(i)
+        clf
+        semilogx(freq,log10(abs(VppdfPlt(:,j,i))),'b','LineWidth',2)
+        hold on
+        semilogx(freq,VTrlog_pwp_k_avg(j,i)+log10(freq.^(-5/3)),'k','LineWidth',2)
+        semilogx(f_nth_dec,VTrlog_ppsd_avg(:,j,i),'r*','LineWidth',4)
+        semilogx(f_nth_dec(Vusd_inds{j,i}),VTrlog_ppsd_avg(Vusd_inds{j,i},j,i),'go','LineWidth',2)
+        semilogx(freq,(VTrlog_pwp_k_avg(j,i)+VTrlog_pwp_ks_avg(j,i))+ log10(freq.^(-5/3)),'k--','LineWidth',1)
+        semilogx(freq,(VTrlog_pwp_k_avg(j,i)-VTrlog_pwp_ks_avg(j,i))+ log10(freq.^(-5/3)),'k--','LineWidth',1)        
+        legend('power spectrum','-5/3 fit line','points from bin. avg spectrum','points used in fitting', 'error bars','Location','SouthWest')
+        axis([freq(1) freq(end) -15 0])
+        xlabel('F')
+        ylabel('Vy PSD')
+        a_1=title(['Vy Spectra, Trajectory = ',num2str(i), ', Height = ', num2str(mTrGzUx(j,i))]);
+        grid on
+        if saSp == 1
+            cd(dirtry) 
+            savefig(['Vy_Tr',num2str(i),'_Ht',num2str(mTrGzUx(j,i)),'.fig'])
+            cd(exectry)
+        end
+        close all
+    end
+end
+for i = 1:1:numTraj
+    for j = 1:1:numInts
+        figure(i)
+        clf
+        semilogx(freq,log10(abs(WppdfPlt(:,j,i))),'b','LineWidth',2)
+        hold on
+        semilogx(freq,WTrlog_pwp_k_avg(j,i)+log10(freq.^(-5/3)),'k','LineWidth',2)
+        semilogx(f_nth_dec,WTrlog_ppsd_avg(:,j,i),'r*','LineWidth',4)
+        semilogx(f_nth_dec(Wusd_inds{j,i}),WTrlog_ppsd_avg(Wusd_inds{j,i},j,i),'go','LineWidth',2)
+        semilogx(freq,(WTrlog_pwp_k_avg(j,i)+WTrlog_pwp_ks_avg(j,i))+ log10(freq.^(-5/3)),'k--','LineWidth',1)
+        semilogx(freq,(WTrlog_pwp_k_avg(j,i)-WTrlog_pwp_ks_avg(j,i))+ log10(freq.^(-5/3)),'k--','LineWidth',1)        
+        legend('power spectrum','-5/3 fit line','points from bin. avg spectrum','points used in fitting', 'error bars','Location','SouthWest')
+        axis([freq(1) freq(end) -15 0])
+        xlabel('F')
+        ylabel('Wz PSD')
+        a_1=title(['Wz Spectra, Trajectory = ',num2str(i), ', Height = ', num2str(mTrGzUx(j,i))]);
+        grid on
+        if saSp == 1
+            cd(dirtry) 
+            savefig(['Wz_Tr',num2str(i),'_Ht',num2str(mTrGzUx(j,i)),'.fig'])
+            cd(exectry)
+        end
+        close all
+    end
+end
 %% Save output data, figures, spectra
