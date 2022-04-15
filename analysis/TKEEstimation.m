@@ -21,8 +21,8 @@ epsMeas = 4.0e-3;   % epsMeas = TKE dissipation rate [m^3s^-2]
 nu = 4.0e-4;        % nu = Kinematic viscosity [m^2s^-1]
 resMet = 1.4413;    % resMet = DNS resolution metric ( = grid spacing/ kolmogorov length scale)
 balRt = 2.5;        % balRt = HYFLITS balloon descent rate [m/s]
-%dirtry = '/Users/script_away/Projects/Documents/MURI_modeling/GWBData/analysis/';
-dirtry = '/Users/script/Projects/Documents/MURI_modeling/GWBData/analysis/';
+dirtry = '/Users/script_away/Projects/Documents/MURI_modeling/GWBData/analysis/';
+%dirtry = '/Users/script/Projects/Documents/MURI_modeling/GWBData/analysis/';
 exectry = pwd;
 saSp = 1;
 % Plot Inputs: All inputs are mandatory
