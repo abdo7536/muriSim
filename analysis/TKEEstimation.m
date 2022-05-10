@@ -363,6 +363,7 @@ for i = 1:1:numTraj
     
     % Variables to store for plotting spectra
     UppdfPlt(:,:,i) = Uppsd;
+    UppsfPlt(:,:,i) = Upps;
     UTrlog_ppsd_avg(:,:,i) = Ulog_ppsd_avg;
     Uusd_inds(:,i) = Uk_inds_pit;
 end
