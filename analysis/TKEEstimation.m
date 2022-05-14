@@ -21,73 +21,18 @@ epsMeas = 4.0e-3;   % epsMeas = TKE dissipation rate [m^3s^-2]
 nu = 4.0e-4;        % nu = Kinematic viscosity [m^2s^-1]
 resMet = 1.4413;    % resMet = DNS resolution metric ( = grid spacing/ kolmogorov length scale)
 balRt = 2.5;        % balRt = HYFLITS balloon descent rate [m/s]
-dirtry = '/Users/script/Projects/Documents/MURI_modeling/GWBData/analysis2/';
+dirtry = '/Users/script_away/Projects/Documents/MURI_modeling/GWBData/analysis3/';
 exectry = pwd;
 saSp = 1;
 % Plot Inputs: All inputs are mandatory
 ftsz = 22;
-
-%% Load Data
-% For DNS Epsilon
-flGxEx = strcat(dirtry,'GridXEx000100_025500.txt');
-flGxEy = strcat(dirtry,'GridXEy000100_025500.txt');
-flGxEz = strcat(dirtry,'GridXEz000100_025500.txt');
-flGyEx = strcat(dirtry,'GridYEx000100_025500.txt');
-flGyEy = strcat(dirtry,'GridYEy000100_025500.txt');
-flGyEz = strcat(dirtry,'GridYEz000100_025500.txt');
-flGzEx = strcat(dirtry,'GridZEx000100_025500.txt');
-flGzEy = strcat(dirtry,'GridZEy000100_025500.txt');
-flGzEz = strcat(dirtry,'GridZEz000100_025500.txt');
-flEx = strcat(dirtry,'Ex000100_025500.txt');
-flEy = strcat(dirtry,'Ey000100_025500.txt');
-flEz = strcat(dirtry,'Ez000100_025500.txt');
-GxEx = table2array(readtable(flGxEx));
-GxEy = table2array(readtable(flGxEy));
-GxEz = table2array(readtable(flGxEz));
-GyEx = table2array(readtable(flGyEx));
-GyEy = table2array(readtable(flGyEy));
-GyEz = table2array(readtable(flGyEz));
-GzEx = table2array(readtable(flGzEx));
-GzEy = table2array(readtable(flGzEy));
-GzEz = table2array(readtable(flGzEz));
-Ex = table2array(readtable(flEx));
-Ey = table2array(readtable(flEy));
-Ez = table2array(readtable(flEz));
-% For U'
-flGxUx = strcat(dirtry,'GridXUx000100_025500.txt');
-flGyUx = strcat(dirtry,'GridYUx000100_025500.txt');
-flGzUx = strcat(dirtry,'GridZUx000100_025500.txt');
-flUx = strcat(dirtry,'Ux000100_025500.txt');
-GxUx = table2array(readtable(flGxUx));
-GyUx = table2array(readtable(flGyUx));
-GzUx = table2array(readtable(flGzUx));
-Ux = table2array(readtable(flUx));
-% For V'
-flGxVy = strcat(dirtry,'GridXVy000100_025500.txt');
-flGyVy = strcat(dirtry,'GridYVy000100_025500.txt');
-flGzVy = strcat(dirtry,'GridZVy000100_025500.txt');
-flVy = strcat(dirtry,'Vy000100_025500.txt');
-GxVy = table2array(readtable(flGxVy));
-GyVy = table2array(readtable(flGyVy));
-GzVy = table2array(readtable(flGzVy));
-Vy = table2array(readtable(flVy));
-% For W'
-flGxWz = strcat(dirtry,'GridXWz000100_025500.txt');
-flGyWz = strcat(dirtry,'GridYWz000100_025500.txt');
-flGzWz = strcat(dirtry,'GridZWz000100_025500.txt');
-flWz = strcat(dirtry,'Wz000100_025500.txt');
-GxWz = table2array(readtable(flGxWz));
-GyWz = table2array(readtable(flGyWz));
-GzWz = table2array(readtable(flGzWz));
-Wz = table2array(readtable(flWz));
-
 %% Setup calculations
-% Compute the number of trajectories
-tmpSz = size(Wz);
-numTraj = tmpSz(2);
-sampPts = tmpSz(1);
 % Calculate scale parameters for DNS data
 eta = (nu^3/epsMeas)^(1/4);         % Kolmogorov length scale [m]
+tau = (nu/epsMeas)^(1/2);           % Kolmogorov time scale [s]
+mu = eta/tau;                       % Kolmogorov velocity scale [m/s]
+epsStar = nu*(mu/eta)^2;            % Scaling to be applied for TKE dissipation rate [m^3/s^2]
+% Calculate the DNS domain extents using Kolmogorov scaling
 Zscal = Nz*eta*resMet;              % Scaled Z DNS domain dimension [m]
 Xscal = Zscal*(Xl/Zl);              % Scaled X DNS domain dimension [m]
 Yscal = Zscal*(Yl/Zl);              % Scaled Y DNS domain dimension [m]
@@ -101,6 +46,65 @@ dzscal = Zscal/Nz;      % Grid Resolution in Z (scaled) [m]
 % Compute the number of sample points per interval
 numInts = floor(Zscal/balRt);
 numSmpls = floor(balRt/dzscal);
+
+%% Load Data
+% For DNS Epsilon
+flGxEx = strcat(dirtry,'GridXEx000100_026000.txt');
+flGxEy = strcat(dirtry,'GridXEy000100_026000.txt');
+flGxEz = strcat(dirtry,'GridXEz000100_026000.txt');
+flGyEx = strcat(dirtry,'GridYEx000100_026000.txt');
+flGyEy = strcat(dirtry,'GridYEy000100_026000.txt');
+flGyEz = strcat(dirtry,'GridYEz000100_026000.txt');
+flGzEx = strcat(dirtry,'GridZEx000100_026000.txt');
+flGzEy = strcat(dirtry,'GridZEy000100_026000.txt');
+flGzEz = strcat(dirtry,'GridZEz000100_026000.txt');
+flEx = strcat(dirtry,'Ex000100_026000.txt');
+flEy = strcat(dirtry,'Ey000100_026000.txt');
+flEz = strcat(dirtry,'Ez000100_026000.txt');
+GxEx = table2array(readtable(flGxEx));
+GxEy = table2array(readtable(flGxEy));
+GxEz = table2array(readtable(flGxEz));
+GyEx = table2array(readtable(flGyEx));
+GyEy = table2array(readtable(flGyEy));
+GyEz = table2array(readtable(flGyEz));
+GzEx = table2array(readtable(flGzEx));
+GzEy = table2array(readtable(flGzEy));
+GzEz = table2array(readtable(flGzEz));
+Ex = table2array(readtable(flEx)).*epsStar;
+Ey = table2array(readtable(flEy)).*epsStar;
+Ez = table2array(readtable(flEz)).*epsStar;
+% For U'
+flGxUx = strcat(dirtry,'GridXUx000100_026000.txt');
+flGyUx = strcat(dirtry,'GridYUx000100_026000.txt');
+flGzUx = strcat(dirtry,'GridZUx000100_026000.txt');
+flUx = strcat(dirtry,'Ux000100_026000.txt');
+GxUx = table2array(readtable(flGxUx));
+GyUx = table2array(readtable(flGyUx));
+GzUx = table2array(readtable(flGzUx));
+Ux = table2array(readtable(flUx)).*mu;
+% For V'
+flGxVy = strcat(dirtry,'GridXVy000100_026000.txt');
+flGyVy = strcat(dirtry,'GridYVy000100_026000.txt');
+flGzVy = strcat(dirtry,'GridZVy000100_026000.txt');
+flVy = strcat(dirtry,'Vy000100_026000.txt');
+GxVy = table2array(readtable(flGxVy));
+GyVy = table2array(readtable(flGyVy));
+GzVy = table2array(readtable(flGzVy));
+Vy = table2array(readtable(flVy)).*mu;
+% For W'
+flGxWz = strcat(dirtry,'GridXWz000100_026000.txt');
+flGyWz = strcat(dirtry,'GridYWz000100_026000.txt');
+flGzWz = strcat(dirtry,'GridZWz000100_026000.txt');
+flWz = strcat(dirtry,'Wz000100_026000.txt');
+GxWz = table2array(readtable(flGxWz));
+GyWz = table2array(readtable(flGyWz));
+GzWz = table2array(readtable(flGzWz));
+Wz = table2array(readtable(flWz)).*mu;
+
+% Compute the number of trajectories
+tmpSz = size(Wz);
+numTraj = tmpSz(2);
+sampPts = tmpSz(1);
 
 %% Compute frequency averaging and inputs for Spectral analysis
 Nrec = numSmpls;
