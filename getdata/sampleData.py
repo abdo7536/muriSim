@@ -22,9 +22,9 @@ numTraj = 100
 ### locFlg = Flag to control the (X,Y) location for sampling; 1 = choose random (x,y) location for each trajectory; 2 = Specific (x,y) location (DEFAULT set to X/2, Y/2 location); 3 = Read X,Y reference co-ordinates for each trajectory from a .txt file
 locFlg = 3
 ### datVar = The data variable to be stored; NOTE: This is the variable extracted from the DNS 3D datafield and stored at the user defined destination/directory
-datVar = 'E'
+datVar = 'U'
 ### trajDir = The direction in which the synthetic observer traverses; NOTE: choice of X, Y and Z directions of synthetic observation traverse; NOTE: ONLY USED FOR NAMING THE FILES
-trajDir = 'z'
+trajDir = 'x'
 
 ################# Data Inputs: All inputs are mandatory
 ### NOTE: These inputs are required to scale the scale-normalized DNS datasets  
@@ -40,7 +40,7 @@ balRt = 2.5
 ################# Function Specific Inputs: All inputs are mandatory
 ########## function name: 'lodatsin'
 ### flNm = The string name whose file name group needs to be created (including the path to the directory) [type - string]
-flNm = '/p/work1/abdo7536/GWB/subvol' + datVar + '*'
+flNm = '/p/work1/abdo7536/GW20/run05/subvol' + datVar + '*'
 ### form = the file format (input exactly as it appears in the filenames) [type - string]
 form = 'dat'
 ### flNm = Input file name identifying character string (including the directory location)
@@ -48,7 +48,7 @@ form = 'dat'
 ################# Function Specific Inputs: All inputs are mandatory
 ########## function name: 'trajInd'
 ### trajTyp = Synthetic Observation trajectory type; 1 = balloon-like vertical trajectory (descending); 2 = Horizontal Sampling in X; 3 = Horizontal Sampling in Y
-trajTyp = [1]
+trajTyp = [2]
 
 ##########################################################################################################################################################################
 ################# Call custom function module developed to execute this program
