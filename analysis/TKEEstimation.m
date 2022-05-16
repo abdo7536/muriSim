@@ -21,74 +21,18 @@ epsMeas = 4.0e-3;   % epsMeas = TKE dissipation rate [m^3s^-2]
 nu = 4.0e-4;        % nu = Kinematic viscosity [m^2s^-1]
 resMet = 1.4413;    % resMet = DNS resolution metric ( = grid spacing/ kolmogorov length scale)
 balRt = 2.5;        % balRt = HYFLITS balloon descent rate [m/s]
-dirtry = '/Users/script_away/Projects/Documents/MURI_modeling/GWBData/analysis/';
-%dirtry = '/Users/script/Projects/Documents/MURI_modeling/GWBData/analysis/';
+dirtry = '/Users/script_away/Projects/Documents/MURI_modeling/GWBData/analysis3/';
 exectry = pwd;
 saSp = 1;
 % Plot Inputs: All inputs are mandatory
 ftsz = 22;
-
-%% Load Data
-% For DNS Epsilon
-flGxEx = strcat(dirtry,'GridXEx000100_022000.txt');
-flGxEy = strcat(dirtry,'GridXEy000100_022000.txt');
-flGxEz = strcat(dirtry,'GridXEz000100_022000.txt');
-flGyEx = strcat(dirtry,'GridYEx000100_022000.txt');
-flGyEy = strcat(dirtry,'GridYEy000100_022000.txt');
-flGyEz = strcat(dirtry,'GridYEz000100_022000.txt');
-flGzEx = strcat(dirtry,'GridZEx000100_022000.txt');
-flGzEy = strcat(dirtry,'GridZEy000100_022000.txt');
-flGzEz = strcat(dirtry,'GridZEz000100_022000.txt');
-flEx = strcat(dirtry,'Ex000100_022000.txt');
-flEy = strcat(dirtry,'Ey000100_022000.txt');
-flEz = strcat(dirtry,'Ez000100_022000.txt');
-GxEx = table2array(readtable(flGxEx));
-GxEy = table2array(readtable(flGxEy));
-GxEz = table2array(readtable(flGxEz));
-GyEx = table2array(readtable(flGyEx));
-GyEy = table2array(readtable(flGyEy));
-GyEz = table2array(readtable(flGyEz));
-GzEx = table2array(readtable(flGzEx));
-GzEy = table2array(readtable(flGzEy));
-GzEz = table2array(readtable(flGzEz));
-Ex = table2array(readtable(flEx));
-Ey = table2array(readtable(flEy));
-Ez = table2array(readtable(flEz));
-% For U'
-flGxUx = strcat(dirtry,'GridXUx000100_022000.txt');
-flGyUx = strcat(dirtry,'GridYUx000100_022000.txt');
-flGzUx = strcat(dirtry,'GridZUx000100_022000.txt');
-flUx = strcat(dirtry,'Ux000100_022000.txt');
-GxUx = table2array(readtable(flGxUx));
-GyUx = table2array(readtable(flGyUx));
-GzUx = table2array(readtable(flGzUx));
-Ux = table2array(readtable(flUx));
-% For V'
-flGxVy = strcat(dirtry,'GridXVy000100_022000.txt');
-flGyVy = strcat(dirtry,'GridYVy000100_022000.txt');
-flGzVy = strcat(dirtry,'GridZVy000100_022000.txt');
-flVy = strcat(dirtry,'Vy000100_022000.txt');
-GxVy = table2array(readtable(flGxVy));
-GyVy = table2array(readtable(flGyVy));
-GzVy = table2array(readtable(flGzVy));
-Vy = table2array(readtable(flVy));
-% For W'
-flGxWz = strcat(dirtry,'GridXWz000100_022000.txt');
-flGyWz = strcat(dirtry,'GridYWz000100_022000.txt');
-flGzWz = strcat(dirtry,'GridZWz000100_022000.txt');
-flWz = strcat(dirtry,'Wz000100_022000.txt');
-GxWz = table2array(readtable(flGxWz));
-GyWz = table2array(readtable(flGyWz));
-GzWz = table2array(readtable(flGzWz));
-Wz = table2array(readtable(flWz));
-
 %% Setup calculations
-% Compute the number of trajectories
-tmpSz = size(Wz);
-numTraj = tmpSz(2);
-sampPts = tmpSz(1);
 % Calculate scale parameters for DNS data
 eta = (nu^3/epsMeas)^(1/4);         % Kolmogorov length scale [m]
+tau = (nu/epsMeas)^(1/2);           % Kolmogorov time scale [s]
+mu = eta/tau;                       % Kolmogorov velocity scale [m/s]
+epsStar = nu*(mu/eta)^2;            % Scaling to be applied for TKE dissipation rate [m^3/s^2]
+% Calculate the DNS domain extents using Kolmogorov scaling
 Zscal = Nz*eta*resMet;              % Scaled Z DNS domain dimension [m]
 Xscal = Zscal*(Xl/Zl);              % Scaled X DNS domain dimension [m]
 Yscal = Zscal*(Yl/Zl);              % Scaled Y DNS domain dimension [m]
@@ -102,6 +46,65 @@ dzscal = Zscal/Nz;      % Grid Resolution in Z (scaled) [m]
 % Compute the number of sample points per interval
 numInts = floor(Zscal/balRt);
 numSmpls = floor(balRt/dzscal);
+
+%% Load Data
+% For DNS Epsilon
+flGxEx = strcat(dirtry,'GridXEx000100_026000.txt');
+flGxEy = strcat(dirtry,'GridXEy000100_026000.txt');
+flGxEz = strcat(dirtry,'GridXEz000100_026000.txt');
+flGyEx = strcat(dirtry,'GridYEx000100_026000.txt');
+flGyEy = strcat(dirtry,'GridYEy000100_026000.txt');
+flGyEz = strcat(dirtry,'GridYEz000100_026000.txt');
+flGzEx = strcat(dirtry,'GridZEx000100_026000.txt');
+flGzEy = strcat(dirtry,'GridZEy000100_026000.txt');
+flGzEz = strcat(dirtry,'GridZEz000100_026000.txt');
+flEx = strcat(dirtry,'Ex000100_026000.txt');
+flEy = strcat(dirtry,'Ey000100_026000.txt');
+flEz = strcat(dirtry,'Ez000100_026000.txt');
+GxEx = table2array(readtable(flGxEx));
+GxEy = table2array(readtable(flGxEy));
+GxEz = table2array(readtable(flGxEz));
+GyEx = table2array(readtable(flGyEx));
+GyEy = table2array(readtable(flGyEy));
+GyEz = table2array(readtable(flGyEz));
+GzEx = table2array(readtable(flGzEx));
+GzEy = table2array(readtable(flGzEy));
+GzEz = table2array(readtable(flGzEz));
+Ex = table2array(readtable(flEx)).*epsStar;
+Ey = table2array(readtable(flEy)).*epsStar;
+Ez = table2array(readtable(flEz)).*epsStar;
+% For U'
+flGxUx = strcat(dirtry,'GridXUx000100_026000.txt');
+flGyUx = strcat(dirtry,'GridYUx000100_026000.txt');
+flGzUx = strcat(dirtry,'GridZUx000100_026000.txt');
+flUx = strcat(dirtry,'Ux000100_026000.txt');
+GxUx = table2array(readtable(flGxUx));
+GyUx = table2array(readtable(flGyUx));
+GzUx = table2array(readtable(flGzUx));
+Ux = table2array(readtable(flUx)).*mu;
+% For V'
+flGxVy = strcat(dirtry,'GridXVy000100_026000.txt');
+flGyVy = strcat(dirtry,'GridYVy000100_026000.txt');
+flGzVy = strcat(dirtry,'GridZVy000100_026000.txt');
+flVy = strcat(dirtry,'Vy000100_026000.txt');
+GxVy = table2array(readtable(flGxVy));
+GyVy = table2array(readtable(flGyVy));
+GzVy = table2array(readtable(flGzVy));
+Vy = table2array(readtable(flVy)).*mu;
+% For W'
+flGxWz = strcat(dirtry,'GridXWz000100_026000.txt');
+flGyWz = strcat(dirtry,'GridYWz000100_026000.txt');
+flGzWz = strcat(dirtry,'GridZWz000100_026000.txt');
+flWz = strcat(dirtry,'Wz000100_026000.txt');
+GxWz = table2array(readtable(flGxWz));
+GyWz = table2array(readtable(flGyWz));
+GzWz = table2array(readtable(flGzWz));
+Wz = table2array(readtable(flWz)).*mu;
+
+% Compute the number of trajectories
+tmpSz = size(Wz);
+numTraj = tmpSz(2);
+sampPts = tmpSz(1);
 
 %% Compute frequency averaging and inputs for Spectral analysis
 Nrec = numSmpls;
@@ -368,6 +371,202 @@ for i = 1:1:numTraj
     Uusd_inds(:,i) = Uk_inds_pit;
 end
 
+% Compute trajectory averaged spectra and epsilon for Ux
+for pt = 1:1:numInts
+    % calculate mean airspeed
+    tmpU = mTrUx(pt,:);
+    avmTrUx(pt) = mean(tmpU,2);
+    % average the spectra for each altitude 
+    tmppt = reshape(UppdfPlt(:,pt,:),[length(freq),numTraj]);
+    avUppsd(:,pt) = mean(tmppt,2);
+    % average epsilon Ex
+    avgTrEx = mean(mTrEx,2); 
+    % conduct the spectral fit
+    % weight PSD by f^(5/3)
+    avUppsdw(:,pt) =  avUppsd(:,pt).*freq'.^(5/3);    % [m^2 s^(-8/3)]
+
+    % average the weighted PSD:
+    for q = 1:length(f_inds)-1
+        if q == 1
+            if (f_inds(q+1) - f_inds(q)) == 0
+                avUppsdw_avg(q,pt) = avUppsdw(f_inds(q+1),pt);
+            else
+                avUppsdw_avg(q,pt) = mean( avUppsdw(f_inds(q):f_inds(q+1)-1,pt));
+            end
+        else
+            if (f_inds(q+1) - f_inds(q)) == 0
+                avUppsdw_avg(q,pt) = avUppsdw(f_inds(q+1),pt);
+            else
+                avUppsdw_avg(q,pt) = mean( avUppsdw(f_inds(q)+1:f_inds(q+1)-1,pt));
+            end
+        end
+    end
+    % store the averaged spectral points in this array (for comparison)
+    avUPPSDW_AVG(:,pt) = avUppsdw_avg(:,pt);
+
+    % average weighted power spectral density from f_low to f_high, [m^2 s^(-8/3)]
+    avUpwp(pt) = sum(avUppsdw(f_ind_low:f_ind_high,pt))/(f_ind_high-f_ind_low+1);
+    avUpwp_avg(pt) = sum(avUppsdw_avg(:,pt))/length(f_nth_dec);
+
+    % remove data in the interval (f_ind_low:f_ind_high) at or below the sensor noise floor
+    avUpit_NFw = pit_NF*freq(f_ind_low:f_ind_high).^(5/3);
+    avUpit_NFw_avg = pit_NF*f_nth_dec.^(5/3);
+    avUpwp_est(:,pt) = avUppsdw(f_ind_low:f_ind_high,pt);
+    avUpwp_est_avg(:,pt) = avUppsdw_avg(:,pt);
+    avUk_inds = find(avUpwp_est(:,pt) > avUpit_NFw');   % indexes of data points to keep
+    avUk_inds_avg = find(avUpwp_est_avg(:,pt) > avUpit_NFw_avg');   % indexes of data points to keep
+    avUlog_pwp_k(pt) = mean(log10(abs(avUpwp_est(avUk_inds,pt))));      % average over log of kept indexes
+    avUlog_pwp_ks(pt) = std(log10(abs(avUpwp_est(avUk_inds,pt))));      % standard deviation of the log mean
+    avUlog_pwp_k_avg(pt) = mean(log10(abs(avUpwp_est_avg(avUk_inds_avg,pt)))); % average over log of kept indexes
+    avUlog_pwp_ks_avg(pt) = std(log10(abs(avUpwp_est_avg(avUk_inds_avg,pt)))); % standard deviation of the log mean
+
+    % unweight these estimates for plotting and checking
+    % for the average spectra
+    avUlog_ppsd_est(:,pt) = avUlog_pwp_k_avg(pt) + log10(f_nth_dec.^(-5/3));
+    avUlog_ppsd_avg(:,pt) = log10(avUppsdw_avg(:,pt))' + log10(f_nth_dec.^(-5/3));
+
+    % second pass: include indexes where the fit function is above the noise floor
+    avUk_inds_avg = find(avUlog_ppsd_est(:,pt) > log10(avUpit_NFw_avg.*f_nth_dec.^(-5/3))');   % indexes of data points to keep
+
+    if pass_3 == 1
+        % third pass: include the points that contribute towards reducing the
+        % standard deviation
+        if length(avUk_inds_avg) > min_fit_pts
+            clear stand inds_to_use
+            % use the first three points to begin with and then iterate over the remaining points
+            avUind_to_use = avUk_inds_avg(1:min_fit_pts);
+            for p = 1:1:length(avUk_inds_avg)-(min_fit_pts)+1
+                avUstand(p) = std(log10(abs(avUpwp_est_avg(avUind_to_use,pt))));
+                if p>1 && p<length(avUk_inds_avg)-(min_fit_pts)+1
+                    if avUstand(p) > 0 && avUstand(p) < 0.25
+                        if avUstand(p) > 1.2*avUstand(p-1)
+                            avUind_to_use = [avUk_inds_avg(avUind_to_use(1:end-1)); avUk_inds_avg(min_fit_pts+p)];
+                            avUstand(p) = avUstand(p-1);
+                        else
+                            avUind_to_use = [avUk_inds_avg(avUind_to_use); avUk_inds_avg(min_fit_pts+p)];
+                        end
+                    end
+                    if avUstand(p) > 0.25 && avUstand(p) < 0.5
+                        if avUstand(p) > 1.15*avUstand(p-1)
+                            avUind_to_use = [avUk_inds_avg(avUind_to_use(1:end-1)); avUk_inds_avg(min_fit_pts+p)];
+                            avUstand(p) = avUstand(p-1);
+                        else
+                            avUind_to_use = [avUk_inds_avg(avUind_to_use); avUk_inds_avg(min_fit_pts+p)];
+                        end
+                    end
+                    if avUstand(p) > 0.5 && avUstand(p) < 0.75
+                        if avUstand(p) > 1.12*avUstand(p-1)
+                            avUind_to_use = [avUk_inds_avg(avUind_to_use(1:end-1)); avUk_inds_avg(min_fit_pts+p)];
+                            avUstand(p) = avUstand(p-1);
+                        else
+                            avUind_to_use = [avUk_inds_avg(avUind_to_use); avUk_inds_avg(min_fit_pts+p)];
+                        end
+                    end
+                    if avUstand(p) > 0.75 && avUstand(p) < 1
+                        if avUstand(p) > 1.1*avUstand(p-1)
+                            avUind_to_use = [avUk_inds_avg(avUind_to_use(1:end-1)); avUk_inds_avg(min_fit_pts+p)];
+                            avUstand(p) = avUstand(p-1);
+                        else
+                            avUind_to_use = [avUk_inds_avg(avUind_to_use); avUk_inds_avg(min_fit_pts+p)];
+                        end
+                    end
+                    if avUstand(p) > 1 && avUstand(p) < 1.5
+                        if avUstand(p) > 1.05*avUstand(p-1)
+                            avUind_to_use = [avUk_inds_avg(avUind_to_use(1:end-1)); avUk_inds_avg(min_fit_pts+p)];
+                            avUstand(p) = avUstand(p-1);
+                        else
+                            avUind_to_use = [avUk_inds_avg(avUind_to_use); avUk_inds_avg(min_fit_pts+p)];
+                        end
+                    end
+                    if avUstand(p) >= 1.5
+                        if avUstand(p) > 1.02*avUstand(p-1)
+                            avUind_to_use = [avUk_inds_avg(avUind_to_use(1:end-1)); avUk_inds_avg(min_fit_pts+p)];
+                            avUstand(p) = avUstand(p-1);
+                        else
+                            avUind_to_use = [avUk_inds_avg(avUind_to_use); avUk_inds_avg(min_fit_pts+p)];
+                        end
+                    end
+                elseif p == 1
+                    avUind_to_use = avUk_inds_avg(1:min_fit_pts+p);
+                elseif p == length(avUk_inds_avg)-(min_fit_pts)+1
+                    if avUstand(p) > 0 && avUstand(p) < 0.25
+                        if avUstand(p) > 1.20*avUstand(p-1)
+                            avUind_to_use = avUk_inds_avg(avUind_to_use(1:end-1));
+                            avUstand(p) = avUstand(p-1);
+                        else
+                            avUind_to_use = avUk_inds_avg(avUind_to_use);
+                        end
+                    end
+                    if avUstand(p) > 0.25 && avUstand(p) < 0.5
+                        if avUstand(p) > 1.15*avUstand(p-1)
+                            avUind_to_use = avUk_inds_avg(avUind_to_use(1:end-1));
+                            avUstand(p) = avUstand(p-1);
+                        else
+                            avUind_to_use = avUk_inds_avg(avUind_to_use);
+                        end
+                    end
+                    if avUstand(p) > 0.5 && avUstand(p) < 0.75
+                        if avUstand(p) > 1.12*avUstand(p-1)
+                            avUind_to_use = avUk_inds_avg(avUind_to_use(1:end-1));
+                            avUstand(p) = avUstand(p-1);
+                        else
+                            avUind_to_use = avUk_inds_avg(avUind_to_use);
+                        end
+                    end
+                    if avUstand(p) > 0.75 && avUstand(p) < 1
+                        if avUstand(p) > 1.1*avUstand(p-1)
+                            avUind_to_use = avUk_inds_avg(avUind_to_use(1:end-1));
+                            avUstand(p) = avUstand(p-1);
+                        else
+                            avUind_to_use = avUk_inds_avg(avUind_to_use);
+                        end
+                    end
+                    if avUstand(p) > 1 && avUstand(p) < 1.5
+                        if avUstand(p) > 1.05*avUstand(p-1)
+                            avUind_to_use = avUk_inds_avg(avUind_to_use(1:end-1));
+                            avUstand(p) = avUstand(p-1);
+                        else
+                            avUind_to_use = avUk_inds_avg(avUind_to_use);
+                        end
+                    end
+                    if avUstand(p) >= 1.5
+                        if avUstand(p) > 1.02*avUstand(p-1)
+                            avUind_to_use = avUk_inds_avg(avUind_to_use(1:end-1));
+                            avUstand(p) = avUstand(p-1);
+                        else
+                            avUind_to_use = avUk_inds_avg(avUind_to_use);
+                        end
+                    end
+                    avUk_inds_avg = avUind_to_use;
+                end
+            end
+        end
+    end
+
+    if exist('stand','var')
+        avUstand_pit{pt} = avUstand;
+    else
+        avUstand_pit{pt} = nan;
+    end
+    avUk_inds_pit{pt} = avUk_inds_avg;            % store the indices used for each spectral fit in a structure (the array lengths may vary)
+
+    % if the number of selected points are less than the min number of
+    % poits needed (set by the user) to get a decent fit estimate, then
+    % don't bother with such spectra [set to nan by default - generally indicates that all the points in the spectra are suspect]
+    avUlog_pwp_k_avg(pt) = mean(log10(abs(avUpwp_est_avg(avUk_inds_avg,pt)))); % average over log of kept indexes - in second pass
+    avUlog_pwp_ks_avg(pt) = std(log10(abs(avUpwp_est_avg(avUk_inds_avg,pt)))); % standard deviation of the log mean - in second pass
+
+    % Also calculate the fit slope (using unweighted PSD) -- used for diagnostics
+    avUact_fit_pit(:,pt) = polyfit(log10(f_nth_dec(avUk_inds_pit{pt})),log10(avUppsdw_avg((avUk_inds_pit{pt}),pt).*((f_nth_dec(avUk_inds_pit{pt}))'.^(-5/3))),1);
+    
+    % Compute Epsilons for each trajectory
+    log_avUepsilon_k(pt) = 3/2*avUlog_pwp_k_avg(pt) - 3/2*log10(.146169) - log10(avmTrUx(pt));
+    % compute error bars for epsilon
+    log_avUepsilon_d(pt) = 3/2*avUlog_pwp_ks_avg(pt);
+    log_avUepsilon_u(pt) = log_avUepsilon_k(pt) + log_avUepsilon_d(pt);
+    log_avUepsilon_l(pt) = log_avUepsilon_k(pt) - log_avUepsilon_d(pt);
+end
+
 %% Loop over V trajectories (includes averaging of TKE DNS)
 for i = 1:1:numTraj
     Vtrj = Vy(:,i);
@@ -603,6 +802,202 @@ for i = 1:1:numTraj
     Vusd_inds(:,i) = Vk_inds_pit;
 end
 
+% Compute trajectory averaged spectra and epsilon for Vy
+for pt = 1:1:numInts
+    % calculate mean airspeed
+    tmpV = mTrVy(pt,:);
+    avmTrVy(pt) = mean(tmpV,2);
+    % average the spectra for each altitude 
+    tmppt = reshape(VppdfPlt(:,pt,:),[length(freq),numTraj]);
+    avVppsd(:,pt) = mean(tmppt,2);
+    % average epsilon Ey
+    avgTrEy = mean(mTrEy,2); 
+    % conduct the spectral fit
+    % weight PSD by f^(5/3)
+    avVppsdw(:,pt) =  avVppsd(:,pt).*freq'.^(5/3);    % [m^2 s^(-8/3)]
+
+    % average the weighted PSD:
+    for q = 1:length(f_inds)-1
+        if q == 1
+            if (f_inds(q+1) - f_inds(q)) == 0
+                avVppsdw_avg(q,pt) = avVppsdw(f_inds(q+1),pt);
+            else
+                avVppsdw_avg(q,pt) = mean( avVppsdw(f_inds(q):f_inds(q+1)-1,pt));
+            end
+        else
+            if (f_inds(q+1) - f_inds(q)) == 0
+                avVppsdw_avg(q,pt) = avVppsdw(f_inds(q+1),pt);
+            else
+                avVppsdw_avg(q,pt) = mean( avVppsdw(f_inds(q)+1:f_inds(q+1)-1,pt));
+            end
+        end
+    end
+    % store the averaged spectral points in this array (for comparison)
+    avVPPSDW_AVG(:,pt) = avVppsdw_avg(:,pt);
+
+    % average weighted power spectral density from f_low to f_high, [m^2 s^(-8/3)]
+    avVpwp(pt) = sum(avVppsdw(f_ind_low:f_ind_high,pt))/(f_ind_high-f_ind_low+1);
+    avVpwp_avg(pt) = sum(avVppsdw_avg(:,pt))/length(f_nth_dec);
+
+    % remove data in the interval (f_ind_low:f_ind_high) at or below the sensor noise floor
+    avVpit_NFw = pit_NF*freq(f_ind_low:f_ind_high).^(5/3);
+    avVpit_NFw_avg = pit_NF*f_nth_dec.^(5/3);
+    avVpwp_est(:,pt) = avVppsdw(f_ind_low:f_ind_high,pt);
+    avVpwp_est_avg(:,pt) = avVppsdw_avg(:,pt);
+    avVk_inds = find(avVpwp_est(:,pt) > avVpit_NFw');   % indexes of data points to keep
+    avVk_inds_avg = find(avVpwp_est_avg(:,pt) > avVpit_NFw_avg');   % indexes of data points to keep
+    avVlog_pwp_k(pt) = mean(log10(abs(avVpwp_est(avVk_inds,pt))));      % average over log of kept indexes
+    avVlog_pwp_ks(pt) = std(log10(abs(avVpwp_est(avVk_inds,pt))));      % standard deviation of the log mean
+    avVlog_pwp_k_avg(pt) = mean(log10(abs(avVpwp_est_avg(avVk_inds_avg,pt)))); % average over log of kept indexes
+    avVlog_pwp_ks_avg(pt) = std(log10(abs(avVpwp_est_avg(avVk_inds_avg,pt)))); % standard deviation of the log mean
+
+    % unweight these estimates for plotting and checking
+    % for the average spectra
+    avVlog_ppsd_est(:,pt) = avVlog_pwp_k_avg(pt) + log10(f_nth_dec.^(-5/3));
+    avVlog_ppsd_avg(:,pt) = log10(avVppsdw_avg(:,pt))' + log10(f_nth_dec.^(-5/3));
+
+    % second pass: include indexes where the fit function is above the noise floor
+    avVk_inds_avg = find(avVlog_ppsd_est(:,pt) > log10(avVpit_NFw_avg.*f_nth_dec.^(-5/3))');   % indexes of data points to keep
+
+    if pass_3 == 1
+        % third pass: include the points that contribute towards reducing the
+        % standard deviation
+        if length(avVk_inds_avg) > min_fit_pts
+            clear stand inds_to_use
+            % use the first three points to begin with and then iterate over the remaining points
+            avVind_to_use = avVk_inds_avg(1:min_fit_pts);
+            for p = 1:1:length(avVk_inds_avg)-(min_fit_pts)+1
+                avVstand(p) = std(log10(abs(avVpwp_est_avg(avVind_to_use,pt))));
+                if p>1 && p<length(avVk_inds_avg)-(min_fit_pts)+1
+                    if avVstand(p) > 0 && avVstand(p) < 0.25
+                        if avVstand(p) > 1.2*avVstand(p-1)
+                            avVind_to_use = [avVk_inds_avg(avVind_to_use(1:end-1)); avVk_inds_avg(min_fit_pts+p)];
+                            avVstand(p) = avVstand(p-1);
+                        else
+                            avVind_to_use = [avVk_inds_avg(avVind_to_use); avVk_inds_avg(min_fit_pts+p)];
+                        end
+                    end
+                    if avVstand(p) > 0.25 && avVstand(p) < 0.5
+                        if avVstand(p) > 1.15*avVstand(p-1)
+                            avVind_to_use = [avVk_inds_avg(avVind_to_use(1:end-1)); avVk_inds_avg(min_fit_pts+p)];
+                            avVstand(p) = avVstand(p-1);
+                        else
+                            avVind_to_use = [avVk_inds_avg(avVind_to_use); avVk_inds_avg(min_fit_pts+p)];
+                        end
+                    end
+                    if avVstand(p) > 0.5 && avVstand(p) < 0.75
+                        if avVstand(p) > 1.12*avVstand(p-1)
+                            avVind_to_use = [avVk_inds_avg(avVind_to_use(1:end-1)); avVk_inds_avg(min_fit_pts+p)];
+                            avVstand(p) = avVstand(p-1);
+                        else
+                            avVind_to_use = [avVk_inds_avg(avVind_to_use); avVk_inds_avg(min_fit_pts+p)];
+                        end
+                    end
+                    if avVstand(p) > 0.75 && avVstand(p) < 1
+                        if avVstand(p) > 1.1*avVstand(p-1)
+                            avVind_to_use = [avVk_inds_avg(avVind_to_use(1:end-1)); avVk_inds_avg(min_fit_pts+p)];
+                            avVstand(p) = avVstand(p-1);
+                        else
+                            avVind_to_use = [avVk_inds_avg(avVind_to_use); avVk_inds_avg(min_fit_pts+p)];
+                        end
+                    end
+                    if avVstand(p) > 1 && avVstand(p) < 1.5
+                        if avVstand(p) > 1.05*avVstand(p-1)
+                            avVind_to_use = [avVk_inds_avg(avVind_to_use(1:end-1)); avVk_inds_avg(min_fit_pts+p)];
+                            avVstand(p) = avVstand(p-1);
+                        else
+                            avVind_to_use = [avVk_inds_avg(avVind_to_use); avVk_inds_avg(min_fit_pts+p)];
+                        end
+                    end
+                    if avVstand(p) >= 1.5
+                        if avVstand(p) > 1.02*avVstand(p-1)
+                            avVind_to_use = [avVk_inds_avg(avVind_to_use(1:end-1)); avVk_inds_avg(min_fit_pts+p)];
+                            avVstand(p) = avVstand(p-1);
+                        else
+                            avVind_to_use = [avVk_inds_avg(avVind_to_use); avVk_inds_avg(min_fit_pts+p)];
+                        end
+                    end
+                elseif p == 1
+                    avVind_to_use = avVk_inds_avg(1:min_fit_pts+p);
+                elseif p == length(avVk_inds_avg)-(min_fit_pts)+1
+                    if avVstand(p) > 0 && avVstand(p) < 0.25
+                        if avVstand(p) > 1.20*avVstand(p-1)
+                            avVind_to_use = avVk_inds_avg(avVind_to_use(1:end-1));
+                            avVstand(p) = avVstand(p-1);
+                        else
+                            avVind_to_use = avVk_inds_avg(avVind_to_use);
+                        end
+                    end
+                    if avVstand(p) > 0.25 && avVstand(p) < 0.5
+                        if avVstand(p) > 1.15*avVstand(p-1)
+                            avVind_to_use = avVk_inds_avg(avVind_to_use(1:end-1));
+                            avVstand(p) = avVstand(p-1);
+                        else
+                            avVind_to_use = avVk_inds_avg(avVind_to_use);
+                        end
+                    end
+                    if avVstand(p) > 0.5 && avVstand(p) < 0.75
+                        if avVstand(p) > 1.12*avVstand(p-1)
+                            avVind_to_use = avVk_inds_avg(avVind_to_use(1:end-1));
+                            avVstand(p) = avVstand(p-1);
+                        else
+                            avVind_to_use = avVk_inds_avg(avVind_to_use);
+                        end
+                    end
+                    if avVstand(p) > 0.75 && avVstand(p) < 1
+                        if avVstand(p) > 1.1*avVstand(p-1)
+                            avVind_to_use = avVk_inds_avg(avVind_to_use(1:end-1));
+                            avVstand(p) = avVstand(p-1);
+                        else
+                            avVind_to_use = avVk_inds_avg(avVind_to_use);
+                        end
+                    end
+                    if avVstand(p) > 1 && avVstand(p) < 1.5
+                        if avVstand(p) > 1.05*avVstand(p-1)
+                            avVind_to_use = avVk_inds_avg(avVind_to_use(1:end-1));
+                            avVstand(p) = avVstand(p-1);
+                        else
+                            avVind_to_use = avVk_inds_avg(avVind_to_use);
+                        end
+                    end
+                    if avVstand(p) >= 1.5
+                        if avVstand(p) > 1.02*avVstand(p-1)
+                            avVind_to_use = avVk_inds_avg(avVind_to_use(1:end-1));
+                            avVstand(p) = avVstand(p-1);
+                        else
+                            avVind_to_use = avVk_inds_avg(avVind_to_use);
+                        end
+                    end
+                    avVk_inds_avg = avVind_to_use;
+                end
+            end
+        end
+    end
+
+    if exist('stand','var')
+        avVstand_pit{pt} = avVstand;
+    else
+        avVstand_pit{pt} = nan;
+    end
+    avVk_inds_pit{pt} = avVk_inds_avg;            % store the indices used for each spectral fit in a structure (the array lengths may vary)
+
+    % if the number of selected points are less than the min number of
+    % poits needed (set by the user) to get a decent fit estimate, then
+    % don't bother with such spectra [set to nan by default - generally indicates that all the points in the spectra are suspect]
+    avVlog_pwp_k_avg(pt) = mean(log10(abs(avVpwp_est_avg(avVk_inds_avg,pt)))); % average over log of kept indexes - in second pass
+    avVlog_pwp_ks_avg(pt) = std(log10(abs(avVpwp_est_avg(avVk_inds_avg,pt)))); % standard deviation of the log mean - in second pass
+
+    % Also calculate the fit slope (using unweighted PSD) -- used for diagnostics
+    avVact_fit_pit(:,pt) = polyfit(log10(f_nth_dec(avVk_inds_pit{pt})),log10(avVppsdw_avg((avVk_inds_pit{pt}),pt).*((f_nth_dec(avVk_inds_pit{pt}))'.^(-5/3))),1);
+    
+    % Compute Epsilons for each trajectory
+    log_avVepsilon_k(pt) = 3/2*avVlog_pwp_k_avg(pt) - 3/2*log10(.146169) - log10(avmTrVy(pt));
+    % compute error bars for epsilon
+    log_avVepsilon_d(pt) = 3/2*avVlog_pwp_ks_avg(pt);
+    log_avVepsilon_u(pt) = log_avVepsilon_k(pt) + log_avVepsilon_d(pt);
+    log_avVepsilon_l(pt) = log_avVepsilon_k(pt) - log_avVepsilon_d(pt);
+end
+
 %% Loop over W trajectories (includes averaging of TKE DNS)
 for i = 1:1:numTraj
     Wtrj = Wz(:,i);
@@ -812,6 +1207,7 @@ for i = 1:1:numTraj
         mGxEz(j) = sum(GxEztrj(floor(start_index)+1:floor(stop_index)))/(Nrec);
         mGyEz(j) = sum(GyEztrj(floor(start_index)+1:floor(stop_index)))/(Nrec);
         mGzEz(j) = sum(GzEztrj(floor(start_index)+1:floor(stop_index)))/(Nrec);
+
     end
     % Reassign the required variables before restarting analysis for a different trajectory
     mTrWz(:,i) = mWz;
@@ -838,17 +1234,369 @@ for i = 1:1:numTraj
     Wusd_inds(:,i) = Wk_inds_pit;
 end
 
+% Compute trajectory averaged spectra and epsilon for Wz
+for pt = 1:1:numInts
+    % calculate mean airspeed
+    tmpW = mTrWz(pt,:);
+    avmTrWz(pt) = mean(tmpW,2);
+    % average the spectra for each altitude 
+    tmppt = reshape(WppdfPlt(:,pt,:),[length(freq),numTraj]);
+    avWppsd(:,pt) = mean(tmppt,2);
+    % average epsilon Ez
+    avgTrEz = mean(mTrEz,2);
+    % conduct the spectral fit
+    % weight PSD by f^(5/3)
+    avWppsdw(:,pt) =  avWppsd(:,pt).*freq'.^(5/3);    % [m^2 s^(-8/3)]
+
+    % average the weighted PSD:
+    for q = 1:length(f_inds)-1
+        if q == 1
+            if (f_inds(q+1) - f_inds(q)) == 0
+                avWppsdw_avg(q,pt) = avWppsdw(f_inds(q+1),pt);
+            else
+                avWppsdw_avg(q,pt) = mean( avWppsdw(f_inds(q):f_inds(q+1)-1,pt));
+            end
+        else
+            if (f_inds(q+1) - f_inds(q)) == 0
+                avWppsdw_avg(q,pt) = avWppsdw(f_inds(q+1),pt);
+            else
+                avWppsdw_avg(q,pt) = mean( avWppsdw(f_inds(q)+1:f_inds(q+1)-1,pt));
+            end
+        end
+    end
+    % store the averaged spectral points in this array (for comparison)
+    avWPPSDW_AVG(:,pt) = avWppsdw_avg(:,pt);
+
+    % average weighted power spectral density from f_low to f_high, [m^2 s^(-8/3)]
+    avWpwp(pt) = sum(avWppsdw(f_ind_low:f_ind_high,pt))/(f_ind_high-f_ind_low+1);
+    avWpwp_avg(pt) = sum(avWppsdw_avg(:,pt))/length(f_nth_dec);
+
+    % remove data in the interval (f_ind_low:f_ind_high) at or below the sensor noise floor
+    avWpit_NFw = pit_NF*freq(f_ind_low:f_ind_high).^(5/3);
+    avWpit_NFw_avg = pit_NF*f_nth_dec.^(5/3);
+    avWpwp_est(:,pt) = avWppsdw(f_ind_low:f_ind_high,pt);
+    avWpwp_est_avg(:,pt) = avWppsdw_avg(:,pt);
+    avWk_inds = find(avWpwp_est(:,pt) > avWpit_NFw');   % indexes of data points to keep
+    avWk_inds_avg = find(avWpwp_est_avg(:,pt) > avWpit_NFw_avg');   % indexes of data points to keep
+    avWlog_pwp_k(pt) = mean(log10(abs(avWpwp_est(avWk_inds,pt))));      % average over log of kept indexes
+    avWlog_pwp_ks(pt) = std(log10(abs(avWpwp_est(avWk_inds,pt))));      % standard deviation of the log mean
+    avWlog_pwp_k_avg(pt) = mean(log10(abs(avWpwp_est_avg(avWk_inds_avg,pt)))); % average over log of kept indexes
+    avWlog_pwp_ks_avg(pt) = std(log10(abs(avWpwp_est_avg(avWk_inds_avg,pt)))); % standard deviation of the log mean
+
+    % unweight these estimates for plotting and checking
+    % for the average spectra
+    avWlog_ppsd_est(:,pt) = avWlog_pwp_k_avg(pt) + log10(f_nth_dec.^(-5/3));
+    avWlog_ppsd_avg(:,pt) = log10(avWppsdw_avg(:,pt))' + log10(f_nth_dec.^(-5/3));
+
+    % second pass: include indexes where the fit function is above the noise floor
+    avWk_inds_avg = find(avWlog_ppsd_est(:,pt) > log10(avWpit_NFw_avg.*f_nth_dec.^(-5/3))');   % indexes of data points to keep
+
+    if pass_3 == 1
+        % third pass: include the points that contribute towards reducing the
+        % standard deviation
+        if length(avWk_inds_avg) > min_fit_pts
+            clear stand inds_to_use
+            % use the first three points to begin with and then iterate over the remaining points
+            avWind_to_use = avWk_inds_avg(1:min_fit_pts);
+            for p = 1:1:length(avWk_inds_avg)-(min_fit_pts)+1
+                avWstand(p) = std(log10(abs(avWpwp_est_avg(avWind_to_use,pt))));
+                if p>1 && p<length(avWk_inds_avg)-(min_fit_pts)+1
+                    if avWstand(p) > 0 && avWstand(p) < 0.25
+                        if avWstand(p) > 1.2*avWstand(p-1)
+                            avWind_to_use = [avWk_inds_avg(avWind_to_use(1:end-1)); avWk_inds_avg(min_fit_pts+p)];
+                            avWstand(p) = avWstand(p-1);
+                        else
+                            avWind_to_use = [avWk_inds_avg(avWind_to_use); avWk_inds_avg(min_fit_pts+p)];
+                        end
+                    end
+                    if avWstand(p) > 0.25 && avWstand(p) < 0.5
+                        if avWstand(p) > 1.15*avWstand(p-1)
+                            avWind_to_use = [avWk_inds_avg(avWind_to_use(1:end-1)); avWk_inds_avg(min_fit_pts+p)];
+                            avWstand(p) = avWstand(p-1);
+                        else
+                            avWind_to_use = [avWk_inds_avg(avWind_to_use); avWk_inds_avg(min_fit_pts+p)];
+                        end
+                    end
+                    if avWstand(p) > 0.5 && avWstand(p) < 0.75
+                        if avWstand(p) > 1.12*avWstand(p-1)
+                            avWind_to_use = [avWk_inds_avg(avWind_to_use(1:end-1)); avWk_inds_avg(min_fit_pts+p)];
+                            avWstand(p) = avWstand(p-1);
+                        else
+                            avWind_to_use = [avWk_inds_avg(avWind_to_use); avWk_inds_avg(min_fit_pts+p)];
+                        end
+                    end
+                    if avWstand(p) > 0.75 && avWstand(p) < 1
+                        if avWstand(p) > 1.1*avWstand(p-1)
+                            avWind_to_use = [avWk_inds_avg(avWind_to_use(1:end-1)); avWk_inds_avg(min_fit_pts+p)];
+                            avWstand(p) = avWstand(p-1);
+                        else
+                            avWind_to_use = [avWk_inds_avg(avWind_to_use); avWk_inds_avg(min_fit_pts+p)];
+                        end
+                    end
+                    if avWstand(p) > 1 && avWstand(p) < 1.5
+                        if avWstand(p) > 1.05*avWstand(p-1)
+                            avWind_to_use = [avWk_inds_avg(avWind_to_use(1:end-1)); avWk_inds_avg(min_fit_pts+p)];
+                            avWstand(p) = avWstand(p-1);
+                        else
+                            avWind_to_use = [avWk_inds_avg(avWind_to_use); avWk_inds_avg(min_fit_pts+p)];
+                        end
+                    end
+                    if avWstand(p) >= 1.5
+                        if avWstand(p) > 1.02*avWstand(p-1)
+                            avWind_to_use = [avWk_inds_avg(avWind_to_use(1:end-1)); avWk_inds_avg(min_fit_pts+p)];
+                            avWstand(p) = avWstand(p-1);
+                        else
+                            avWind_to_use = [avWk_inds_avg(avWind_to_use); avWk_inds_avg(min_fit_pts+p)];
+                        end
+                    end
+                elseif p == 1
+                    avWind_to_use = avWk_inds_avg(1:min_fit_pts+p);
+                elseif p == length(avWk_inds_avg)-(min_fit_pts)+1
+                    if avWstand(p) > 0 && avWstand(p) < 0.25
+                        if avWstand(p) > 1.20*avWstand(p-1)
+                            avWind_to_use = avWk_inds_avg(avWind_to_use(1:end-1));
+                            avWstand(p) = avWstand(p-1);
+                        else
+                            avWind_to_use = avWk_inds_avg(avWind_to_use);
+                        end
+                    end
+                    if avWstand(p) > 0.25 && avWstand(p) < 0.5
+                        if avWstand(p) > 1.15*avWstand(p-1)
+                            avWind_to_use = avWk_inds_avg(avWind_to_use(1:end-1));
+                            avWstand(p) = avWstand(p-1);
+                        else
+                            avWind_to_use = avWk_inds_avg(avWind_to_use);
+                        end
+                    end
+                    if avWstand(p) > 0.5 && avWstand(p) < 0.75
+                        if avWstand(p) > 1.12*avWstand(p-1)
+                            avWind_to_use = avWk_inds_avg(avWind_to_use(1:end-1));
+                            avWstand(p) = avWstand(p-1);
+                        else
+                            avWind_to_use = avWk_inds_avg(avWind_to_use);
+                        end
+                    end
+                    if avWstand(p) > 0.75 && avWstand(p) < 1
+                        if avWstand(p) > 1.1*avWstand(p-1)
+                            avWind_to_use = avWk_inds_avg(avWind_to_use(1:end-1));
+                            avWstand(p) = avWstand(p-1);
+                        else
+                            avWind_to_use = avWk_inds_avg(avWind_to_use);
+                        end
+                    end
+                    if avWstand(p) > 1 && avWstand(p) < 1.5
+                        if avWstand(p) > 1.05*avWstand(p-1)
+                            avWind_to_use = avWk_inds_avg(avWind_to_use(1:end-1));
+                            avWstand(p) = avWstand(p-1);
+                        else
+                            avWind_to_use = avWk_inds_avg(avWind_to_use);
+                        end
+                    end
+                    if avWstand(p) >= 1.5
+                        if avWstand(p) > 1.02*avWstand(p-1)
+                            avWind_to_use = avWk_inds_avg(avWind_to_use(1:end-1));
+                            avWstand(p) = avWstand(p-1);
+                        else
+                            avWind_to_use = avWk_inds_avg(avWind_to_use);
+                        end
+                    end
+                    avWk_inds_avg = avWind_to_use;
+                end
+            end
+        end
+    end
+
+    if exist('stand','var')
+        avWstand_pit{pt} = avWstand;
+    else
+        avWstand_pit{pt} = nan;
+    end
+    avWk_inds_pit{pt} = avWk_inds_avg;            % store the indices used for each spectral fit in a structure (the array lengths may vary)
+
+    % if the number of selected points are less than the min number of
+    % poits needed (set by the user) to get a decent fit estimate, then
+    % don't bother with such spectra [set to nan by default - generally indicates that all the points in the spectra are suspect]
+    avWlog_pwp_k_avg(pt) = mean(log10(abs(avWpwp_est_avg(avWk_inds_avg,pt)))); % average over log of kept indexes - in second pass
+    avWlog_pwp_ks_avg(pt) = std(log10(abs(avWpwp_est_avg(avWk_inds_avg,pt)))); % standard deviation of the log mean - in second pass
+
+    % Also calculate the fit slope (using unweighted PSD) -- used for diagnostics
+    avWact_fit_pit(:,pt) = polyfit(log10(f_nth_dec(avWk_inds_pit{pt})),log10(avWppsdw_avg((avWk_inds_pit{pt}),pt).*((f_nth_dec(avWk_inds_pit{pt}))'.^(-5/3))),1);
+    
+    % Compute Epsilons for each trajectory
+    log_avWepsilon_k(pt) = 3/2*avWlog_pwp_k_avg(pt) - 3/2*log10(.146169) - log10(avmTrWz(pt));
+    % compute error bars for epsilon
+    log_avWepsilon_d(pt) = 3/2*avWlog_pwp_ks_avg(pt);
+    log_avWepsilon_u(pt) = log_avWepsilon_k(pt) + log_avWepsilon_d(pt);
+    log_avWepsilon_l(pt) = log_avWepsilon_k(pt) - log_avWepsilon_d(pt);
+end
+
 %% Plot the profiles
-% Loop over all profiles for plotting
+% set limits for Epsilon plotting
 Epslims = [-8 0];
+
+% Plot averaged trajectories
+figure(2000)
+clf
+subplot(1,5,1)
+plot(log10(avgTrEx),mTrGzEx(:,1),'k','LineWidth',2)
+hold on
+plot(log_avUepsilon_k,mTrGzUx(:,1),'r','LineWidth',2)
+plot(log_avUepsilon_u,mTrGzUx(:,1),'--r')
+plot(log_avUepsilon_l,mTrGzUx(:,1),'--r')
+legend('Ex','Ux')
+xlabel('averaged \epsilon')
+ylabel('height')
+grid on
+grid Minor
+xlim([Epslims(1) Epslims(2)])
+ylim([0 16])
+a_1=title(['averaged Ux and Ex comparison']);
+subplot(1,5,2)
+plot(log10(avgTrEy),mTrGzEy(:,1),'k','LineWidth',2)
+hold on
+plot(log_avVepsilon_k,mTrGzVy(:,1),'r','LineWidth',2)
+plot(log_avVepsilon_u,mTrGzVy(:,1),'--r')
+plot(log_avVepsilon_l,mTrGzVy(:,1),'--r')
+legend('Ey','Vy')
+xlabel('averaged \epsilon')
+ylabel('height')
+grid on
+grid Minor
+xlim([Epslims(1) Epslims(2)])
+ylim([0 16])
+a_1=title(['averaged Vy and Ey comparison']);
+subplot(1,5,3)
+plot(log10(avgTrEz),mTrGzEz(:,1),'k','LineWidth',2)
+hold on
+plot(log_avWepsilon_k,mTrGzWz(:,1),'r','LineWidth',2)
+plot(log_avWepsilon_u,mTrGzWz(:,1),'--r')
+plot(log_avWepsilon_l,mTrGzWz(:,1),'--r')
+legend('Ez','Wz')
+xlabel('averaged \epsilon')
+ylabel('height')
+grid on
+grid Minor
+xlim([Epslims(1) Epslims(2)])
+ylim([0 16])
+a_1=title('averaged Wz and Ez comparison');
+subplot(1,5,4)
+plot(log10(avgTrEx),mTrGzEx(:,1),'r','LineWidth',2)
+hold on
+plot(log10(avgTrEy),mTrGzEy(:,1),'b','LineWidth',2)
+plot(log10(avgTrEz),mTrGzEz(:,1),'m','LineWidth',2)
+legend('Ex','Ey','Ez')
+xlabel('averaged DNS \epsilon')
+ylabel('height')
+grid on
+grid Minor
+xlim([Epslims(1) Epslims(2)])
+ylim([0 16])
+a_1=title('averaged Ex, Ey, Ez comparison');
+subplot(1,5,5)
+plot(log_avUepsilon_k,mTrGzUx(:,1),'r','LineWidth',2)
+hold on
+plot(log_avVepsilon_k,mTrGzVy(:,1),'b','LineWidth',2)
+plot(log_avWepsilon_k,mTrGzWz(:,1),'m','LineWidth',2)
+legend('Ux','Vy','Wz')
+xlabel('averaged Spectral \epsilon')
+ylabel('height')
+grid on
+grid Minor
+xlim([Epslims(1) Epslims(2)])
+ylim([0 16])
+a_1=title('averaged Ux, Vy, Wz comparison');
+set(gcf, 'Position',[100, 100, 1800, 900])
+if saSp == 1
+    cd(dirtry)
+    savefig(['avgTr_comp.fig'])
+    cd(exectry)
+end
+close all
+
+% Plot averaged spectra
+for j = 1:1:numInts
+    figure(100+j)
+    clf
+    semilogx(freq,log10(abs(avUppsd(:,j))),'b','LineWidth',2)
+    hold on
+    semilogx(freq,avUlog_pwp_k_avg(pt)+log10(freq.^(-5/3)),'k','LineWidth',2)
+    semilogx(f_nth_dec,avUlog_ppsd_avg(:,pt),'r*','LineWidth',4)
+    semilogx(f_nth_dec(avUk_inds_pit{pt}),avUlog_ppsd_avg(avUk_inds_pit{pt},pt),'go','LineWidth',2)
+    semilogx(freq,(avUlog_pwp_k_avg(pt)+avUlog_pwp_ks_avg(pt))+ log10(freq.^(-5/3)),'k--','LineWidth',1)
+    semilogx(freq,(avUlog_pwp_k_avg(pt)-avUlog_pwp_ks_avg(pt))+ log10(freq.^(-5/3)),'k--','LineWidth',1)
+    semilogx(freq,(avUlog_pwp_k_avg(pt)+6)+log10(freq.^(-7)),'g','LineWidth',2)
+    legend('power spectrum','-5/3 fit line','points from bin. avg spectrum','points used in fitting', 'error bars','Location','SouthWest')
+    axis([freq(1) freq(end) -15 0])
+    xlabel('F')
+    ylabel('averaged Ux PSD')
+    a_1=title(['averaged Ux Spectra, Height = ', num2str(mTrGzUx(j,i))]);
+    grid on
+    if saSp == 1
+        cd(dirtry)
+        savefig(['Ux_avg',num2str(j),'_Ht',num2str(mTrGzUx(j,i)),'.fig'])
+        cd(exectry)
+    end
+    %close all
+end
+for j = 1:1:numInts
+    figure(200+j)
+    clf
+    semilogx(freq,log10(abs(avVppsd(:,j))),'b','LineWidth',2)
+    hold on
+    semilogx(freq,avVlog_pwp_k_avg(pt)+log10(freq.^(-5/3)),'k','LineWidth',2)
+    semilogx(f_nth_dec,avVlog_ppsd_avg(:,pt),'r*','LineWidth',4)
+    semilogx(f_nth_dec(avVk_inds_pit{pt}),avVlog_ppsd_avg(avVk_inds_pit{pt},pt),'go','LineWidth',2)
+    semilogx(freq,(avVlog_pwp_k_avg(pt)+avVlog_pwp_ks_avg(pt))+ log10(freq.^(-5/3)),'k--','LineWidth',1)
+    semilogx(freq,(avVlog_pwp_k_avg(pt)-avVlog_pwp_ks_avg(pt))+ log10(freq.^(-5/3)),'k--','LineWidth',1)
+    semilogx(freq,(avVlog_pwp_k_avg(pt)+6)+log10(freq.^(-7)),'g','LineWidth',2)
+    legend('power spectrum','-5/3 fit line','points from bin. avg spectrum','points used in fitting', 'error bars','Location','SouthWest')
+    axis([freq(1) freq(end) -15 0])
+    xlabel('F')
+    ylabel('averaged Vy PSD')
+    a_1=title(['averaged Vy Spectra, Height = ', num2str(mTrGzUx(j,i))]);
+    grid on
+    if saSp == 1
+        cd(dirtry)
+        savefig(['Vy_avg',num2str(j),'_Ht',num2str(mTrGzUx(j,i)),'.fig'])
+        cd(exectry)
+    end
+    %close all
+end
+for j = 1:1:numInts
+    figure(300+j)
+    clf
+    semilogx(freq,log10(abs(avWppsd(:,j))),'b','LineWidth',2)
+    hold on
+    semilogx(freq,avWlog_pwp_k_avg(pt)+log10(freq.^(-5/3)),'k','LineWidth',2)
+    semilogx(f_nth_dec,avWlog_ppsd_avg(:,pt),'r*','LineWidth',4)
+    semilogx(f_nth_dec(avWk_inds_pit{pt}),avWlog_ppsd_avg(avWk_inds_pit{pt},pt),'go','LineWidth',2)
+    semilogx(freq,(avWlog_pwp_k_avg(pt)+avWlog_pwp_ks_avg(pt))+ log10(freq.^(-5/3)),'k--','LineWidth',1)
+    semilogx(freq,(avWlog_pwp_k_avg(pt)-avWlog_pwp_ks_avg(pt))+ log10(freq.^(-5/3)),'k--','LineWidth',1)
+    semilogx(freq,(avWlog_pwp_k_avg(pt)+6)+log10(freq.^(-7)),'g','LineWidth',2)
+    legend('power spectrum','-5/3 fit line','points from bin. avg spectrum','points used in fitting', 'error bars','Location','SouthWest')
+    axis([freq(1) freq(end) -15 0])
+    xlabel('F')
+    ylabel('averaged Wz PSD')
+    a_1=title(['averaged Wz Spectra, Height = ', num2str(mTrGzUx(j,i))]);
+    grid on
+    if saSp == 1
+        cd(dirtry)
+        savefig(['Wz_avg',num2str(j),'_Ht',num2str(mTrGzUx(j,i)),'.fig'])
+        cd(exectry)
+    end
+    %close all
+end
+
+% Plot trajectories
 for i = 1:1:numTraj
     pt = i;
     figure(i)
     clf
     subplot(1,5,1)
-    plot(log10(mTrEx(:,pt)),mTrGzEx(:,pt),'k')
+    plot(log10(mTrEx(:,pt)),mTrGzEx(:,pt),'k','LineWidth',2)
     hold on
-    plot(log_Uepsilon_k(:,pt),mTrGzUx(:,pt),'r')
+    plot(log_Uepsilon_k(:,pt),mTrGzUx(:,pt),'r','LineWidth',2)
+    scatter(log10(Ex(:,pt)),GzEx(:,pt),'ok','MarkerEdgeAlpha',0.1)
     plot(log_Uepsilon_u(:,pt),mTrGzUx(:,pt),'--r')
     plot(log_Uepsilon_l(:,pt),mTrGzUx(:,pt),'--r')
     legend('Ex','Ux')
@@ -860,9 +1608,10 @@ for i = 1:1:numTraj
     ylim([0 16])
     a_1=title(['Ux and Ex comparison, Trajectory = ',num2str(i)]);
     subplot(1,5,2)
-    plot(log10(mTrEy(:,pt)),mTrGzEy(:,pt),'k')
+    plot(log10(mTrEy(:,pt)),mTrGzEy(:,pt),'k','LineWidth',2)
     hold on
-    plot(log_Vepsilon_k(:,pt),mTrGzVy(:,pt),'b')
+    plot(log_Vepsilon_k(:,pt),mTrGzVy(:,pt),'b','LineWidth',2)
+    scatter(log10(Ey(:,pt)),GzEy(:,pt),'ok','MarkerEdgeAlpha',0.1)
     plot(log_Vepsilon_u(:,pt),mTrGzUx(:,pt),'--b')
     plot(log_Vepsilon_l(:,pt),mTrGzUx(:,pt),'--b')
     legend('Ey','Vy')
@@ -874,9 +1623,10 @@ for i = 1:1:numTraj
     ylim([0 16])
     a_1=title(['Vy and Ey comparison, Trajectory = ',num2str(i)]);
     subplot(1,5,3)
-    plot(log10(mTrEz(:,pt)),mTrGzEz(:,pt),'k')
+    plot(log10(mTrEz(:,pt)),mTrGzEz(:,pt),'k','LineWidth',2)
     hold on
-    plot(log_Wepsilon_k(:,pt),mTrGzWz(:,pt),'m')
+    plot(log_Wepsilon_k(:,pt),mTrGzWz(:,pt),'m','LineWidth',2)
+    scatter(log10(Ez(:,pt)),GzEz(:,pt),'ok','MarkerEdgeAlpha',0.1)
     plot(log_Wepsilon_u(:,pt),mTrGzUx(:,pt),'--m')
     plot(log_Wepsilon_l(:,pt),mTrGzUx(:,pt),'--m')
     legend('Ez','Wz')
@@ -888,10 +1638,10 @@ for i = 1:1:numTraj
     ylim([0 16])
     a_1=title(['Wz and Ez comparison, Trajectory = ',num2str(i)]);
     subplot(1,5,4)
-    plot(log10(mTrEx(:,pt)),mTrGzEx(:,pt),'r')
+    plot(log10(mTrEx(:,pt)),mTrGzEx(:,pt),'r','LineWidth',2)
     hold on
-    plot(log10(mTrEy(:,pt)),mTrGzEy(:,pt),'b')
-    plot(log10(mTrEz(:,pt)),mTrGzEz(:,pt),'m')
+    plot(log10(mTrEy(:,pt)),mTrGzEy(:,pt),'b','LineWidth',2)
+    plot(log10(mTrEz(:,pt)),mTrGzEz(:,pt),'m','LineWidth',2)
     legend('Ex','Ey','Ez')
     xlabel('DNS \epsilon')
     ylabel('height')
@@ -901,10 +1651,10 @@ for i = 1:1:numTraj
     ylim([0 16])
     a_1=title(['Ex, Ey, Ez comparison, Trajectory = ',num2str(i)]);
     subplot(1,5,5)
-    plot(log_Uepsilon_k(:,pt),mTrGzUx(:,pt),'r')
+    plot(log_Uepsilon_k(:,pt),mTrGzUx(:,pt),'r','LineWidth',2)
     hold on
-    plot(log_Vepsilon_k(:,pt),mTrGzVy(:,pt),'b')
-    plot(log_Wepsilon_k(:,pt),mTrGzWz(:,pt),'m')
+    plot(log_Vepsilon_k(:,pt),mTrGzVy(:,pt),'b','LineWidth',2)
+    plot(log_Wepsilon_k(:,pt),mTrGzWz(:,pt),'m','LineWidth',2)
     legend('Ux','Vy','Wz')
     xlabel('Spectral \epsilon')
     ylabel('height')
@@ -998,4 +1748,3 @@ for i = 1:1:numTraj
         close all
     end
 end
-%% Save output data, figures, spectra
