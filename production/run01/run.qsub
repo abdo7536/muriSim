@@ -1,0 +1,33 @@
+#!/bin/bash
+
+## Required PBS directives ------------------------------
+#PBS -A AFOSR42572501
+#PBS -N SHITest
+#PBS -q debug
+#PBS -l select=1:ncpus=128:mpiprocs=128
+#PBS -l walltime=00:30:00
+#PBS -j oe
+#PBS -m be
+#PBS -M abdo7536@colorado.edu
+
+## Execution Block --------------------------------------
+# Environment setup
+# cd to your scratch directory
+cd /p/work1/abdo7536
+
+# make a new directory for the problem and navigate into it
+rm -rf SHIT01
+mkdir SHIT01
+
+## store sam code's git commit tag used for execution ------------------
+cd /p/home/abdo7536/sam
+git log -1 > git_commit_tag.out
+mv git_commit_tag.out /p/work1/abdo7536/SHIT01/
+cd /p/work1/abdo7536/SHIT01/
+
+# add the required input and executable files into the directory
+cp /p/home/abdo7536/muriSim/production/run01/sam.inp .
+ln -s /p/home/abdo7536/sam/src/sam .
+
+## Launch SAM ------------------------------------------
+mpiexec -np 128 ./sam > SHIT01.out
