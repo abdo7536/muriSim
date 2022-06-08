@@ -1,0 +1,28 @@
+#!/bin/sh
+#PBS -q transfer
+#PBS -A AFOSR42572501 
+#PBS -l select=1:ncpus=1
+#PBS -l walltime=48:00:00
+#PBS -j oe
+#PBS -m be
+#PBS -M abdo7536@colorado.edu
+
+# cd to wherever your data is located
+cd $WORKDIR
+
+# pack the folders to be archived
+echo "Packing data for archiving:"
+archive put -C muriSim/SHIT04/ SHIT04/vel.002200
+archive put -C muriSim/SHIT04/ SHIT04/vel.002400
+archive put -C muriSim/SHIT04/ SHIT04/vel.002600
+archive put -C muriSim/SHIT04/ SHIT04/vel.002800
+archive put -C muriSim/SHIT04/ SHIT04/vel.003000
+archive put -C muriSim/SHIT04/ SHIT04/vel.003200
+archive put -C muriSim/SHIT04/ SHIT04/vel.003400
+archive put -C muriSim/SHIT04/ SHIT04/vel.003600
+archive put -C muriSim/SHIT04/ SHIT04/vel.003800
+archive put -C muriSim/SHIT04/ SHIT04/vel.004000
+
+# print the date in the output file and exit out of the script
+date
+exit
