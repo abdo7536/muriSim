@@ -24,6 +24,6 @@ cp /p/home/abdo7536/muriSim/production/run02/analysis/volViz3DTKEFull.py .
 cp /p/home/abdo7536/pvbatch_lib/scripts/pvessentials.py .
 
 ## Launch SAM ------------------------------------------
-mpiexec -np 02 pvbatch volViz3DTKEFull.py > Viz3DTKEFull.out
+mpiexec_mpt -np 02 pvbatch volViz3DTKEFull.py > Viz3DTKEFull.out
 
 exit()

@@ -7,7 +7,7 @@ extSS = 0 # Extract subset from the subvol_xxxx.vtk domain
 ### transForm = Switch to enable data transformation to the visualization data (1 - Yes; 0 - No); NOTE: If set to 1 then prescribe inputs for 'pyCalc' function below
 transForm = 0 # Transform visualization data 
 ### datRng = The data range for Visualization data field - ordered [min, max]
-datRng = [0.0, 0.25]
+datRng = [0.0, 0.1]
 ### invColorTF = Switch that inverts the color transfer function (1 -- invert; 0 - dont invert)
 invColorTF = 0 # Color TF invert
 ### opcFn = The opacity transfer function option: 
@@ -129,7 +129,7 @@ rotCam = 0
 ### If rotCam = 1; stCampt, rotax, angdiv, savnam are important but set other inputs as described below 
 ### stCampt = The starting position of the camera (prescribed as Azimuth from +Y axis: -ve value for CCW rotations; Elevation from +Y axis: +ve for elevate up) [type - list of floats]
 # NOTE: Arranged as [azm, elev, zoom] NOTE: set zoom value as 1 if no zoom is needed; >1 for zoomIn and <1 for zoomOut
-stCampt = [-45, 90.0, 1.50]
+stCampt = [-45, 90.0, 1.0]
 ### rotax = Input that prescribes the camera movement for roll, azimuth, elevation axes respectively, and camera zoom [NOTE: Can choose multiple inputs simultaneously]; A 1D array of 4 mandatory inputs (either 0 or 1 to turn on and off) arranged as [roll, azm, elev, zoom] [type - list of int]
 rotax = [0, 1, 0, 0]
 ### angdiv = The number of divisions between 0 - 360 degrees for each axes rotation [type - integer] 
@@ -265,7 +265,7 @@ for lp in range(0,len(fls)):
         ### Get opacity transfer function/opacity map 
         TFopc = GetOpacityTransferFunction(colrby)
         ### show color bar/color legend
-        volDisp.SetScalarBarVisibility(RV1, True)
+        #volDisp.SetScalarBarVisibility(RV1, True)
 
     ################# rescale color map to fit the current data range
     TF.RescaleTransferFunction(datRng[0], datRng[1])          # modifies the Colorbar TF
