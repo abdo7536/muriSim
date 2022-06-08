@@ -1,0 +1,29 @@
+#!/bin/bash
+
+## Required PBS directives ------------------------------
+#PBS -A AFOSR42572501
+#PBS -N GWBsamplTst
+#PBS -q debug
+#PBS -l select=01:ncpus=01:mpiprocs=01
+#PBS -l walltime=00:15:00
+#PBS -j oe
+#PBS -m be
+#PBS -M abdo7536@colorado.edu
+
+## Execution Block --------------------------------------
+# Environment setup
+module load cseinit
+module load cse/python3
+module list
+which python3
+python3 --version
+
+# cd to your scratch directory
+cd /p/work1/abdo7536/SHIT04/
+
+# add the required input and executable files into the directory
+cp /p/home/abdo7536/muriSim/production/run04/analysis/sampleData.py .
+cp /p/home/abdo7536/muriSim/getdata/userFns.py .
+
+## Launch SAM ------------------------------------------
+python3 sampleData.py > samplTst.out

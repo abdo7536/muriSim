@@ -4,7 +4,7 @@ Nz            1536         number of points in z
 xL            16           Box size in x
 yL            16           Box size in y
 zL            16           Box size in z
-i_restart     0            0-new field, 1-read restart, 2-remesh restart
+i_restart     1            0-new field, 1-read restart, 2-remesh restart
 nt_restart    4000         Restart field is at this time step
 n_steps       2000         number of time steps
 n_skip_h      1            skip factor for output
@@ -21,9 +21,9 @@ z_end_sub1    16           Ending k index value for subvolume1
 i_skip_sub1   1            x-direction skip factor for subvolume1
 j_skip_sub1   1            y-direction skip factor for subvolume1
 k_skip_sub1   1            z-direction skip factor for subvolume1
-i_mean_sub    1            See below
-i_vtk_sub     1            1-write vtk file, 0-write pure data
-i_64bit_sub   0            0-write 32bit, 1-write 64 bit (data file only)
+i_mean_sub    0            See below
+i_vtk_sub     0            1-write vtk file, 0-write pure data
+i_64bit_sub   1            0-write 32bit, 1-write 64 bit (data file only)
 i_cfl         1            0-fixed dt, 1-fixed cfl
 cfl0          0.90000      cfl, used when cfl flag = 1
 i_prob        1            problem type: see below

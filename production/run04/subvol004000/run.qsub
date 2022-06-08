@@ -4,7 +4,7 @@
 #PBS -A AFOSR42572501
 #PBS -N SHIT01SVJOB
 #PBS -q debug
-#PBS -l select=1:ncpus=128:mpiprocs=128
+#PBS -l select=4:ncpus=48:mpiprocs=48
 #PBS -l walltime=00:05:00
 #PBS -j oe
 #PBS -m be
@@ -13,15 +13,15 @@
 ## Execution Block --------------------------------------
 # Environment setup
 # cd to your scratch directory
-cd /p/work1/abdo7536/SHIT02
+cd /p/work1/abdo7536/SHIT04
 
 # add the required input and executable files into the directory
-cp /p/home/abdo7536/muriSim/production/run04/subvol002000/sam.inp .
+cp /p/home/abdo7536/muriSim/production/run04/subvol004000/sam.inp .
 ln -s /p/home/abdo7536/sam/src/vel2subvol .
 
 ## Launch SAM ------------------------------------------
-mpiexec -np 128 ./vel2subvol > SVJob.out
+mpiexec -np 192 ./vel2subvol > SVJob.out
 
 ## Rename files - setup for next run -------------------
-mv subvol1_002000.vtk subvol1_002000_TKE.vtk
-
+mv subvol1_004000.dat subvolE_004000.dat
+mv subvol1_004000.hdr subvolE_004000.hdr
