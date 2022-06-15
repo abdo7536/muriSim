@@ -11,7 +11,7 @@ n_skip_h      1            skip factor for output
 n_skip_p      500          skip factor for output
 n_skip_v      100          skip factor for output
 n_skip_s      00001        skip factor for subvolume output
-sub_fields    8            Subvolume fields to process, see below
+sub_fields    1            Subvolume fields to process, see below
 x_beg_sub1    -8           Beginning i index value for subvolume1
 x_end_sub1    8            Ending i index value for subvolume1
 y_beg_sub1    -8           Beginning j index value for subvolume1

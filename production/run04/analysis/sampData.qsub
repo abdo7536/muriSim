@@ -3,7 +3,7 @@
 ## Required PBS directives ------------------------------
 #PBS -A AFOSR42572501
 #PBS -N GWBsamplTst
-#PBS -q debug
+#PBS -q standard
 #PBS -l select=01:ncpus=01:mpiprocs=01
 #PBS -l walltime=00:15:00
 #PBS -j oe
