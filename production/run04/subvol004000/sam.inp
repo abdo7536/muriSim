@@ -11,7 +11,7 @@ n_skip_h      1            skip factor for output
 n_skip_p      500          skip factor for output
 n_skip_v      100          skip factor for output
 n_skip_s      00001        skip factor for subvolume output
-sub_fields    1            Subvolume fields to process, see below
+sub_fields    8            Subvolume fields to process, see below
 x_beg_sub1    -8           Beginning i index value for subvolume1
 x_end_sub1    8            Ending i index value for subvolume1
 y_beg_sub1    -8           Beginning j index value for subvolume1
@@ -23,7 +23,7 @@ j_skip_sub1   1            y-direction skip factor for subvolume1
 k_skip_sub1   1            z-direction skip factor for subvolume1
 i_mean_sub    0            See below
 i_vtk_sub     0            1-write vtk file, 0-write pure data
-i_64bit_sub   1            0-write 32bit, 1-write 64 bit (data file only)
+i_64bit_sub   0            0-write 32bit, 1-write 64 bit (data file only)
 i_cfl         1            0-fixed dt, 1-fixed cfl
 cfl0          0.90000      cfl, used when cfl flag = 1
 i_prob        1            problem type: see below

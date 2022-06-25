@@ -22,20 +22,20 @@ numTraj = 100
 ### locFlg = Flag to control the (X,Y) location for sampling; 1 = choose random (x,y) location for each trajectory; 2 = Specific (x,y) location (DEFAULT set to X/2, Y/2 location); 3 = Read X,Y reference co-ordinates for each trajectory from a .txt file
 locFlg = 3
 ### datVar = The data variable to be stored; NOTE: This is the variable extracted from the DNS 3D datafield and stored at the user defined destination/directory
-datVar = 'W'
+datVar = 'V'
 ### trajDir = The direction in which the synthetic observer traverses; NOTE: choice of X, Y and Z directions of synthetic observation traverse; NOTE: ONLY USED FOR NAMING THE FILES
-trajDir = 'z'
+trajDir = 'y'
 
 ################# Data Inputs: All inputs are mandatory
 ### NOTE: These inputs are required to scale the scale-normalized DNS datasets  
 ### epsMeas = TKE dissipation rate [m^3s^-2]
-epsMeas = 2.8890e-3
+epsMeas = 2.83e-3
 ### nu = Kinematic viscosity [m^2s^-1]
 nu = 4.0e-4
 ### resMet = DNS resolution metric ( = grid spacing/ kolmogorov length scale)
 resMet = 0.64016 
 ### balRt = HYFLITS balloon descent rate [m/s]
-balRt = 2
+balRt = 12
 
 ################# Function Specific Inputs: All inputs are mandatory
 ########## function name: 'lodatsin'
@@ -48,7 +48,7 @@ form = 'dat'
 ################# Function Specific Inputs: All inputs are mandatory
 ########## function name: 'trajInd'
 ### trajTyp = Synthetic Observation trajectory type; 1 = balloon-like vertical trajectory (descending); 2 = Horizontal Sampling in X; 3 = Horizontal Sampling in Y
-trajTyp = [1]
+trajTyp = [3]
 
 ##########################################################################################################################################################################
 ################# Call custom function module developed to execute this program
@@ -70,7 +70,6 @@ eta = (nu**3/epsMeas)**(1/4)        # Kolmogorov length scale [m]
 Zscal = Nz*eta*resMet               # Scaled Z DNS domain dimension [m]
 Xscal = Zscal*(Xl/Zl)               # Scaled X DNS domain dimension [m]
 Yscal = Zscal*(Yl/Zl)               # Scaled Y DNS domain dimension [m]
-
 ### DNS resolution calculations
 dx = Xl/Nx             # Grid Resolution in X (normalized)
 dy = Yl/Ny             # Grid Resolution in Y (normalized)
@@ -135,8 +134,6 @@ elif locFlg == 3:         # Read (X,Y) reference co-ordinates from a text file
 trajTyp.append(math.floor(Zscal/balRt))         # calculate the maximum number of (full) intervals in one single descent through the DNS datafield [integer]
 trajTyp.append(math.floor(balRt/dzscal))        # calculate the maximum number of grid points per each interval
 smplPts = trajTyp[1]*trajTyp[2]                 # Compute the number of points to sample from the (scaled) DNS dataset
-
-
 ### Loop over the number of trajectories
 for i in range(0,numTraj):
     ### Call the function to generate each trajectory
