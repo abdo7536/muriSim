@@ -33,7 +33,11 @@ except ImportError:
 try:
     import random
 except ImportError:
-    print("import module not installed...install random and try again")
+    print("random module not installed...install random and try again")
+try:
+    import sys
+except ImportError:
+    print("sys module not installed...install sys and try again")
 
 ##########################################################################################################################################################################
 ################# function to generate a list of file name groups
