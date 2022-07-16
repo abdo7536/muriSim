@@ -2,10 +2,10 @@
 
 ## Required PBS directives ------------------------------
 #PBS -A AFOSR42572501
-#PBS -N SHIT01SVJOB
+#PBS -N SHIT04SVJOB
 #PBS -q debug
-#PBS -l select=4:ncpus=48:mpiprocs=48
-#PBS -l walltime=00:05:00
+#PBS -l select=10:ncpus=48:mpiprocs=48
+#PBS -l walltime=00:03:00
 #PBS -j oe
 #PBS -m be
 #PBS -M abdo7536@colorado.edu
@@ -20,7 +20,7 @@ cp /p/home/abdo7536/muriSim/production/run04/subvol004000/sam.inp .
 ln -s /p/home/abdo7536/sam/src/vel2subvol .
 
 ## Launch SAM ------------------------------------------
-mpiexec -np 192 ./vel2subvol > SVJob.out
+mpiexec -np 480 ./vel2subvol > SVJob.out
 
 ## Rename files - setup for next run -------------------
 mv subvol1_004000.dat subvolE_004000.dat
