@@ -29,13 +29,13 @@ trajDir = 'y'
 ################# Data Inputs: All inputs are mandatory
 ### NOTE: These inputs are required to scale the scale-normalized DNS datasets  
 ### epsMeas = TKE dissipation rate [m^3s^-2]
-epsMeas = 1
+epsMeas = 2.83e-3
 ### nu = Kinematic viscosity [m^2s^-1]
 nu = 4.0e-4
 ### resMet = DNS resolution metric ( = grid spacing/ kolmogorov length scale)
 resMet = 0.64016 
 ### balRt = HYFLITS balloon descent rate [m/s]
-balRt = 2
+balRt = 12
 
 ################# Function Specific Inputs: All inputs are mandatory
 ########## function name: 'lodatsin'
@@ -70,7 +70,6 @@ eta = (nu**3/epsMeas)**(1/4)        # Kolmogorov length scale [m]
 Zscal = Nz*eta*resMet               # Scaled Z DNS domain dimension [m]
 Xscal = Zscal*(Xl/Zl)               # Scaled X DNS domain dimension [m]
 Yscal = Zscal*(Yl/Zl)               # Scaled Y DNS domain dimension [m]
-
 ### DNS resolution calculations
 dx = Xl/Nx             # Grid Resolution in X (normalized)
 dy = Yl/Ny             # Grid Resolution in Y (normalized)

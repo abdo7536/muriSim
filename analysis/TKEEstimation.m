@@ -9,23 +9,25 @@ clc
 
 %% Inputs
 % General Inputs: All inputs are mandatory
-Xl = 3;         % Xl = Domain X dimension
-Yl = 2;         % Yl = Domain Y dimension
-Zl = 1;         % Zl = Domain Z dimension
-Nx = 2880;      % Nx = Number of points in Domain X dimension
-Ny = 1920;      % Ny = Number of points in Domain Y dimension
-Nz = 960;       % Nz = Number of points in Domain Z dimension
+Xl = 16;         % Xl = Domain X dimension
+Yl = 16;         % Yl = Domain Y dimension
+Zl = 16;         % Zl = Domain Z dimension
+Nx = 1536;       % Nx = Number of points in Domain X dimension
+Ny = 1536;       % Ny = Number of points in Domain Y dimension
+Nz = 1536;       % Nz = Number of points in Domain Z dimension
 % Data Inputs: All inputs are mandatory
 % NOTE: These inputs are required to scale the scale-normalized DNS datasets  
-epsMeas = 4.0e-3;   % epsMeas = TKE dissipation rate [m^3s^-2]
-nu = 4.0e-4;        % nu = Kinematic viscosity [m^2s^-1]
-resMet = 1.4413;    % resMet = DNS resolution metric ( = grid spacing/ kolmogorov length scale)
-balRt = 2.5;        % balRt = HYFLITS balloon descent rate [m/s]
-dirtry = '/Users/script_away/Projects/Documents/MURI_modeling/GWBData/analysis3/';
+epsMeas = 1.02;       % epsMeas = TKE dissipation rate [m^3s^-2]
+nu = 4.0e-4;              % nu = Kinematic viscosity [m^2s^-1]
+nuDNS = 2.0e-3;           % The kunematic viscosity set in the DNS (unscaled)
+resMet = 0.68161;         % resMet = DNS resolution metric ( = grid spacing/ kolmogorov length scale)
+balRt = 2.0;              % balRt = HYFLITS balloon descent rate [m/s]
+dirtry = '/Users/script_away/Projects/Documents/MURI_modeling/SHIT/run03/higheps/analysis2m/';
 exectry = pwd;
 saSp = 1;
 % Plot Inputs: All inputs are mandatory
 ftsz = 22;
+
 %% Setup calculations
 % Calculate scale parameters for DNS data
 eta = (nu^3/epsMeas)^(1/4);         % Kolmogorov length scale [m]
@@ -43,24 +45,25 @@ dz = Zl/Nz;             % Grid Resolution in Z (normalized)
 dxscal = Xscal/Nx;      % Grid Resolution in X (scaled) [m]
 dyscal = Yscal/Ny;      % Grid Resolution in Y (scaled) [m]
 dzscal = Zscal/Nz;      % Grid Resolution in Z (scaled) [m]
+epsScalDNS = ((dz/resMet)^(-4))*(nuDNS^(3));   % The DNS co-incidental scale with measurement EPSILON
 % Compute the number of sample points per interval
 numInts = floor(Zscal/balRt);
 numSmpls = floor(balRt/dzscal);
 
 %% Load Data
 % For DNS Epsilon
-flGxEx = strcat(dirtry,'GridXEx000100_026000.txt');
-flGxEy = strcat(dirtry,'GridXEy000100_026000.txt');
-flGxEz = strcat(dirtry,'GridXEz000100_026000.txt');
-flGyEx = strcat(dirtry,'GridYEx000100_026000.txt');
-flGyEy = strcat(dirtry,'GridYEy000100_026000.txt');
-flGyEz = strcat(dirtry,'GridYEz000100_026000.txt');
-flGzEx = strcat(dirtry,'GridZEx000100_026000.txt');
-flGzEy = strcat(dirtry,'GridZEy000100_026000.txt');
-flGzEz = strcat(dirtry,'GridZEz000100_026000.txt');
-flEx = strcat(dirtry,'Ex000100_026000.txt');
-flEy = strcat(dirtry,'Ey000100_026000.txt');
-flEz = strcat(dirtry,'Ez000100_026000.txt');
+flGxEx = strcat(dirtry,'GridXEx000100_000500.txt');
+flGxEy = strcat(dirtry,'GridXEy000100_000500.txt');
+flGxEz = strcat(dirtry,'GridXEz000100_000500.txt');
+flGyEx = strcat(dirtry,'GridYEx000100_000500.txt');
+flGyEy = strcat(dirtry,'GridYEy000100_000500.txt');
+flGyEz = strcat(dirtry,'GridYEz000100_000500.txt');
+flGzEx = strcat(dirtry,'GridZEx000100_000500.txt');
+flGzEy = strcat(dirtry,'GridZEy000100_000500.txt');
+flGzEz = strcat(dirtry,'GridZEz000100_000500.txt');
+flEx = strcat(dirtry,'Ex000100_000500.txt');
+flEy = strcat(dirtry,'Ey000100_000500.txt');
+flEz = strcat(dirtry,'Ez000100_000500.txt');
 GxEx = table2array(readtable(flGxEx));
 GxEy = table2array(readtable(flGxEy));
 GxEz = table2array(readtable(flGxEz));
@@ -74,28 +77,28 @@ Ex = table2array(readtable(flEx)).*epsStar;
 Ey = table2array(readtable(flEy)).*epsStar;
 Ez = table2array(readtable(flEz)).*epsStar;
 % For U'
-flGxUx = strcat(dirtry,'GridXUx000100_026000.txt');
-flGyUx = strcat(dirtry,'GridYUx000100_026000.txt');
-flGzUx = strcat(dirtry,'GridZUx000100_026000.txt');
-flUx = strcat(dirtry,'Ux000100_026000.txt');
+flGxUx = strcat(dirtry,'GridXUx000100_000500.txt');
+flGyUx = strcat(dirtry,'GridYUx000100_000500.txt');
+flGzUx = strcat(dirtry,'GridZUx000100_000500.txt');
+flUx = strcat(dirtry,'Ux000100_000500.txt');
 GxUx = table2array(readtable(flGxUx));
 GyUx = table2array(readtable(flGyUx));
 GzUx = table2array(readtable(flGzUx));
 Ux = table2array(readtable(flUx)).*mu;
 % For V'
-flGxVy = strcat(dirtry,'GridXVy000100_026000.txt');
-flGyVy = strcat(dirtry,'GridYVy000100_026000.txt');
-flGzVy = strcat(dirtry,'GridZVy000100_026000.txt');
-flVy = strcat(dirtry,'Vy000100_026000.txt');
+flGxVy = strcat(dirtry,'GridXVy000100_000500.txt');
+flGyVy = strcat(dirtry,'GridYVy000100_000500.txt');
+flGzVy = strcat(dirtry,'GridZVy000100_000500.txt');
+flVy = strcat(dirtry,'Vy000100_000500.txt');
 GxVy = table2array(readtable(flGxVy));
 GyVy = table2array(readtable(flGyVy));
 GzVy = table2array(readtable(flGzVy));
 Vy = table2array(readtable(flVy)).*mu;
 % For W'
-flGxWz = strcat(dirtry,'GridXWz000100_026000.txt');
-flGyWz = strcat(dirtry,'GridYWz000100_026000.txt');
-flGzWz = strcat(dirtry,'GridZWz000100_026000.txt');
-flWz = strcat(dirtry,'Wz000100_026000.txt');
+flGxWz = strcat(dirtry,'GridXWz000100_000500.txt');
+flGyWz = strcat(dirtry,'GridYWz000100_000500.txt');
+flGzWz = strcat(dirtry,'GridZWz000100_000500.txt');
+flWz = strcat(dirtry,'Wz000100_000500.txt');
 GxWz = table2array(readtable(flGxWz));
 GyWz = table2array(readtable(flGyWz));
 GzWz = table2array(readtable(flGzWz));
@@ -109,16 +112,16 @@ sampPts = tmpSz(1);
 %% Compute frequency averaging and inputs for Spectral analysis
 Nrec = numSmpls;
 f_low_avg = 2;          % low frequency limit for spectral averaging [Hz]
-f_high_avg = 76;       % high frequency limit for spectral averaging [Hz]
+f_high_avg = Nrec/2;    % high frequency limit for spectral averaging [Hz]
 pts_in_dec = 1/5;       % [1/3 = 1/3rd decade averaging of the spectra] [set 1/10 for 1/10th decade averaging of the spectra]
-pit_NF = 10^-18;         % define the noise floor for pitot 
-min_fit_pts = 3;        % the minimum number of points to be used in the third pass of fitting
+pit_NF = 10^-18;        % define the noise floor for pitot 
+min_fit_pts = 2;        % the minimum number of points to be used in the third pass of fitting
 pass_3 = 1;             % This switch turns on an additional level scan on the spectra -- provides conservative turbulence estimates
 time_segment_center_inds = (Nrec/2):Nrec:length(GzEz);
-dt = 1/154;  % sampling period in [sec]
+dt = 1/Nrec;  % sampling period in [sec]
 f_low = f_low_avg;              % low frequency limit for spectral averaging [Hz]
 f_high = f_high_avg;            % high frequency limit for spectral averaging [Hz]
-freq = 0:Nrec/2-1/(Nrec*dt); % spectral frequency samples, up to Nyquist rate [Hz]
+freq = 1:Nrec/2/(Nrec*dt);    % spectral frequency samples, up to Nyquist rate [Hz]
 f_ind_low = find(freq >= f_low,1,'first');
 f_ind_high = find(freq <= f_high,1,'last');
 freqs_used = freq(f_ind_low:f_ind_high);
@@ -128,7 +131,7 @@ f_avg = logspace(log10(f_low_avg),log10(f_high_avg),floor(decades/pts_in_dec));
 f_nth_dec = (f_avg(2:end)+f_avg(1:end-1))/2;           % bin center frequencies
 f_inds = zeros(1,length(f_avg));
 for i = 1:length(f_avg)
-    f_inds(i) = find(freq-f_avg(i) >= 0,1,'First') - 1; % index of first frequency in each bin
+    f_inds(i) = find(freq-f_avg(i) >= -1e-6,1,'First') - 1; % index of first frequency in each bin
 end
 
 f_avgind_low = freq(f_inds(1:end-1));
@@ -1430,9 +1433,112 @@ for pt = 1:1:numInts
     log_avWepsilon_l(pt) = log_avWepsilon_k(pt) - log_avWepsilon_d(pt);
 end
 
+%-log10(epsStar)
+%% Save data for plotting Histogram
+% save data for epsilon Ux
+sz_epsU = size(log_Uepsilon_k);
+save_epsDNSU = reshape(log10(mTrEx),[1,sz_epsU(1)*sz_epsU(2)]);
+save_eps_U = reshape(log_Uepsilon_k,[1,sz_epsU(1)*sz_epsU(2)]);
+% save data for epsilon Vy
+sz_epsV = size(log_Vepsilon_k);
+save_epsDNSV = reshape(log10(mTrEy),[1,sz_epsU(1)*sz_epsU(2)]);
+save_eps_V = reshape(log_Vepsilon_k,[1,sz_epsV(1)*sz_epsV(2)]);
+% save data for epsilon Wz
+sz_epsW = size(log_Wepsilon_k);
+save_epsDNSW = reshape(log10(mTrEz),[1,sz_epsU(1)*sz_epsU(2)]);
+save_eps_W = reshape(log_Wepsilon_k,[1,sz_epsW(1)*sz_epsW(2)]);
+if saSp == 1
+    cd(dirtry)
+    save('Eps_hist_data','save_eps_U','save_eps_V','save_eps_W','save_epsDNSU',...
+        'save_epsDNSV','save_epsDNSW','epsStar','epsScalDNS','Ex','Ey','Ez')
+    cd(exectry)
+end
+
 %% Plot the profiles
 % set limits for Epsilon plotting
 Epslims = [-8 0];
+
+% Overplot all spectra for u'
+for j = 1:1:numInts
+    figure(1000+j)
+    clf
+    for i = 1:1:numTraj
+        figure(1000+j)
+        semilogx(freq,log10(abs(UppdfPlt(:,j,i))),'LineWidth',0.5)
+        hold on
+        axis([freq(1) freq(end) -15 0])
+        xlabel('F')
+        ylabel('Ux PSD')
+        a_1=title(['All Ux Spectra for Height = ', num2str(mTrGzUx(j,i))]);
+        grid on
+    end
+    figure(1000+j)
+    semilogx(freq,avUlog_pwp_k_avg(pt)+log10(freq.^(-5/3)),'k','LineWidth',2)
+    semilogx(f_nth_dec,avUlog_ppsd_avg(:,pt),'r*','LineWidth',4)
+    semilogx(f_nth_dec(avUk_inds_pit{pt}),avUlog_ppsd_avg(avUk_inds_pit{pt},pt),'go','LineWidth',2)
+    semilogx(freq,(avUlog_pwp_k_avg(pt)+avUlog_pwp_ks_avg(pt))+ log10(freq.^(-5/3)),'k--','LineWidth',1)
+    semilogx(freq,(avUlog_pwp_k_avg(pt)-avUlog_pwp_ks_avg(pt))+ log10(freq.^(-5/3)),'k--','LineWidth',1)
+    if saSp == 1
+        cd(dirtry) 
+        savefig(['Ux_Tr_all_Ht',num2str(mTrGzUx(j,i)),'.fig'])
+        cd(exectry)
+    end
+    close all
+end
+% Overplot all spectra for v'
+for j = 1:1:numInts
+    figure(2000+j)
+    clf
+    for i = 1:1:numTraj
+        figure(2000+j)
+        semilogx(freq,log10(abs(VppdfPlt(:,j,i))),'LineWidth',0.5)
+        hold on
+        axis([freq(1) freq(end) -15 0])
+        xlabel('F')
+        ylabel('Vy PSD')
+        a_1=title(['All Vy Spectra for Height = ', num2str(mTrGzUx(j,i))]);
+        grid on
+    end
+    figure(2000+j)
+    semilogx(freq,VTrlog_pwp_k_avg(j,i)+log10(freq.^(-5/3)),'k','LineWidth',2)
+	semilogx(f_nth_dec,VTrlog_ppsd_avg(:,j,i),'r*','LineWidth',4)
+    semilogx(f_nth_dec(Vusd_inds{j,i}),VTrlog_ppsd_avg(Vusd_inds{j,i},j,i),'go','LineWidth',2)
+    semilogx(freq,(VTrlog_pwp_k_avg(j,i)+VTrlog_pwp_ks_avg(j,i))+ log10(freq.^(-5/3)),'k--','LineWidth',1)
+    semilogx(freq,(VTrlog_pwp_k_avg(j,i)-VTrlog_pwp_ks_avg(j,i))+ log10(freq.^(-5/3)),'k--','LineWidth',1)        
+    if saSp == 1
+        cd(dirtry) 
+        savefig(['Vy_Tr_all_Ht',num2str(mTrGzUx(j,i)),'.fig'])
+        cd(exectry)
+    end
+    close all
+end
+% Overplot all spectra for w'
+for j = 1:1:numInts
+    figure(3000+j)
+    clf
+    for i = 1:1:numTraj
+        figure(3000+j)
+        semilogx(freq,log10(abs(WppdfPlt(:,j,i))),'LineWidth',0.5)
+        hold on
+        axis([freq(1) freq(end) -15 0])
+        xlabel('F')
+        ylabel('Wz PSD')
+        a_1=title(['All Wz Spectra for Height = ', num2str(mTrGzUx(j,i))]);
+        grid on
+    end
+    figure(3000+j)
+    semilogx(freq,WTrlog_pwp_k_avg(j,i)+log10(freq.^(-5/3)),'k','LineWidth',2)
+	semilogx(f_nth_dec,WTrlog_ppsd_avg(:,j,i),'r*','LineWidth',4)
+    semilogx(f_nth_dec(Wusd_inds{j,i}),WTrlog_ppsd_avg(Wusd_inds{j,i},j,i),'go','LineWidth',2)
+	semilogx(freq,(WTrlog_pwp_k_avg(j,i)+WTrlog_pwp_ks_avg(j,i))+ log10(freq.^(-5/3)),'k--','LineWidth',1)
+	semilogx(freq,(WTrlog_pwp_k_avg(j,i)-WTrlog_pwp_ks_avg(j,i))+ log10(freq.^(-5/3)),'k--','LineWidth',1)        
+    if saSp == 1
+        cd(dirtry) 
+        savefig(['Wz_Tr_all_Ht',num2str(mTrGzUx(j,i)),'.fig'])
+        cd(exectry)
+    end
+    close all
+end
 
 % Plot averaged trajectories
 figure(2000)
@@ -1449,7 +1555,7 @@ ylabel('height')
 grid on
 grid Minor
 xlim([Epslims(1) Epslims(2)])
-ylim([0 16])
+ylim([0 Zscal])
 a_1=title(['averaged Ux and Ex comparison']);
 subplot(1,5,2)
 plot(log10(avgTrEy),mTrGzEy(:,1),'k','LineWidth',2)
@@ -1463,7 +1569,7 @@ ylabel('height')
 grid on
 grid Minor
 xlim([Epslims(1) Epslims(2)])
-ylim([0 16])
+ylim([0 Zscal])
 a_1=title(['averaged Vy and Ey comparison']);
 subplot(1,5,3)
 plot(log10(avgTrEz),mTrGzEz(:,1),'k','LineWidth',2)
@@ -1477,7 +1583,7 @@ ylabel('height')
 grid on
 grid Minor
 xlim([Epslims(1) Epslims(2)])
-ylim([0 16])
+ylim([0 Zscal])
 a_1=title('averaged Wz and Ez comparison');
 subplot(1,5,4)
 plot(log10(avgTrEx),mTrGzEx(:,1),'r','LineWidth',2)
@@ -1490,7 +1596,7 @@ ylabel('height')
 grid on
 grid Minor
 xlim([Epslims(1) Epslims(2)])
-ylim([0 16])
+ylim([0 Zscal])
 a_1=title('averaged Ex, Ey, Ez comparison');
 subplot(1,5,5)
 plot(log_avUepsilon_k,mTrGzUx(:,1),'r','LineWidth',2)
@@ -1503,7 +1609,7 @@ ylabel('height')
 grid on
 grid Minor
 xlim([Epslims(1) Epslims(2)])
-ylim([0 16])
+ylim([0 Zscal])
 a_1=title('averaged Ux, Vy, Wz comparison');
 set(gcf, 'Position',[100, 100, 1800, 900])
 if saSp == 1
@@ -1536,7 +1642,7 @@ for j = 1:1:numInts
         savefig(['Ux_avg',num2str(j),'_Ht',num2str(mTrGzUx(j,i)),'.fig'])
         cd(exectry)
     end
-    %close all
+    close all
 end
 for j = 1:1:numInts
     figure(200+j)
@@ -1560,7 +1666,7 @@ for j = 1:1:numInts
         savefig(['Vy_avg',num2str(j),'_Ht',num2str(mTrGzUx(j,i)),'.fig'])
         cd(exectry)
     end
-    %close all
+    close all
 end
 for j = 1:1:numInts
     figure(300+j)
@@ -1584,7 +1690,7 @@ for j = 1:1:numInts
         savefig(['Wz_avg',num2str(j),'_Ht',num2str(mTrGzUx(j,i)),'.fig'])
         cd(exectry)
     end
-    %close all
+    close all
 end
 
 % Plot trajectories
@@ -1605,7 +1711,7 @@ for i = 1:1:numTraj
     grid on
     grid Minor
     xlim([Epslims(1) Epslims(2)])
-    ylim([0 16])
+    ylim([0 Zscal])
     a_1=title(['Ux and Ex comparison, Trajectory = ',num2str(i)]);
     subplot(1,5,2)
     plot(log10(mTrEy(:,pt)),mTrGzEy(:,pt),'k','LineWidth',2)
@@ -1620,7 +1726,7 @@ for i = 1:1:numTraj
     grid on
     grid Minor
     xlim([Epslims(1) Epslims(2)])
-    ylim([0 16])
+    ylim([0 Zscal])
     a_1=title(['Vy and Ey comparison, Trajectory = ',num2str(i)]);
     subplot(1,5,3)
     plot(log10(mTrEz(:,pt)),mTrGzEz(:,pt),'k','LineWidth',2)
@@ -1635,7 +1741,7 @@ for i = 1:1:numTraj
     grid on
     grid Minor
     xlim([Epslims(1) Epslims(2)])
-    ylim([0 16])
+    ylim([0 Zscal])
     a_1=title(['Wz and Ez comparison, Trajectory = ',num2str(i)]);
     subplot(1,5,4)
     plot(log10(mTrEx(:,pt)),mTrGzEx(:,pt),'r','LineWidth',2)
@@ -1648,7 +1754,7 @@ for i = 1:1:numTraj
     grid on
     grid Minor
     xlim([Epslims(1) Epslims(2)])
-    ylim([0 16])
+    ylim([0 Zscal])
     a_1=title(['Ex, Ey, Ez comparison, Trajectory = ',num2str(i)]);
     subplot(1,5,5)
     plot(log_Uepsilon_k(:,pt),mTrGzUx(:,pt),'r','LineWidth',2)
@@ -1661,7 +1767,7 @@ for i = 1:1:numTraj
     grid on
     grid Minor
     xlim([Epslims(1) Epslims(2)])
-    ylim([0 16])
+    ylim([0 Zscal])
     a_1=title(['Ux, Vy, Wz comparison, Trajectory = ',num2str(i)]);
     set(gcf, 'Position',[100, 100, 1800, 900])
     if saSp == 1
