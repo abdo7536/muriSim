@@ -18,7 +18,7 @@ Ny = 1536
 ### Nz = Number of points in Domain Z dimension
 Nz = 1536 
 ### numTraj = Number of trajectories to sample
-numTraj = 100
+numTraj = 1000
 ### locFlg = Flag to control the (X,Y) location for sampling; 1 = choose random (x,y) location for each trajectory; 2 = Specific (x,y) location (DEFAULT set to X/2, Y/2 location); 3 = Read X,Y reference co-ordinates for each trajectory from a .txt file
 locFlg = 3
 ### datVar = The data variable to be stored; NOTE: This is the variable extracted from the DNS 3D datafield and stored at the user defined destination/directory
@@ -29,13 +29,13 @@ trajDir = 'y'
 ################# Data Inputs: All inputs are mandatory
 ### NOTE: These inputs are required to scale the scale-normalized DNS datasets  
 ### epsMeas = TKE dissipation rate [m^3s^-2]
-epsMeas = 2.83e-3
+epsMeas = 2.84e-3
 ### nu = Kinematic viscosity [m^2s^-1]
 nu = 4.0e-4
 ### resMet = DNS resolution metric ( = grid spacing/ kolmogorov length scale)
 resMet = 0.64016 
 ### balRt = HYFLITS balloon descent rate [m/s]
-balRt = 12
+balRt = 2
 
 ################# Function Specific Inputs: All inputs are mandatory
 ########## function name: 'lodatsin'
