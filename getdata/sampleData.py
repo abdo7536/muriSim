@@ -6,41 +6,41 @@
 ##########################################################################################################################################################################
 ################# General Inputs: All inputs are mandatory
 ### Xl = Domain X dimension
-Xl = 3
+Xl = 16
 ### Yl = Domain Y dimension
-Yl = 2
+Yl = 16 
 ### Zl = Domain Z dimension
-Zl = 1
+Zl = 16 
 ### Nx = Number of points in Domain X dimension
-Nx = 2880
+Nx = 1536 
 ### Ny = Number of points in Domain Y dimension
-Ny = 1920
+Ny = 1536
 ### Nz = Number of points in Domain Z dimension
-Nz = 960
+Nz = 1536 
 ### numTraj = Number of trajectories to sample
-numTraj = 100
-### locFlg = Flag to control the (X,Y) location for sampling; 1 = choose random (x,y) location for each trajectory; 2 = Specific (x,y) location (DEFAULT set to X/2, Y/2 location); 3 = Read X,Y reference co-ordinates for each trajectory from a .txt file
+numTraj = 1000
+### locFlg = Flag to control the (X,Y) location for sampling; 1 = choose random (x,y) location for each trajectory; 21 = randomly chosen Y reference co-ordinates at Domain X centre ; 22 = randomly chosen X reference co-ordinates at Domain Y centre; 3 = Read X,Y reference co-ordinates for each trajectory from a .txt file
 locFlg = 3
 ### datVar = The data variable to be stored; NOTE: This is the variable extracted from the DNS 3D datafield and stored at the user defined destination/directory
-datVar = 'U'
+datVar = 'V'
 ### trajDir = The direction in which the synthetic observer traverses; NOTE: choice of X, Y and Z directions of synthetic observation traverse; NOTE: ONLY USED FOR NAMING THE FILES
-trajDir = 'x'
+trajDir = 'y'
 
 ################# Data Inputs: All inputs are mandatory
 ### NOTE: These inputs are required to scale the scale-normalized DNS datasets  
 ### epsMeas = TKE dissipation rate [m^3s^-2]
-epsMeas = 4.0e-3
+epsMeas = 2.84e-3
 ### nu = Kinematic viscosity [m^2s^-1]
 nu = 4.0e-4
 ### resMet = DNS resolution metric ( = grid spacing/ kolmogorov length scale)
-resMet = 1.4413
+resMet = 0.64016 
 ### balRt = HYFLITS balloon descent rate [m/s]
-balRt = 2.5
+balRt = 2
 
 ################# Function Specific Inputs: All inputs are mandatory
 ########## function name: 'lodatsin'
 ### flNm = The string name whose file name group needs to be created (including the path to the directory) [type - string]
-flNm = '/p/work1/abdo7536/GW20/run05/subvol' + datVar + '*'
+flNm = '/p/work1/abdo7536/SHIT04/subvol' + datVar + '*'
 ### form = the file format (input exactly as it appears in the filenames) [type - string]
 form = 'dat'
 ### flNm = Input file name identifying character string (including the directory location)
@@ -48,7 +48,7 @@ form = 'dat'
 ################# Function Specific Inputs: All inputs are mandatory
 ########## function name: 'trajInd'
 ### trajTyp = Synthetic Observation trajectory type; 1 = balloon-like vertical trajectory (descending); 2 = Horizontal Sampling in X; 3 = Horizontal Sampling in Y
-trajTyp = [2]
+trajTyp = [3]
 
 ##########################################################################################################################################################################
 ################# Call custom function module developed to execute this program
@@ -70,7 +70,6 @@ eta = (nu**3/epsMeas)**(1/4)        # Kolmogorov length scale [m]
 Zscal = Nz*eta*resMet               # Scaled Z DNS domain dimension [m]
 Xscal = Zscal*(Xl/Zl)               # Scaled X DNS domain dimension [m]
 Yscal = Zscal*(Yl/Zl)               # Scaled Y DNS domain dimension [m]
-
 ### DNS resolution calculations
 dx = Xl/Nx             # Grid Resolution in X (normalized)
 dy = Yl/Ny             # Grid Resolution in Y (normalized)
@@ -112,8 +111,16 @@ if locFlg == 1:         # Pick random, non-repeating locations
     strctRef = np.column_stack((Xref,Yref))
     refFlNm = dirTry + 'refPts.txt'
     np.savetxt(refFlNm,strctRef,delimiter=',')
-elif locFlg == 2:         # Manually chosen (X,Y) reference co-ordinates at Domain X,Y centre
+elif locFlg == 21:        # randomly chosen Y reference co-ordinates at Domain X centre
     tmpXref = np.ones(numTraj)*Nx/2
+    tmpYref = random.sample(range(1,Ny),numTraj)
+    Xref = np.transpose(np.reshape(tmpXref,(1,len(tmpXref))))
+    Yref = np.transpose(np.reshape(tmpYref,(1,len(tmpYref))))
+    strctRef = np.column_stack((Xref,Yref))
+    refFlNm = dirTry + 'refPts.txt'
+    np.savetxt(refFlNm,strctRef,delimiter=',')
+elif locFlg == 22:        # randomly chosen X reference co-ordinates at Domain Y centre
+    tmpXref = random.sample(range(1,Nx),numTraj)
     tmpYref = np.ones(numTraj)*Ny/2
     Xref = np.transpose(np.reshape(tmpXref,(1,len(tmpXref))))
     Yref = np.transpose(np.reshape(tmpYref,(1,len(tmpYref))))
@@ -135,7 +142,6 @@ elif locFlg == 3:         # Read (X,Y) reference co-ordinates from a text file
 trajTyp.append(math.floor(Zscal/balRt))         # calculate the maximum number of (full) intervals in one single descent through the DNS datafield [integer]
 trajTyp.append(math.floor(balRt/dzscal))        # calculate the maximum number of grid points per each interval
 smplPts = trajTyp[1]*trajTyp[2]                 # Compute the number of points to sample from the (scaled) DNS dataset
-
 
 ### Loop over the number of trajectories
 for i in range(0,numTraj):
