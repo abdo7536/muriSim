@@ -22,74 +22,214 @@ nu = 4.0e-4;              % nu = Kinematic viscosity [m^2s^-1]
 nuDNS = 2.0e-3;           % The kunematic viscosity set in the DNS (unscaled)
 resMet = 0.64016;         % resMet = DNS resolution metric ( = grid spacing/ kolmogorov length scale)
 balRt = 2.0;              % balRt = HYFLITS balloon descent rate [m/s]
-dirtry = '/Users/script_away/Projects/Documents/MURI_modeling/SHIT/run04/analysis2m_smPln/';
+dirtry = '/Users/script/Projects/Documents/MURI_modeling/SHIT/run04/analysis2m_smPln/';
 plnFlg = [0 0 1 1];                 % binary switches to turn on plane viz for u, v, w, and epsilon
 exectry = pwd;
 saSp = 1;
 % Plot Inputs: All inputs are mandatory
-ftsz = 22;
+ftsz = 18;
+
+%% Setup calculations
+% Calculate scale parameters for DNS data
+eta = (nu^3/epsMeas)^(1/4);         % Kolmogorov length scale [m]
+tau = (nu/epsMeas)^(1/2);           % Kolmogorov time scale [s]
+mu = eta/tau;                       % Kolmogorov velocity scale [m/s]
+epsStar = nu*(mu/eta)^2;            % Scaling to be applied for TKE dissipation rate [m^3/s^2]
 
 %% Load Data
 if plnFlg(1) == 1               % for u
     flPlnU = strcat(dirtry,'yz1_0008_U.txt');
     temp = table2array(readtable(flPlnU));
-    PlnU = reshape(temp,[Nx+1,Ny+1]);
+    PlnU = transpose(reshape(temp,[Nx+1,Ny+1])).*mu;
     clear temp
 end
 
 if plnFlg(2) == 1               % for v
     flPlnV = strcat(dirtry,'yz1_0008_V.txt');
     temp = table2array(readtable(flPlnV));
-    PlnV = reshape(temp,[Nx+1,Ny+1]);
+    PlnV = transpose(reshape(temp,[Nx+1,Ny+1])).*mu;
     clear temp
 end
 
 if plnFlg(3) == 1               % for w
     flPlnW = strcat(dirtry,'yz1_0008_W.txt');
     temp = table2array(readtable(flPlnW));
-    PlnW = reshape(temp,[Nx+1,Ny+1]);
+    PlnW = transpose(reshape(temp,[Nx+1,Ny+1])).*mu;
     clear temp
 end
 
 if plnFlg(4) == 1               % for epsilon
     flPlnE = strcat(dirtry,'yz1_0008_E.txt');
     temp = table2array(readtable(flPlnE));
-    PlnE = reshape(temp,[Nx+1,Ny+1]);
+    PlnE = transpose(reshape(temp,[Nx+1,Ny+1])).*epsStar;
     clear temp
 end
 % also load the trajectory data
 flrfPt = strcat(dirtry,'refPts.txt');
 refXY = table2array(readtable(flrfPt));         % array containing reference grid indices (not co-ordinates) for each trajectory
+% load 
+flPDF = strcat(dirtry,'subvol1_004000_KE-diss-rate_pdf.txt');
+dataPDF = table2array(readtable(flPDF));
+bin = dataPDF(6:end,3);
+PDF = dataPDF(6:end,4);
 
 %% calculate the grid
+% Calculate the DNS domain extents using Kolmogorov scaling
+Zscal = Nz*eta*resMet;              % Scaled Z DNS domain dimension [m]
+Xscal = Zscal*(Xl/Zl);              % Scaled X DNS domain dimension [m]
+Yscal = Zscal*(Yl/Zl);              % Scaled Y DNS domain dimension [m]
 % calculate DNS resolution parameters
 dx = Xl/Nx;             % Grid Resolution in X (normalized)
 dy = Yl/Ny;             % Grid Resolution in Y (normalized)
 dz = Zl/Nz;             % Grid Resolution in Z (normalized)
-[GridXYx,GridXYy] = meshgrid((-Xl/2):dx:(Xl/2),(-Yl/2):dy:(Yl/2));
-[GridXZx,GridXZz] = meshgrid((-Xl/2):dx:(Xl/2),0:dz:Zl);
-[GridYZy,GridYZz] = meshgrid((-Yl/2):dy:(Yl/2),0:dz:Zl);
+dxscal = Xscal/Nx;      % Grid Resolution in X (scaled) [m]
+dyscal = Yscal/Ny;      % Grid Resolution in Y (scaled) [m]
+dzscal = Zscal/Nz;      % Grid Resolution in Z (scaled) [m]
+[GridXYx,GridXYy] = meshgrid((-Xscal/2):dxscal:(Xscal/2),(-Yscal/2):dyscal:(Yscal/2));
+[GridXZx,GridXZz] = meshgrid((-Xscal/2):dxscal:(Xscal/2),0:dzscal:Zscal);
+[GridYZy,GridYZz] = meshgrid((-Yscal/2):dyscal:(Yscal/2),0:dzscal:Zscal);
 
 %% create trajectories
-trajX = refXY(:,1)*dx + (-Xl/2);
-trajY = refXY(:,2)*dy + (-Yl/2);
+trajX = refXY(:,1)*dxscal + (-Xscal/2);
+trajY = refXY(:,2)*dyscal + (-Yscal/2);
 % create Z coordinates for each trajectory
-trajZ = 0:dz:Zl;
+trajZ = 0:dzscal:Zscal;
 
 %% Plot the planes and trajectories
-figure(1)
-clf
-s = surface(GridYZy,GridYZz,PlnE);
-hold on
-xlabel('Y')
-ylabel('Z')
-s.EdgeColor = 'none';
-colorbar
-caxis([0 1])
-for i = 1:1:length(trajY)
-    Ycrd = ones([length(trajZ),1]).*trajY(i);
-    Zcrd = ones([length(trajZ),1]).*max(max(PlnE));
+if plnFlg(1) == 1               % for u
     figure(1)
-    plot3(Ycrd,trajZ,Zcrd,'r','LineWidth',0.5)
-    clear Ycrd Zcrd
+    clf
+    s = surface(GridYZy,GridYZz,PlnU);
+    hold on
+    xlabel('Y','FontSize', ftsz)
+    ylabel('Z','FontSize', ftsz)
+    s.EdgeColor = 'none';
+    colorbar
+    %caxis([0 1])
+    title('U on YZ plane at X=0','FontSize', ftsz)
+    for i = 1:1:length(trajY)
+        Ycrd = ones([length(trajZ),1]).*trajY(i);
+        Zcrd = ones([length(trajZ),1]).*max(max(PlnU));
+        figure(1)
+        plot3(Ycrd,trajZ,Zcrd,'r','LineWidth',0.25)
+        text(trajY(i),trajZ(end-(15*i)),num2str(i),'FontSize', ftsz-4)
+        clear Ycrd Zcrd
+    end
+    xlim([min(min(GridYZy)) max(max(GridYZy))])
+    ylim([min(min(GridYZz)) max(max(GridYZz))])
+    if saSp == 1
+        cd(dirtry)
+        set(gcf, 'Position',[100, 100, 1300, 1000])
+        set(gcf, 'Position',[100, 100, 600, 450])
+        savefig('U_YZpln.fig')
+        cd(exectry)
+    end
+end
+
+if plnFlg(2) == 1               % for v
+    figure(2)
+    clf
+    s = surface(GridYZy,GridYZz,PlnV);
+    hold on
+    xlabel('Y','FontSize', ftsz)
+    ylabel('Z','FontSize', ftsz)
+    s.EdgeColor = 'none';
+    colorbar
+    %caxis([0 1])
+    title('V on YZ plane at X=0','FontSize', ftsz)
+    for i = 1:1:length(trajY)
+        Ycrd = ones([length(trajZ),1]).*trajY(i);
+        Zcrd = ones([length(trajZ),1]).*max(max(PlnV));
+        figure(2)
+        plot3(Ycrd,trajZ,Zcrd,'r','LineWidth',0.25)
+        text(trajY(i),trajZ(end-(15*i)),num2str(i),'FontSize', ftsz-4)
+        clear Ycrd Zcrd
+    end
+    xlim([min(min(GridYZy)) max(max(GridYZy))])
+    ylim([min(min(GridYZz)) max(max(GridYZz))])
+    if saSp == 1
+        cd(dirtry) 
+        set(gcf, 'Position',[100, 100, 1300, 1000])
+        savefig('V_YZpln.fig')
+        cd(exectry)
+    end
+end
+
+if plnFlg(3) == 1               % for w
+    figure(3)
+    clf
+    s = surface(GridYZy,GridYZz,PlnW);
+    hold on
+    xlabel('Y','FontSize', ftsz)
+    ylabel('Z','FontSize', ftsz)
+    s.EdgeColor = 'none';
+    colorbar
+    %caxis([0 1])
+    title('W on YZ plane at X=0','FontSize', ftsz)
+    for i = 1:1:length(trajY)
+        Ycrd = ones([length(trajZ),1]).*trajY(i);
+        Zcrd = ones([length(trajZ),1]).*max(max(PlnW));
+        figure(3)
+        plot3(Ycrd,trajZ,Zcrd,'r','LineWidth',0.25)
+        text(trajY(i),trajZ(end-(15*i)),num2str(i),'FontSize', ftsz-4)
+        clear Ycrd Zcrd
+    end
+    xlim([min(min(GridYZy)) max(max(GridYZy))])
+    ylim([min(min(GridYZz)) max(max(GridYZz))])
+    if saSp == 1
+        cd(dirtry) 
+        set(gcf, 'Position',[100, 100, 1300, 1000])
+        savefig('W_YZpln.fig')
+        cd(exectry)
+    end
+end
+
+if plnFlg(4) == 1               % for epsilon
+    figure(4)
+    clf
+    s = surface(GridYZy,GridYZz,log10(PlnE));
+    hold on
+    xlabel('Y','FontSize', ftsz)
+    ylabel('Z','FontSize', ftsz)
+    s.EdgeColor = 'none';
+    colorbar
+    caxis([-6 -1])
+    title('\epsilon_{DNS} on YZ plane at X=0','FontSize', ftsz)
+    for i = 1:1:length(trajY)
+        Ycrd = ones([length(trajZ),1]).*trajY(i);
+        Zcrd = ones([length(trajZ),1]).*max(max(PlnE));
+        figure(4)
+        plot3(Ycrd,trajZ,Zcrd,'r','LineWidth',0.25)
+        text(trajY(i),trajZ(end-(15*i)),num2str(i),'FontSize', ftsz-4)
+        clear Ycrd Zcrd
+    end
+    xlim([min(min(GridYZy)) max(max(GridYZy))])
+    ylim([min(min(GridYZz)) max(max(GridYZz))])
+    if saSp == 1
+        cd(dirtry)
+        set(gcf, 'Position',[100, 100, 1300, 1000])
+        savefig('E_YZpln.fig')
+        cd(exectry)
+    end
+    % plot histogram
+    edges = -6:0.05:1;
+    figure(5)
+    clf
+    plot(log10(bin),PDF,'k','LineWidth',2)
+    hold on
+    histogram(log10(PlnE)-log10(epsStar),edges,'Normalization','pdf','FaceColor', 'b')
+    xlabel('log_{10}{\epsilon}','FontSize', ftsz)
+    ylabel('Probability Density','FontSize', ftsz)
+    grid on
+    grid Minor
+    xlim([edges(1) edges(end)])
+    ylim([0 10])
+    title('Probability Density of \epsilon_{DNS} on YZ plane at X=0', 'FontSize', ftsz);
+    legend('full DNS','YZ plane at X=0','FontSize',ftsz)
+    if saSp == 1
+        cd(dirtry)
+        set(gcf, 'Position',[100, 100, 600, 450])
+            savefig('E_hist_YZpln.fig')
+        cd(exectry)
+    end
 end
