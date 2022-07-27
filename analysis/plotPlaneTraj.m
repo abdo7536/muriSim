@@ -22,10 +22,10 @@ nu = 4.0e-4;              % nu = Kinematic viscosity [m^2s^-1]
 nuDNS = 2.0e-3;           % The kunematic viscosity set in the DNS (unscaled)
 resMet = 0.64016;         % resMet = DNS resolution metric ( = grid spacing/ kolmogorov length scale)
 balRt = 2.0;              % balRt = HYFLITS balloon descent rate [m/s]
-dirtry = '/Users/script/Projects/Documents/MURI_modeling/SHIT/run04/analysis2m_smPln/';
+dirtry = '/Users/script_away/Projects/Documents/MURI_modeling/SHIT/run04/analysis2m_smPln/';
 plnFlg = [0 0 1 1];                 % binary switches to turn on plane viz for u, v, w, and epsilon
 exectry = pwd;
-saSp = 1;
+saSp = 0;
 % Plot Inputs: All inputs are mandatory
 ftsz = 18;
 
@@ -72,6 +72,7 @@ flPDF = strcat(dirtry,'subvol1_004000_KE-diss-rate_pdf.txt');
 dataPDF = table2array(readtable(flPDF));
 bin = dataPDF(6:end,3);
 PDF = dataPDF(6:end,4);
+samples = dataPDF(6:end,5);
 
 %% calculate the grid
 % Calculate the DNS domain extents using Kolmogorov scaling
@@ -209,27 +210,6 @@ if plnFlg(4) == 1               % for epsilon
         cd(dirtry)
         set(gcf, 'Position',[100, 100, 1300, 1000])
         savefig('E_YZpln.fig')
-        cd(exectry)
-    end
-    % plot histogram
-    edges = -6:0.05:1;
-    figure(5)
-    clf
-    plot(log10(bin),PDF,'k','LineWidth',2)
-    hold on
-    histogram(log10(PlnE)-log10(epsStar),edges,'Normalization','pdf','FaceColor', 'b')
-    xlabel('log_{10}{\epsilon}','FontSize', ftsz)
-    ylabel('Probability Density','FontSize', ftsz)
-    grid on
-    grid Minor
-    xlim([edges(1) edges(end)])
-    ylim([0 10])
-    title('Probability Density of \epsilon_{DNS} on YZ plane at X=0', 'FontSize', ftsz);
-    legend('full DNS','YZ plane at X=0','FontSize',ftsz)
-    if saSp == 1
-        cd(dirtry)
-        set(gcf, 'Position',[100, 100, 600, 450])
-            savefig('E_hist_YZpln.fig')
         cd(exectry)
     end
 end
