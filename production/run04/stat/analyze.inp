@@ -1,0 +1,16 @@
+########## This file contains information on the input prescription for Recipe == 3: "getPDF"
+########## Mandatory inputs:
+Recipe                      3                       # "getHist"
+colrby                      KE-diss-rate            # [common options are: KE-diss-rate,Lambda2,T-diss-rate,p,u,v,w,vort_x,vort_y,vort_z,vort-mag,stab-index]
+datRng                      -8.0,5.0                # data range for which the histogram is calculated
+########## Optional inputs:
+histLg                      1                       # Switch to turn on histogram plotting on log10 scale; NOTE: If this is set to 1, recheck the 'datRng' input above to ensure the data range in specified for log scale and not linear scale of dataset
+numBins                     250                     # The number of bins to sort the histogram data into
+#extSS                       1                       # Extract subset/subvolume from DNS domain
+### ONLY IF 'extSS' is set to 1
+#domXYZ                      120,42,24               # The Simulation Box size
+#x                           40,80                   # The x1-x2 Extent for the plane/volume
+#y                           15,42                   # The y1-y2 Extent for the plane/volume
+#z                           0,18                    # The z1-z2 Extent for the plane/volume
+#N                           5040,1470,1680          # The number of mesh points in X, Y, and Z for the simulation Domain
+#subSamp                     1,1,1                   # The subsampling rate applied to the data

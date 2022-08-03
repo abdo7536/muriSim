@@ -1,0 +1,28 @@
+#!/bin/bash
+
+## Required PBS directives ------------------------------
+#PBS -A AFOSR42572501
+#PBS -N Sh04getHist
+#PBS -q debug
+#PBS -l select=01:ncpus=01:mpiprocs=01:bigmem=1
+#PBS -l walltime=00:30:00
+#PBS -j oe
+#PBS -m be
+#PBS -M abdo7536@colorado.edu
+
+## Execution Block --------------------------------------
+# Environment setup
+# cd to your scratch directory
+cd /p/work1/abdo7536/SHIT04 
+
+# add the required input and executable files into the directory
+module load paraview/5.10.1_osmesa
+
+# copy over the file into the created folder in scratch space
+cp /p/home/abdo7536/muriSim/production/run04/stat/analyze.inp .
+cp /p/home/abdo7536/pvbatch_lib/scripts/pvessentials.py .
+cp /p/home/abdo7536/pvbatch_lib/programs/analyze.py .
+
+## Launch SAM ------------------------------------------
+# python3 -u analyze.py > volviz3D.out
+mpiexec_mpt -np 01 pvbatch analyze.py > getHist.out

@@ -1,0 +1,18 @@
+/p/home/abdo7536/.personal.bashrc: line 8: setenv: command not found
+Currently Loaded Modulefiles:
+ 1) libfabric/1.11.0.4.97    9) cray-libsci/21.08.1.2        
+ 2) cce/12.0.3              10) cray-pals/1.1.5              
+ 3) craype/2.7.10           11) PrgEnv-cray/8.1.0            
+ 4) craype-x86-rome         12) bct-env/0.1                  
+ 5) craype-network-ofi      13) bc_mod/1.3.4                 
+ 6) cray-dsmml/0.2.1        14) /p/app/startup/shell.module  
+ 7) perftools-base/21.09.0  15) /p/app/startup/alias.module  
+ 8) cray-mpich/8.1.9        
+jobStarter
+Loading mpi version latest
+	module paraview/5.10.1_osmesa loaded
+	Running the  paraview client on a login node and displaying back to your local
+	workstation is not recommended and is not supported by the DAAC staff.
+	Customized clients, instructions and remote vis options are available on
+	http://daac.hpc.mil/software/cssoftware.html
+/var/spool/pbs/mom_priv/jobs/853436.warhawk-pbs.SC.user: line 36: mpiexec_mpt: command not found
