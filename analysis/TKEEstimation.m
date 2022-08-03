@@ -17,14 +17,14 @@ Ny = 1536;       % Ny = Number of points in Domain Y dimension
 Nz = 1536;       % Nz = Number of points in Domain Z dimension
 % Data Inputs: All inputs are mandatory
 % NOTE: These inputs are required to scale the scale-normalized DNS datasets  
-epsMeas = 1.02;       % epsMeas = TKE dissipation rate [m^3s^-2]
+epsMeas = 2.84e-3;        % epsMeas = TKE dissipation rate [m^3s^-2]
 nu = 4.0e-4;              % nu = Kinematic viscosity [m^2s^-1]
 nuDNS = 2.0e-3;           % The kunematic viscosity set in the DNS (unscaled)
-resMet = 0.68161;         % resMet = DNS resolution metric ( = grid spacing/ kolmogorov length scale)
+resMet = 0.64016;         % resMet = DNS resolution metric ( = grid spacing/ kolmogorov length scale)
 balRt = 2.0;              % balRt = HYFLITS balloon descent rate [m/s]
-dirtry = '/Users/script_away/Projects/Documents/MURI_modeling/SHIT/run03/higheps/analysis2m/';
+dirtry = '/Users/script_away/Projects/Documents/MURI_modeling/SHIT/run04/analysis2m_1000/';
 exectry = pwd;
-saSp = 1;
+saSp = 0;
 % Plot Inputs: All inputs are mandatory
 ftsz = 22;
 
@@ -52,18 +52,18 @@ numSmpls = floor(balRt/dzscal);
 
 %% Load Data
 % For DNS Epsilon
-flGxEx = strcat(dirtry,'GridXEx000100_000500.txt');
-flGxEy = strcat(dirtry,'GridXEy000100_000500.txt');
-flGxEz = strcat(dirtry,'GridXEz000100_000500.txt');
-flGyEx = strcat(dirtry,'GridYEx000100_000500.txt');
-flGyEy = strcat(dirtry,'GridYEy000100_000500.txt');
-flGyEz = strcat(dirtry,'GridYEz000100_000500.txt');
-flGzEx = strcat(dirtry,'GridZEx000100_000500.txt');
-flGzEy = strcat(dirtry,'GridZEy000100_000500.txt');
-flGzEz = strcat(dirtry,'GridZEz000100_000500.txt');
-flEx = strcat(dirtry,'Ex000100_000500.txt');
-flEy = strcat(dirtry,'Ey000100_000500.txt');
-flEz = strcat(dirtry,'Ez000100_000500.txt');
+flGxEx = strcat(dirtry,'GridXEx001000_004000.txt');
+flGxEy = strcat(dirtry,'GridXEy001000_004000.txt');
+flGxEz = strcat(dirtry,'GridXEz001000_004000.txt');
+flGyEx = strcat(dirtry,'GridYEx001000_004000.txt');
+flGyEy = strcat(dirtry,'GridYEy001000_004000.txt');
+flGyEz = strcat(dirtry,'GridYEz001000_004000.txt');
+flGzEx = strcat(dirtry,'GridZEx001000_004000.txt');
+flGzEy = strcat(dirtry,'GridZEy001000_004000.txt');
+flGzEz = strcat(dirtry,'GridZEz001000_004000.txt');
+flEx = strcat(dirtry,'Ex001000_004000.txt');
+flEy = strcat(dirtry,'Ey001000_004000.txt');
+flEz = strcat(dirtry,'Ez001000_004000.txt');
 GxEx = table2array(readtable(flGxEx));
 GxEy = table2array(readtable(flGxEy));
 GxEz = table2array(readtable(flGxEz));
@@ -77,28 +77,28 @@ Ex = table2array(readtable(flEx)).*epsStar;
 Ey = table2array(readtable(flEy)).*epsStar;
 Ez = table2array(readtable(flEz)).*epsStar;
 % For U'
-flGxUx = strcat(dirtry,'GridXUx000100_000500.txt');
-flGyUx = strcat(dirtry,'GridYUx000100_000500.txt');
-flGzUx = strcat(dirtry,'GridZUx000100_000500.txt');
-flUx = strcat(dirtry,'Ux000100_000500.txt');
+flGxUx = strcat(dirtry,'GridXUx001000_004000.txt');
+flGyUx = strcat(dirtry,'GridYUx001000_004000.txt');
+flGzUx = strcat(dirtry,'GridZUx001000_004000.txt');
+flUx = strcat(dirtry,'Ux001000_004000.txt');
 GxUx = table2array(readtable(flGxUx));
 GyUx = table2array(readtable(flGyUx));
 GzUx = table2array(readtable(flGzUx));
 Ux = table2array(readtable(flUx)).*mu;
 % For V'
-flGxVy = strcat(dirtry,'GridXVy000100_000500.txt');
-flGyVy = strcat(dirtry,'GridYVy000100_000500.txt');
-flGzVy = strcat(dirtry,'GridZVy000100_000500.txt');
-flVy = strcat(dirtry,'Vy000100_000500.txt');
+flGxVy = strcat(dirtry,'GridXVy001000_004000.txt');
+flGyVy = strcat(dirtry,'GridYVy001000_004000.txt');
+flGzVy = strcat(dirtry,'GridZVy001000_004000.txt');
+flVy = strcat(dirtry,'Vy001000_004000.txt');
 GxVy = table2array(readtable(flGxVy));
 GyVy = table2array(readtable(flGyVy));
 GzVy = table2array(readtable(flGzVy));
 Vy = table2array(readtable(flVy)).*mu;
 % For W'
-flGxWz = strcat(dirtry,'GridXWz000100_000500.txt');
-flGyWz = strcat(dirtry,'GridYWz000100_000500.txt');
-flGzWz = strcat(dirtry,'GridZWz000100_000500.txt');
-flWz = strcat(dirtry,'Wz000100_000500.txt');
+flGxWz = strcat(dirtry,'GridXWz001000_004000.txt');
+flGyWz = strcat(dirtry,'GridYWz001000_004000.txt');
+flGzWz = strcat(dirtry,'GridZWz001000_004000.txt');
+flWz = strcat(dirtry,'Wz001000_004000.txt');
 GxWz = table2array(readtable(flGxWz));
 GyWz = table2array(readtable(flGyWz));
 GzWz = table2array(readtable(flGzWz));
