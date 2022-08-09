@@ -35,7 +35,7 @@ nu = 4.0e-4
 ### resMet = DNS resolution metric ( = grid spacing/ kolmogorov length scale)
 resMet = 0.64016 
 ### balRt = HYFLITS balloon descent rate [m/s]
-balRt = 2
+balRt = 12
 
 ################# Function Specific Inputs: All inputs are mandatory
 ########## function name: 'lodatsin'
@@ -70,6 +70,8 @@ eta = (nu**3/epsMeas)**(1/4)        # Kolmogorov length scale [m]
 Zscal = Nz*eta*resMet               # Scaled Z DNS domain dimension [m]
 Xscal = Zscal*(Xl/Zl)               # Scaled X DNS domain dimension [m]
 Yscal = Zscal*(Yl/Zl)               # Scaled Y DNS domain dimension [m]
+print(Xscal,Yscal,Zscal)
+
 ### DNS resolution calculations
 dx = Xl/Nx             # Grid Resolution in X (normalized)
 dy = Yl/Ny             # Grid Resolution in Y (normalized)
@@ -143,6 +145,8 @@ trajTyp.append(math.floor(Zscal/balRt))         # calculate the maximum number o
 trajTyp.append(math.floor(balRt/dzscal))        # calculate the maximum number of grid points per each interval
 smplPts = trajTyp[1]*trajTyp[2]                 # Compute the number of points to sample from the (scaled) DNS dataset
 
+print(smplPts)
+sys.exit()
 ### Loop over the number of trajectories
 for i in range(0,numTraj):
     ### Call the function to generate each trajectory

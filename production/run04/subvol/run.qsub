@@ -1,0 +1,40 @@
+#!/bin/bash
+
+## Required PBS directives ------------------------------
+#PBS -A AFOSR42572501
+#PBS -N SHIT04SVJOB
+#PBS -q standard
+#PBS -l select=4:ncpus=128:mpiprocs=128
+#PBS -l walltime=00:60:00
+#PBS -j oe
+#PBS -m be
+#PBS -M abdo7536@colorado.edu
+
+## Execution Block --------------------------------------
+# cd to your scratch directory
+cd /p/work1/abdo7536/SHIT04
+
+# add the required input and executable files into the directory
+cp /p/home/abdo7536/muriSim/production/run04/subvol/sam.inp .
+ln -s /p/home/abdo7536/sam/src/vel2subvol .
+
+# run the for loop over the number of files
+st=2000
+stp=100
+strn="nt_restart   "
+lp_cnt=$(ls vel.0* | wc -l)
+for i in $(seq 0 $(( lp_cnt - 1 )))
+do
+    nm1=$(( st + i*stp ))
+    org_st="$strn$nm1"
+    nm2=$(( st + (i+1)*stp ))
+    rplc_st="$strn$nm2"
+    sed -i "s/$org_st/$rplc_st/g" "sam.inp"
+    mpiexec -np 512 ./vel2subvol > "SVJOB${nm2}.out"
+done
+
+for f in *0.vtk
+do
+    mv -- "$f" "${f%.vtk}_TKE.vtk"
+done
+
