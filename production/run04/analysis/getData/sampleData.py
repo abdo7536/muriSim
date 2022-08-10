@@ -18,9 +18,11 @@ Ny = 1536
 ### Nz = Number of points in Domain Z dimension
 Nz = 1536 
 ### numTraj = Number of trajectories to sample
-numTraj = 1000
+numTraj = 100
 ### locFlg = Flag to control the (X,Y) location for sampling; 1 = choose random (x,y) location for each trajectory; 21 = randomly chosen Y reference co-ordinates at Domain X centre ; 22 = randomly chosen X reference co-ordinates at Domain Y centre; 3 = Read X,Y reference co-ordinates for each trajectory from a .txt file
-locFlg = 1
+locFlg = 21
+### allZ = Flag to sample every point in Z of the domain as 1 sample
+allZ = 1
 ### datVar = The data variable to be stored; NOTE: This is the variable extracted from the DNS 3D datafield and stored at the user defined destination/directory
 datVar = 'E'
 ### trajDir = The direction in which the synthetic observer traverses; NOTE: choice of X, Y and Z directions of synthetic observation traverse; NOTE: ONLY USED FOR NAMING THE FILES
@@ -29,18 +31,18 @@ trajDir = 'z'
 ################# Data Inputs: All inputs are mandatory
 ### NOTE: These inputs are required to scale the scale-normalized DNS datasets  
 ### epsMeas = TKE dissipation rate [m^3s^-2]
-epsMeas = 2.84e-3
+epsMeas = 3.739
 ### nu = Kinematic viscosity [m^2s^-1]
 nu = 4.0e-4
 ### resMet = DNS resolution metric ( = grid spacing/ kolmogorov length scale)
 resMet = 0.64016 
 ### balRt = HYFLITS balloon descent rate [m/s]
-balRt = 12
+balRt = 2
 
 ################# Function Specific Inputs: All inputs are mandatory
 ########## function name: 'lodatsin'
 ### flNm = The string name whose file name group needs to be created (including the path to the directory) [type - string]
-flNm = '/p/work1/abdo7536/SHIT04/subvol' + datVar + '*'
+flNm = '/p/work1/abdo7536/SHIT04/analysis/getData/subvol' + datVar + '*'
 ### form = the file format (input exactly as it appears in the filenames) [type - string]
 form = 'dat'
 ### flNm = Input file name identifying character string (including the directory location)
@@ -141,12 +143,18 @@ elif locFlg == 3:         # Read (X,Y) reference co-ordinates from a text file
             Yref[i] = int(float(lnRef[26:]))
 
 ### Compute interval sets in case of horizontal sampling trajectories
-trajTyp.append(math.floor(Zscal/balRt))         # calculate the maximum number of (full) intervals in one single descent through the DNS datafield [integer]
-trajTyp.append(math.floor(balRt/dzscal))        # calculate the maximum number of grid points per each interval
+if allZ == 1:
+    trajTyp.append(int(1))
+    trajTyp.append(int(Nz))
+elif allZ == 0:
+    trajTyp.append(math.floor(Zscal/balRt))         # calculate the maximum number of (full) intervals in one single descent through the DNS datafield [integer]
+    trajTyp.append(math.floor(balRt/dzscal))        # calculate the maximum number of grid points per each interval
+
 smplPts = trajTyp[1]*trajTyp[2]                 # Compute the number of points to sample from the (scaled) DNS dataset
 
-print(smplPts)
-sys.exit()
+print('The number of sample intervals and sample points per interval = ', trajTyp)
+print('The number of samples gathered per trajectory = ', smplPts)
+
 ### Loop over the number of trajectories
 for i in range(0,numTraj):
     ### Call the function to generate each trajectory
