@@ -141,6 +141,8 @@ def datGet(TrX,TrY,TrZ,Nx,Ny,Nz,fl):
     pts = Nx*Ny*Nz                  # The number of data points in each 3D dataset
     pt_jmp = ((TrZ-1)*Nx*Ny)+((TrY-1)*Nx)+(TrX-1)+((fldIdent-1)*pts)
     byt_jmp = int(pt_jmp*4)
+    if byt_jmp < 0:
+        byt_jmp = 0
     fl.seek(byt_jmp)
     tl_u = fl.tell()
     b=fl.read(4)

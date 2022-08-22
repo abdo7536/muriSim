@@ -18,11 +18,11 @@ Ny = 1536
 ### Nz = Number of points in Domain Z dimension
 Nz = 1536 
 ### numTraj = Number of trajectories to sample
-numTraj = 100
+numTraj = 1000
 ### locFlg = Flag to control the (X,Y) location for sampling; 1 = choose random (x,y) location for each trajectory; 21 = randomly chosen Y reference co-ordinates at Domain X centre ; 22 = randomly chosen X reference co-ordinates at Domain Y centre; 3 = Read X,Y reference co-ordinates for each trajectory from a .txt file
-locFlg = 21
+locFlg = 21 
 ### allZ = Flag to sample every point in Z of the domain as 1 sample
-allZ = 1
+allZ = 0
 ### datVar = The data variable to be stored; NOTE: This is the variable extracted from the DNS 3D datafield and stored at the user defined destination/directory
 datVar = 'E'
 ### trajDir = The direction in which the synthetic observer traverses; NOTE: choice of X, Y and Z directions of synthetic observation traverse; NOTE: ONLY USED FOR NAMING THE FILES
@@ -31,7 +31,7 @@ trajDir = 'z'
 ################# Data Inputs: All inputs are mandatory
 ### NOTE: These inputs are required to scale the scale-normalized DNS datasets  
 ### epsMeas = TKE dissipation rate [m^3s^-2]
-epsMeas = 3.739
+epsMeas = 3.738
 ### nu = Kinematic viscosity [m^2s^-1]
 nu = 4.0e-4
 ### resMet = DNS resolution metric ( = grid spacing/ kolmogorov length scale)
@@ -72,7 +72,7 @@ eta = (nu**3/epsMeas)**(1/4)        # Kolmogorov length scale [m]
 Zscal = Nz*eta*resMet               # Scaled Z DNS domain dimension [m]
 Xscal = Zscal*(Xl/Zl)               # Scaled X DNS domain dimension [m]
 Yscal = Zscal*(Yl/Zl)               # Scaled Y DNS domain dimension [m]
-print(Xscal,Yscal,Zscal)
+print('Xl = ',Xscal,' [m]\n','Yl = ',Yscal,' [m]\n','Zl = ',Zscal,' [m]')
 
 ### DNS resolution calculations
 dx = Xl/Nx             # Grid Resolution in X (normalized)
@@ -96,7 +96,6 @@ grid_z[0][0:Nz] = (np.linspace(1,Nz,Nz)-1)*dz                 # Grid point locat
 grid_xScal[0][0:Nx] = (-Xscal/2)+(np.linspace(1,Nx,Nx)-1)*dxscal         # Grid point locations in X direction (scaled) [m]
 grid_yScal[0][0:Ny] = (-Yscal/2)+(np.linspace(1,Ny,Ny)-1)*dyscal         # Grid point locations in Y direction (scaled) [m]
 grid_zScal[0][0:Nz] = (np.linspace(1,Nz,Nz)-1)*dzscal                    # Grid point locations in Z direction (scaled) [m]
-
 ### Create a meshgrid (The meshgrid - [X,Y,Z] grid points - should be exported in the File)
 [Ygrid,Xgrid,Zgrid] = np.meshgrid(grid_yScal,grid_xScal,grid_zScal)
 
@@ -105,6 +104,7 @@ grid_zScal[0][0:Nz] = (np.linspace(1,Nz,Nz)-1)*dzscal                    # Grid 
 ### List the datafiles in the operation directory
 filNms = plname(flNm,form)
 dirTry = filNms[0][:-18]
+
 ### Calculate the number datapoints to sample - based on User inputs for the defined observation strategy 
 ### Get X,Y reference points
 if locFlg == 1:         # Pick random, non-repeating locations
@@ -181,6 +181,7 @@ for i in range(0,len(filNms)):
                 GrdX[j][k] = Xgrid[int(TrX[j][k])][int(TrY[j][k])][int(TrZ[j][k])]
                 GrdY[j][k] = Ygrid[int(TrX[j][k])][int(TrY[j][k])][int(TrZ[j][k])]
                 GrdZ[j][k] = Zgrid[int(TrX[j][k])][int(TrY[j][k])][int(TrZ[j][k])]
+            print('Gathered data for Trajectory = ',j)
         ### Create a table containing the extracted data and the grid centre co-ordinates in Z
         strct1 = np.transpose(tmpVar)
         strct2 = np.transpose(GrdX)
