@@ -2,7 +2,7 @@
 ########## Mandatory inputs:
 Recipe                      3                       # "getHist"
 colrby                      KE-diss-rate            # [common options are: KE-diss-rate,Lambda2,T-diss-rate,p,u,v,w,vort_x,vort_y,vort_z,vort-mag,stab-index]
-datRng                      -8.0,5.0                # data range for which the histogram is calculated
+datRng                      -5,5                    # data range for which the histogram is calculated
 ########## Optional inputs:
 histLg                      1                       # Switch to turn on histogram plotting on log10 scale; NOTE: If this is set to 1, recheck the 'datRng' input above to ensure the data range in specified for log scale and not linear scale of dataset
 numBins                     250                     # The number of bins to sort the histogram data into
