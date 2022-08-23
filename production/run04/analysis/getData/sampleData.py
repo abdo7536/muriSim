@@ -18,15 +18,15 @@ Ny = 1536
 ### Nz = Number of points in Domain Z dimension
 Nz = 1536 
 ### numTraj = Number of trajectories to sample
-numTraj = 1000
+numTraj = 1
 ### locFlg = Flag to control the (X,Y) location for sampling; 1 = choose random (x,y) location for each trajectory; 21 = randomly chosen Y reference co-ordinates at Domain X centre ; 22 = randomly chosen X reference co-ordinates at Domain Y centre; 3 = Read X,Y reference co-ordinates for each trajectory from a .txt file
-locFlg = 21 
+locFlg = 1 
 ### allZ = Flag to sample every point in Z of the domain as 1 sample
-allZ = 0
+allZ = 1
 ### datVar = The data variable to be stored; NOTE: This is the variable extracted from the DNS 3D datafield and stored at the user defined destination/directory
 datVar = 'E'
 ### trajDir = The direction in which the synthetic observer traverses; NOTE: choice of X, Y and Z directions of synthetic observation traverse; NOTE: ONLY USED FOR NAMING THE FILES
-trajDir = 'z'
+trajDir = 'y'
 
 ################# Data Inputs: All inputs are mandatory
 ### NOTE: These inputs are required to scale the scale-normalized DNS datasets  
@@ -50,7 +50,7 @@ form = 'dat'
 ################# Function Specific Inputs: All inputs are mandatory
 ########## function name: 'trajInd'
 ### trajTyp = Synthetic Observation trajectory type; 1 = balloon-like vertical trajectory (descending); 2 = Horizontal Sampling in X; 3 = Horizontal Sampling in Y
-trajTyp = [1]
+trajTyp = [3]
 
 ##########################################################################################################################################################################
 ################# Call custom function module developed to execute this program
@@ -155,6 +155,12 @@ smplPts = trajTyp[1]*trajTyp[2]                 # Compute the number of points t
 print('The number of sample intervals and sample points per interval = ', trajTyp)
 print('The number of samples gathered per trajectory = ', smplPts)
 
+### Do not proceed if the total number of points per interval or total points sampled is odd
+if (trajTyp[2] % 2) != 0 or (smplPts % 2) != 0:
+    print('ERROR:The number of points per interval is ODD or the total number of points sampled is ODD')
+    print('WARNING: These need to be EVEN')
+    sys.exit()
+
 ### Loop over the number of trajectories
 for i in range(0,numTraj):
     ### Call the function to generate each trajectory
@@ -162,7 +168,7 @@ for i in range(0,numTraj):
     TrX.append(Xtr[0])
     TrY.append(Ytr[0])
     TrZ.append(Ztr[0])
-
+    
 ##########################################################################################################################################################################
 ################# Data Extraction block
 ### Read required points from file: Loop over the number of files
@@ -178,9 +184,9 @@ for i in range(0,len(filNms)):
         for j in range(0,numTraj):
             for k in range(0,np.shape(TrX)[1]):    
                 tmpVar[j][k] = datGet(TrX[j][k],TrY[j][k],TrZ[j][k],Nx,Ny,Nz,fl)
-                GrdX[j][k] = Xgrid[int(TrX[j][k])][int(TrY[j][k])][int(TrZ[j][k])]
-                GrdY[j][k] = Ygrid[int(TrX[j][k])][int(TrY[j][k])][int(TrZ[j][k])]
-                GrdZ[j][k] = Zgrid[int(TrX[j][k])][int(TrY[j][k])][int(TrZ[j][k])]
+                GrdX[j][k] = Xgrid[int(TrX[j][k])-1][int(TrY[j][k])-1][int(TrZ[j][k])-1]
+                GrdY[j][k] = Ygrid[int(TrX[j][k])-1][int(TrY[j][k])-1][int(TrZ[j][k])-1]
+                GrdZ[j][k] = Zgrid[int(TrX[j][k])-1][int(TrY[j][k])-1][int(TrZ[j][k])-1]
             print('Gathered data for Trajectory = ',j)
         ### Create a table containing the extracted data and the grid centre co-ordinates in Z
         strct1 = np.transpose(tmpVar)

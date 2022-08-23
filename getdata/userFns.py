@@ -77,7 +77,7 @@ def trajInd(trajTyp,Xref,Yref,Nx,Ny,Nz,smplPts):
     if trajTyp[0] == 1:         # Balloon-like descent
         x_sampl = np.ones(smplPts)*Xref
         y_sampl = np.ones(smplPts)*Yref
-        z_sampl = np.linspace(Nz-1,Nz-smplPts,smplPts)
+        z_sampl = np.linspace(Nz,Nz-smplPts+1,smplPts)
         x_sampl = np.reshape(x_sampl,(1,np.shape(x_sampl)[0]))
         y_sampl = np.reshape(y_sampl,(1,np.shape(y_sampl)[0]))
         z_sampl = np.reshape(z_sampl,(1,np.shape(z_sampl)[0]))
@@ -111,13 +111,13 @@ def trajInd(trajTyp,Xref,Yref,Nx,Ny,Nz,smplPts):
         z_sampl = np.reshape(z_sampl,(1,np.shape(z_sampl)[0]*np.shape(z_sampl)[1]))
 ################# Account for periodicity and wrap the indices before returning the arrays of indices
     for i in range(0,np.shape(x_sampl)[1]):
-        if x_sampl[0][i] >= Nx:
+        if x_sampl[0][i] > Nx:
             x_sampl[0][i] = x_sampl[0][i]-Nx
-        elif x_sampl[0][i] < 0:
+        elif x_sampl[0][i] <= 0:
             x_sampl[0][i] = x_sampl[0][i]+Nx
-        if y_sampl[0][i] >= Ny:
+        if y_sampl[0][i] > Ny:
             y_sampl[0][i] = y_sampl[0][i]-Ny
-        elif y_sampl[0][i] < 0:
+        elif y_sampl[0][i] <= 0:
             y_sampl[0][i] = y_sampl[0][i]+Ny
 ################# Return the function's output variables
     return(x_sampl, y_sampl, z_sampl)
