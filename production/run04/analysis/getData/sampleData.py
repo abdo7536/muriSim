@@ -18,13 +18,13 @@ Ny = 1536
 ### Nz = Number of points in Domain Z dimension
 Nz = 1536 
 ### numTraj = Number of trajectories to sample
-numTraj = 1
+numTraj = 100
 ### locFlg = Flag to control the (X,Y) location for sampling; 1 = choose random (x,y) location for each trajectory; 21 = randomly chosen Y reference co-ordinates at Domain X centre ; 22 = randomly chosen X reference co-ordinates at Domain Y centre; 3 = Read X,Y reference co-ordinates for each trajectory from a .txt file
-locFlg = 1 
+locFlg = 3 
 ### allZ = Flag to sample every point in Z of the domain as 1 sample
 allZ = 1
 ### datVar = The data variable to be stored; NOTE: This is the variable extracted from the DNS 3D datafield and stored at the user defined destination/directory
-datVar = 'E'
+datVar = 'V'
 ### trajDir = The direction in which the synthetic observer traverses; NOTE: choice of X, Y and Z directions of synthetic observation traverse; NOTE: ONLY USED FOR NAMING THE FILES
 trajDir = 'y'
 
@@ -116,7 +116,10 @@ if locFlg == 1:         # Pick random, non-repeating locations
     refFlNm = dirTry + 'refPts.txt'
     np.savetxt(refFlNm,strctRef,delimiter=',')
 elif locFlg == 21:        # randomly chosen Y reference co-ordinates at Domain X centre
-    tmpXref = np.ones(numTraj)*Nx/2
+    if trajDir == 'x':
+        tmpXref = np.ones(numTraj)*Nx/2 + 1
+    else:
+        tmpXref = np.ones(numTraj)*Nx/2
     tmpYref = random.sample(range(1,Ny),numTraj)
     Xref = np.transpose(np.reshape(tmpXref,(1,len(tmpXref))))
     Yref = np.transpose(np.reshape(tmpYref,(1,len(tmpYref))))
@@ -125,7 +128,10 @@ elif locFlg == 21:        # randomly chosen Y reference co-ordinates at Domain X
     np.savetxt(refFlNm,strctRef,delimiter=',')
 elif locFlg == 22:        # randomly chosen X reference co-ordinates at Domain Y centre
     tmpXref = random.sample(range(1,Nx),numTraj)
-    tmpYref = np.ones(numTraj)*Ny/2
+    if trajDir == 'y':
+        tmpYref = np.ones(numTraj)*Ny/2 + 1 
+    else:
+        tmpYref = np.ones(numTraj)*Ny/2 
     Xref = np.transpose(np.reshape(tmpXref,(1,len(tmpXref))))
     Yref = np.transpose(np.reshape(tmpYref,(1,len(tmpYref))))
     strctRef = np.column_stack((Xref,Yref))
