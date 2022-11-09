@@ -1,0 +1,29 @@
+Nx            3456         number of points in x
+Ny            3456         number of points in y
+Nz            3456         number of points in z
+xL            1            Box size in x
+yL            1            Box size in y
+zL            1            Box size in z
+i_restart     2            0-new field, 1-read restart, 2-remesh restart
+res_max       1.8          The minimum resolution requirement
+nt_restart    11000        Restart field is at this time step
+n_steps       3000         number of time steps
+n_skip_h      1            skip factor for output
+n_skip_p      100          skip factor for output
+n_skip_v      100          skip factor for output
+i_cfl         1            0-fixed dt, 1-fixed cfl
+cfl0          0.90000      cfl, used when cfl flag = 1
+i_prob        1            problem type: see below
+flct_u        1.00000      Initial velocity fluctuation
+i_force       1            forcing flag: 0-no forcing, 1-forcing
+k_force       4            maximum wavenumber to be forced (for i_force=1)
+vis           1.50000E-05  Kinematic viscosity
+Pr            1.00000      Prandtl number
+
+# i_prob is the initial condition type
+#   0 - white noise with velocity fluctuation flct_u
+#   1 - k^-5/3 spectrum with velocity fluctuation flct_u
+#   2 - Comte-Bellot and Corrsin spectrum at t=42
+#   3 - Comte-Bellot and Corrsin spectrum at t=99
+#   4 - Comte-Bellot and Corrsin spectrum at t=171
+#   5 - Pao spectrum

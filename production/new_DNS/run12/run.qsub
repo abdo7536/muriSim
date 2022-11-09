@@ -1,0 +1,35 @@
+#!/bin/bash
+
+## Required PBS directives ------------------------------
+#PBS -A AFOSR42572501
+#PBS -N SHITDNS12
+#PBS -q standard
+#PBS -l select=15:ncpus=64:mpiprocs=64
+#PBS -l walltime=10:00:00
+#PBS -j oe
+#PBS -m be
+#PBS -M abdo7536@colorado.edu
+
+## Execution Block --------------------------------------
+# Environment setup
+# cd to your scratch directory
+cd /p/work1/abdo7536
+
+# make a new directory for the problem and navigate into it
+rm -rf SHITDNS12
+mkdir SHITDNS12
+
+## store sam code's git commit tag used for execution ------------------
+cd /p/home/abdo7536/sam
+git log -1 > git_commit_tag.out
+mv git_commit_tag.out /p/work1/abdo7536/SHITDNS12/
+cd /p/work1/abdo7536/SHITDNS12/
+
+# add the required input and executable files into the directory
+cp /p/home/abdo7536/muriSim/production/new_DNS/run12/sam.inp .
+ln -s /p/work1/abdo7536/SHITDNS11/header.008900 . 
+ln -s /p/work1/abdo7536/SHITDNS11/vel.008900 .
+ln -s /p/home/abdo7536/sam/src/sam .
+
+## Launch SAM ------------------------------------------
+aprun -n 960 ./sam > SHITDNS12.out
