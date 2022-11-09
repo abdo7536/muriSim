@@ -17,14 +17,16 @@ Ny = 1536;       % Ny = Number of points in Domain Y dimension
 Nz = 1536;       % Nz = Number of points in Domain Z dimension
 % Data Inputs: All inputs are mandatory
 % NOTE: These inputs are required to scale the scale-normalized DNS datasets  
-epsMeas = 2.84e-3;        % epsMeas = TKE dissipation rate [m^3s^-2]
+epsMeas = 3.738;          % epsMeas = TKE dissipation rate [m^3s^-2]
 nu = 4.0e-4;              % nu = Kinematic viscosity [m^2s^-1]
 nuDNS = 2.0e-3;           % The kunematic viscosity set in the DNS (unscaled)
 resMet = 0.64016;         % resMet = DNS resolution metric ( = grid spacing/ kolmogorov length scale)
 balRt = 2.0;              % balRt = HYFLITS balloon descent rate [m/s]
-dirtry = '/Users/script_away/Projects/Documents/MURI_modeling/SHIT/run04/analysis2m_1000/';
+FlDmn = 0;                % switch to wrap data at the last index if using full domain
+winOn = 0;                % switch to turn on or off the windowing
+dirtry = '/Users/script_away/Projects/Documents/MURI_modeling/SHIT/run04/NEW_analysis/Xby2Pln_100_2mBox/';
 exectry = pwd;
-saSp = 0;
+saSp = 1;
 % Plot Inputs: All inputs are mandatory
 ftsz = 22;
 
@@ -46,24 +48,21 @@ dxscal = Xscal/Nx;      % Grid Resolution in X (scaled) [m]
 dyscal = Yscal/Ny;      % Grid Resolution in Y (scaled) [m]
 dzscal = Zscal/Nz;      % Grid Resolution in Z (scaled) [m]
 epsScalDNS = ((dz/resMet)^(-4))*(nuDNS^(3));   % The DNS co-incidental scale with measurement EPSILON
-% Compute the number of sample points per interval
-numInts = floor(Zscal/balRt);
-numSmpls = floor(balRt/dzscal);
 
 %% Load Data
 % For DNS Epsilon
-flGxEx = strcat(dirtry,'GridXEx001000_004000.txt');
-flGxEy = strcat(dirtry,'GridXEy001000_004000.txt');
-flGxEz = strcat(dirtry,'GridXEz001000_004000.txt');
-flGyEx = strcat(dirtry,'GridYEx001000_004000.txt');
-flGyEy = strcat(dirtry,'GridYEy001000_004000.txt');
-flGyEz = strcat(dirtry,'GridYEz001000_004000.txt');
-flGzEx = strcat(dirtry,'GridZEx001000_004000.txt');
-flGzEy = strcat(dirtry,'GridZEy001000_004000.txt');
-flGzEz = strcat(dirtry,'GridZEz001000_004000.txt');
-flEx = strcat(dirtry,'Ex001000_004000.txt');
-flEy = strcat(dirtry,'Ey001000_004000.txt');
-flEz = strcat(dirtry,'Ez001000_004000.txt');
+flGxEx = strcat(dirtry,'GridXEx000100_004000.txt');
+flGxEy = strcat(dirtry,'GridXEy000100_004000.txt');
+flGxEz = strcat(dirtry,'GridXEz000100_004000.txt');
+flGyEx = strcat(dirtry,'GridYEx000100_004000.txt');
+flGyEy = strcat(dirtry,'GridYEy000100_004000.txt');
+flGyEz = strcat(dirtry,'GridYEz000100_004000.txt');
+flGzEx = strcat(dirtry,'GridZEx000100_004000.txt');
+flGzEy = strcat(dirtry,'GridZEy000100_004000.txt');
+flGzEz = strcat(dirtry,'GridZEz000100_004000.txt');
+flEx = strcat(dirtry,'Ex000100_004000.txt');
+flEy = strcat(dirtry,'Ey000100_004000.txt');
+flEz = strcat(dirtry,'Ez000100_004000.txt');
 GxEx = table2array(readtable(flGxEx));
 GxEy = table2array(readtable(flGxEy));
 GxEz = table2array(readtable(flGxEz));
@@ -77,37 +76,75 @@ Ex = table2array(readtable(flEx)).*epsStar;
 Ey = table2array(readtable(flEy)).*epsStar;
 Ez = table2array(readtable(flEz)).*epsStar;
 % For U'
-flGxUx = strcat(dirtry,'GridXUx001000_004000.txt');
-flGyUx = strcat(dirtry,'GridYUx001000_004000.txt');
-flGzUx = strcat(dirtry,'GridZUx001000_004000.txt');
-flUx = strcat(dirtry,'Ux001000_004000.txt');
+flGxUx = strcat(dirtry,'GridXUx000100_004000.txt');
+flGyUx = strcat(dirtry,'GridYUx000100_004000.txt');
+flGzUx = strcat(dirtry,'GridZUx000100_004000.txt');
+flUx = strcat(dirtry,'Ux000100_004000.txt');
 GxUx = table2array(readtable(flGxUx));
 GyUx = table2array(readtable(flGyUx));
 GzUx = table2array(readtable(flGzUx));
 Ux = table2array(readtable(flUx)).*mu;
 % For V'
-flGxVy = strcat(dirtry,'GridXVy001000_004000.txt');
-flGyVy = strcat(dirtry,'GridYVy001000_004000.txt');
-flGzVy = strcat(dirtry,'GridZVy001000_004000.txt');
-flVy = strcat(dirtry,'Vy001000_004000.txt');
+flGxVy = strcat(dirtry,'GridXVy000100_004000.txt');
+flGyVy = strcat(dirtry,'GridYVy000100_004000.txt');
+flGzVy = strcat(dirtry,'GridZVy000100_004000.txt');
+flVy = strcat(dirtry,'Vy000100_004000.txt');
 GxVy = table2array(readtable(flGxVy));
 GyVy = table2array(readtable(flGyVy));
 GzVy = table2array(readtable(flGzVy));
 Vy = table2array(readtable(flVy)).*mu;
 % For W'
-flGxWz = strcat(dirtry,'GridXWz001000_004000.txt');
-flGyWz = strcat(dirtry,'GridYWz001000_004000.txt');
-flGzWz = strcat(dirtry,'GridZWz001000_004000.txt');
-flWz = strcat(dirtry,'Wz001000_004000.txt');
+flGxWz = strcat(dirtry,'GridXWz000100_004000.txt');
+flGyWz = strcat(dirtry,'GridYWz000100_004000.txt');
+flGzWz = strcat(dirtry,'GridZWz000100_004000.txt');
+flWz = strcat(dirtry,'Wz000100_004000.txt');
 GxWz = table2array(readtable(flGxWz));
 GyWz = table2array(readtable(flGyWz));
 GzWz = table2array(readtable(flGzWz));
 Wz = table2array(readtable(flWz)).*mu;
 
+if FlDmn == 1
+    tmpSz = size(Wz);
+    for i = 1:1:tmpSz(2)
+        % For DNS Epsilon
+        GxEx(tmpSz(1)+1,i) = GxEx(tmpSz(1),i)-dxscal;
+        GxEy(tmpSz(1)+1,i) = GxEy(tmpSz(1),i);
+        GxEz(tmpSz(1)+1,i) = GxEz(tmpSz(1),i);
+        GyEx(tmpSz(1)+1,i) = GyEx(tmpSz(1),i);
+        GyEy(tmpSz(1)+1,i) = GyEy(tmpSz(1),i)-dyscal;
+        GyEz(tmpSz(1)+1,i) = GyEz(tmpSz(1),i);
+        GzEx(tmpSz(1)+1,i) = GzEx(tmpSz(1),i);
+        GzEy(tmpSz(1)+1,i) = GzEy(tmpSz(1),i);
+        GzEz(tmpSz(1)+1,i) = GzEz(tmpSz(1),i)-dzscal;
+        Ex(tmpSz(1)+1,i) = Ex(tmpSz(1),i);
+        Ey(tmpSz(1)+1,i) = Ey(tmpSz(1),i);
+        Ez(tmpSz(1)+1,i) = Ez(tmpSz(1),i);
+        % For U'
+        GxUx(tmpSz(1)+1,i) = GxUx(tmpSz(1),i)-dxscal;
+        GyUx(tmpSz(1)+1,i) = GyUx(tmpSz(1),i);
+        GzUx(tmpSz(1)+1,i) = GzUx(tmpSz(1),i);
+        Ux(tmpSz(1)+1,i) = Ux(tmpSz(1),i);
+        % For V'
+        GxVy(tmpSz(1)+1,i) = GxVy(tmpSz(1),i);
+        GyVy(tmpSz(1)+1,i) = GyVy(tmpSz(1),i)-dyscal;
+        GzVy(tmpSz(1)+1,i) = GzVy(tmpSz(1),i);
+        Vy(tmpSz(1)+1,i) = Vy(tmpSz(1),i);
+        % For W'
+        GxWz(tmpSz(1)+1,i) = GxWz(tmpSz(1),i);
+        GyWz(tmpSz(1)+1,i) = GyWz(tmpSz(1),i);
+        GzWz(tmpSz(1)+1,i) = GzWz(tmpSz(1),i)-dzscal;
+        Wz(tmpSz(1)+1,i) = Wz(tmpSz(1),i);
+    end
+    clear tmpSz
+end
+
 % Compute the number of trajectories
 tmpSz = size(Wz);
 numTraj = tmpSz(2);
 sampPts = tmpSz(1);
+% Compute the number of sample points per interval
+numInts = floor(Zscal/balRt);
+numSmpls = length(Ex(:,1));
 
 %% Compute frequency averaging and inputs for Spectral analysis
 Nrec = numSmpls;
@@ -154,7 +191,11 @@ for i = 1:1:numTraj
         
         Uprec(:,j) = abs(Utrj(start_index+1:stop_index));  % time records of relative wind in [m/s]
         % detrend and weight the data to reduce windowing artifacts, using a variance-preserving scale factor
-        Uprecd(:,j) = detrend(Uprec(:,j)).*sqrt(2.66).*hanning(Nrec,'periodic');
+        if winOn == 1
+            Uprecd(:,j) = detrend(Uprec(:,j)).*sqrt(2.66).*hanning(Nrec,'periodic');
+        else
+            Uprecd(:,j) = detrend(Uprec(:,j));
+        end
     
         % fft the records to obtain the power spectral density
         Ups(:,j) = 2*fft(Uprecd(:,j))/Nrec;    % amplitude spectrum [m/s]
@@ -586,7 +627,11 @@ for i = 1:1:numTraj
         
         Vprec(:,j) = abs(Vtrj(start_index+1:stop_index));  % time records of relative wind in [m/s]
         % detrend and weight the data to reduce windowing artifacts, using a variance-preserving scale factor
-        Vprecd(:,j) = detrend(Vprec(:,j)).*sqrt(2.66).*hanning(Nrec,'periodic');
+        if winOn == 1
+            Vprecd(:,j) = detrend(Vprec(:,j)).*sqrt(2.66).*hanning(Nrec,'periodic');
+        else
+            Vprecd(:,j) = detrend(Vprec(:,j));
+        end
     
         % fft the records to obtain the power spectral density
         Vps(:,j) = 2*fft(Vprecd(:,j))/Nrec;    % amplitude spectrum [m/s]
@@ -1017,7 +1062,11 @@ for i = 1:1:numTraj
         
         Wprec(:,j) = abs(Wtrj(start_index+1:stop_index));  % time records of relative wind in [m/s]
         % detrend and weight the data to reduce windowing artifacts, using a variance-preserving scale factor
-        Wprecd(:,j) = detrend(Wprec(:,j)).*sqrt(2.66).*hanning(Nrec,'periodic');
+        if winOn == 1
+            Wprecd(:,j) = detrend(Wprec(:,j)).*sqrt(2.66).*hanning(Nrec,'periodic');
+        else
+            Wprecd(:,j) = detrend(Wprec(:,j));
+        end
     
         % fft the records to obtain the power spectral density
         Wps(:,j) = 2*fft(Wprecd(:,j))/Nrec;    % amplitude spectrum [m/s]
@@ -1464,7 +1513,7 @@ for j = 1:1:numInts
     clf
     for i = 1:1:numTraj
         figure(1000+j)
-        semilogx(freq,log10(abs(UppdfPlt(:,j,i))),'LineWidth',0.5)
+        semilogx(freq(2:end),log10(abs(UppdfPlt(2:end,j,i))),'LineWidth',0.5)
         hold on
         axis([freq(1) freq(end) -15 0])
         xlabel('F')
@@ -1491,7 +1540,7 @@ for j = 1:1:numInts
     clf
     for i = 1:1:numTraj
         figure(2000+j)
-        semilogx(freq,log10(abs(VppdfPlt(:,j,i))),'LineWidth',0.5)
+        semilogx(freq(2:end),log10(abs(VppdfPlt(2:end,j,i))),'LineWidth',0.5)
         hold on
         axis([freq(1) freq(end) -15 0])
         xlabel('F')
@@ -1518,7 +1567,7 @@ for j = 1:1:numInts
     clf
     for i = 1:1:numTraj
         figure(3000+j)
-        semilogx(freq,log10(abs(WppdfPlt(:,j,i))),'LineWidth',0.5)
+        semilogx(freq(2:end),log10(abs(WppdfPlt(2:end,j,i))),'LineWidth',0.5)
         hold on
         axis([freq(1) freq(end) -15 0])
         xlabel('F')
@@ -1544,11 +1593,11 @@ end
 figure(2000)
 clf
 subplot(1,5,1)
-plot(log10(avgTrEx),mTrGzEx(:,1),'k','LineWidth',2)
+plot(log10(avgTrEx),mTrGzEx(:,1),'*-k','LineWidth',2)
 hold on
-plot(log_avUepsilon_k,mTrGzUx(:,1),'r','LineWidth',2)
-plot(log_avUepsilon_u,mTrGzUx(:,1),'--r')
-plot(log_avUepsilon_l,mTrGzUx(:,1),'--r')
+plot(log_avUepsilon_k,mTrGzUx(:,1),'*-r','LineWidth',2)
+plot(log_avUepsilon_u,mTrGzUx(:,1),'*--r')
+plot(log_avUepsilon_l,mTrGzUx(:,1),'*--r')
 legend('Ex','Ux')
 xlabel('averaged \epsilon')
 ylabel('height')
@@ -1558,11 +1607,11 @@ xlim([Epslims(1) Epslims(2)])
 ylim([0 Zscal])
 a_1=title(['averaged Ux and Ex comparison']);
 subplot(1,5,2)
-plot(log10(avgTrEy),mTrGzEy(:,1),'k','LineWidth',2)
+plot(log10(avgTrEy),mTrGzEy(:,1),'*-k','LineWidth',2)
 hold on
-plot(log_avVepsilon_k,mTrGzVy(:,1),'r','LineWidth',2)
-plot(log_avVepsilon_u,mTrGzVy(:,1),'--r')
-plot(log_avVepsilon_l,mTrGzVy(:,1),'--r')
+plot(log_avVepsilon_k,mTrGzVy(:,1),'*-r','LineWidth',2)
+plot(log_avVepsilon_u,mTrGzVy(:,1),'*--r')
+plot(log_avVepsilon_l,mTrGzVy(:,1),'*--r')
 legend('Ey','Vy')
 xlabel('averaged \epsilon')
 ylabel('height')
@@ -1572,11 +1621,11 @@ xlim([Epslims(1) Epslims(2)])
 ylim([0 Zscal])
 a_1=title(['averaged Vy and Ey comparison']);
 subplot(1,5,3)
-plot(log10(avgTrEz),mTrGzEz(:,1),'k','LineWidth',2)
+plot(log10(avgTrEz),mTrGzEz(:,1),'*-k','LineWidth',2)
 hold on
-plot(log_avWepsilon_k,mTrGzWz(:,1),'r','LineWidth',2)
-plot(log_avWepsilon_u,mTrGzWz(:,1),'--r')
-plot(log_avWepsilon_l,mTrGzWz(:,1),'--r')
+plot(log_avWepsilon_k,mTrGzWz(:,1),'*-r','LineWidth',2)
+plot(log_avWepsilon_u,mTrGzWz(:,1),'*--r')
+plot(log_avWepsilon_l,mTrGzWz(:,1),'*--r')
 legend('Ez','Wz')
 xlabel('averaged \epsilon')
 ylabel('height')
@@ -1586,10 +1635,10 @@ xlim([Epslims(1) Epslims(2)])
 ylim([0 Zscal])
 a_1=title('averaged Wz and Ez comparison');
 subplot(1,5,4)
-plot(log10(avgTrEx),mTrGzEx(:,1),'r','LineWidth',2)
+plot(log10(avgTrEx),mTrGzEx(:,1),'*-r','LineWidth',2)
 hold on
-plot(log10(avgTrEy),mTrGzEy(:,1),'b','LineWidth',2)
-plot(log10(avgTrEz),mTrGzEz(:,1),'m','LineWidth',2)
+plot(log10(avgTrEy),mTrGzEy(:,1),'*-b','LineWidth',2)
+plot(log10(avgTrEz),mTrGzEz(:,1),'*-m','LineWidth',2)
 legend('Ex','Ey','Ez')
 xlabel('averaged DNS \epsilon')
 ylabel('height')
@@ -1599,10 +1648,10 @@ xlim([Epslims(1) Epslims(2)])
 ylim([0 Zscal])
 a_1=title('averaged Ex, Ey, Ez comparison');
 subplot(1,5,5)
-plot(log_avUepsilon_k,mTrGzUx(:,1),'r','LineWidth',2)
+plot(log_avUepsilon_k,mTrGzUx(:,1),'*-r','LineWidth',2)
 hold on
-plot(log_avVepsilon_k,mTrGzVy(:,1),'b','LineWidth',2)
-plot(log_avWepsilon_k,mTrGzWz(:,1),'m','LineWidth',2)
+plot(log_avVepsilon_k,mTrGzVy(:,1),'*-b','LineWidth',2)
+plot(log_avWepsilon_k,mTrGzWz(:,1),'*-m','LineWidth',2)
 legend('Ux','Vy','Wz')
 xlabel('averaged Spectral \epsilon')
 ylabel('height')
@@ -1623,7 +1672,7 @@ close all
 for j = 1:1:numInts
     figure(100+j)
     clf
-    semilogx(freq,log10(abs(avUppsd(:,j))),'b','LineWidth',2)
+    semilogx(freq(2:end),log10(abs(avUppsd(2:end,j))),'b','LineWidth',2)
     hold on
     semilogx(freq,avUlog_pwp_k_avg(pt)+log10(freq.^(-5/3)),'k','LineWidth',2)
     semilogx(f_nth_dec,avUlog_ppsd_avg(:,pt),'r*','LineWidth',4)
@@ -1647,7 +1696,7 @@ end
 for j = 1:1:numInts
     figure(200+j)
     clf
-    semilogx(freq,log10(abs(avVppsd(:,j))),'b','LineWidth',2)
+    semilogx(freq(2:end),log10(abs(avVppsd(2:end,j))),'b','LineWidth',2)
     hold on
     semilogx(freq,avVlog_pwp_k_avg(pt)+log10(freq.^(-5/3)),'k','LineWidth',2)
     semilogx(f_nth_dec,avVlog_ppsd_avg(:,pt),'r*','LineWidth',4)
@@ -1671,7 +1720,7 @@ end
 for j = 1:1:numInts
     figure(300+j)
     clf
-    semilogx(freq,log10(abs(avWppsd(:,j))),'b','LineWidth',2)
+    semilogx(freq(2:end),log10(abs(avWppsd(2:end,j))),'b','LineWidth',2)
     hold on
     semilogx(freq,avWlog_pwp_k_avg(pt)+log10(freq.^(-5/3)),'k','LineWidth',2)
     semilogx(f_nth_dec,avWlog_ppsd_avg(:,pt),'r*','LineWidth',4)
@@ -1699,12 +1748,12 @@ for i = 1:1:numTraj
     figure(i)
     clf
     subplot(1,5,1)
-    plot(log10(mTrEx(:,pt)),mTrGzEx(:,pt),'k','LineWidth',2)
+    plot(log10(mTrEx(:,pt)),mTrGzEx(:,pt),'*-k','LineWidth',2)
     hold on
-    plot(log_Uepsilon_k(:,pt),mTrGzUx(:,pt),'r','LineWidth',2)
+    plot(log_Uepsilon_k(:,pt),mTrGzUx(:,pt),'*-r','LineWidth',2)
     scatter(log10(Ex(:,pt)),GzEx(:,pt),'ok','MarkerEdgeAlpha',0.1)
-    plot(log_Uepsilon_u(:,pt),mTrGzUx(:,pt),'--r')
-    plot(log_Uepsilon_l(:,pt),mTrGzUx(:,pt),'--r')
+    plot(log_Uepsilon_u(:,pt),mTrGzUx(:,pt),'*--r')
+    plot(log_Uepsilon_l(:,pt),mTrGzUx(:,pt),'*--r')
     legend('Ex','Ux')
     xlabel('\epsilon')
     ylabel('height')
@@ -1714,12 +1763,12 @@ for i = 1:1:numTraj
     ylim([0 Zscal])
     a_1=title(['Ux and Ex comparison, Trajectory = ',num2str(i)]);
     subplot(1,5,2)
-    plot(log10(mTrEy(:,pt)),mTrGzEy(:,pt),'k','LineWidth',2)
+    plot(log10(mTrEy(:,pt)),mTrGzEy(:,pt),'*-k','LineWidth',2)
     hold on
-    plot(log_Vepsilon_k(:,pt),mTrGzVy(:,pt),'b','LineWidth',2)
+    plot(log_Vepsilon_k(:,pt),mTrGzVy(:,pt),'*-b','LineWidth',2)
     scatter(log10(Ey(:,pt)),GzEy(:,pt),'ok','MarkerEdgeAlpha',0.1)
-    plot(log_Vepsilon_u(:,pt),mTrGzUx(:,pt),'--b')
-    plot(log_Vepsilon_l(:,pt),mTrGzUx(:,pt),'--b')
+    plot(log_Vepsilon_u(:,pt),mTrGzUx(:,pt),'*--b')
+    plot(log_Vepsilon_l(:,pt),mTrGzUx(:,pt),'*--b')
     legend('Ey','Vy')
     xlabel('\epsilon')
     ylabel('height')
@@ -1729,12 +1778,12 @@ for i = 1:1:numTraj
     ylim([0 Zscal])
     a_1=title(['Vy and Ey comparison, Trajectory = ',num2str(i)]);
     subplot(1,5,3)
-    plot(log10(mTrEz(:,pt)),mTrGzEz(:,pt),'k','LineWidth',2)
+    plot(log10(mTrEz(:,pt)),mTrGzEz(:,pt),'*-k','LineWidth',2)
     hold on
-    plot(log_Wepsilon_k(:,pt),mTrGzWz(:,pt),'m','LineWidth',2)
+    plot(log_Wepsilon_k(:,pt),mTrGzWz(:,pt),'*-m','LineWidth',2)
     scatter(log10(Ez(:,pt)),GzEz(:,pt),'ok','MarkerEdgeAlpha',0.1)
-    plot(log_Wepsilon_u(:,pt),mTrGzUx(:,pt),'--m')
-    plot(log_Wepsilon_l(:,pt),mTrGzUx(:,pt),'--m')
+    plot(log_Wepsilon_u(:,pt),mTrGzUx(:,pt),'*--m')
+    plot(log_Wepsilon_l(:,pt),mTrGzUx(:,pt),'*--m')
     legend('Ez','Wz')
     xlabel('\epsilon')
     ylabel('height')
@@ -1744,10 +1793,10 @@ for i = 1:1:numTraj
     ylim([0 Zscal])
     a_1=title(['Wz and Ez comparison, Trajectory = ',num2str(i)]);
     subplot(1,5,4)
-    plot(log10(mTrEx(:,pt)),mTrGzEx(:,pt),'r','LineWidth',2)
+    plot(log10(mTrEx(:,pt)),mTrGzEx(:,pt),'*-r','LineWidth',2)
     hold on
-    plot(log10(mTrEy(:,pt)),mTrGzEy(:,pt),'b','LineWidth',2)
-    plot(log10(mTrEz(:,pt)),mTrGzEz(:,pt),'m','LineWidth',2)
+    plot(log10(mTrEy(:,pt)),mTrGzEy(:,pt),'*-b','LineWidth',2)
+    plot(log10(mTrEz(:,pt)),mTrGzEz(:,pt),'*-m','LineWidth',2)
     legend('Ex','Ey','Ez')
     xlabel('DNS \epsilon')
     ylabel('height')
@@ -1757,10 +1806,10 @@ for i = 1:1:numTraj
     ylim([0 Zscal])
     a_1=title(['Ex, Ey, Ez comparison, Trajectory = ',num2str(i)]);
     subplot(1,5,5)
-    plot(log_Uepsilon_k(:,pt),mTrGzUx(:,pt),'r','LineWidth',2)
+    plot(log_Uepsilon_k(:,pt),mTrGzUx(:,pt),'*-r','LineWidth',2)
     hold on
-    plot(log_Vepsilon_k(:,pt),mTrGzVy(:,pt),'b','LineWidth',2)
-    plot(log_Wepsilon_k(:,pt),mTrGzWz(:,pt),'m','LineWidth',2)
+    plot(log_Vepsilon_k(:,pt),mTrGzVy(:,pt),'*-b','LineWidth',2)
+    plot(log_Wepsilon_k(:,pt),mTrGzWz(:,pt),'*-m','LineWidth',2)
     legend('Ux','Vy','Wz')
     xlabel('Spectral \epsilon')
     ylabel('height')
@@ -1783,7 +1832,7 @@ for i = 1:1:numTraj
     for j = 1:1:numInts
         figure(i)
         clf
-        semilogx(freq,log10(abs(UppdfPlt(:,j,i))),'b','LineWidth',2)
+        semilogx(freq(2:end),log10(abs(UppdfPlt(2:end,j,i))),'b','LineWidth',2)
         hold on
         semilogx(freq,UTrlog_pwp_k_avg(j,i)+log10(freq.^(-5/3)),'k','LineWidth',2)
         semilogx(f_nth_dec,UTrlog_ppsd_avg(:,j,i),'r*','LineWidth',4)
@@ -1808,7 +1857,7 @@ for i = 1:1:numTraj
     for j = 1:1:numInts
         figure(i)
         clf
-        semilogx(freq,log10(abs(VppdfPlt(:,j,i))),'b','LineWidth',2)
+        semilogx(freq(2:end),log10(abs(VppdfPlt(2:end,j,i))),'b','LineWidth',2)
         hold on
         semilogx(freq,VTrlog_pwp_k_avg(j,i)+log10(freq.^(-5/3)),'k','LineWidth',2)
         semilogx(f_nth_dec,VTrlog_ppsd_avg(:,j,i),'r*','LineWidth',4)
@@ -1833,7 +1882,7 @@ for i = 1:1:numTraj
     for j = 1:1:numInts
         figure(i)
         clf
-        semilogx(freq,log10(abs(WppdfPlt(:,j,i))),'b','LineWidth',2)
+        semilogx(freq(2:end),log10(abs(WppdfPlt(2:end,j,i))),'b','LineWidth',2)
         hold on
         semilogx(freq,WTrlog_pwp_k_avg(j,i)+log10(freq.^(-5/3)),'k','LineWidth',2)
         semilogx(f_nth_dec,WTrlog_ppsd_avg(:,j,i),'r*','LineWidth',4)

@@ -17,12 +17,12 @@ Ny = 1536;       % Ny = Number of points in Domain Y dimension
 Nz = 1536;       % Nz = Number of points in Domain Z dimension
 % Data Inputs: All inputs are mandatory
 % NOTE: These inputs are required to scale the scale-normalized DNS datasets  
-epsMeas = 2.84e-3;        % epsMeas = TKE dissipation rate [m^3s^-2]
+epsMeas = 3.738;          % epsMeas = TKE dissipation rate [m^3s^-2]
 nu = 4.0e-4;              % nu = Kinematic viscosity [m^2s^-1]
 nuDNS = 2.0e-3;           % The kunematic viscosity set in the DNS (unscaled)
 resMet = 0.64016;         % resMet = DNS resolution metric ( = grid spacing/ kolmogorov length scale)
 balRt = 2.0;              % balRt = HYFLITS balloon descent rate [m/s]
-dirtry = '/Users/script_away/Projects/Documents/MURI_modeling/SHIT/run04/analysis2m_smPln/';
+dirtry = '/Users/script_away/Projects/Documents/MURI_modeling/SHIT/run04/NEW_analysis/Xby2Pln_100_2mBox/';
 plnFlg = [0 0 1 1];                 % binary switches to turn on plane viz for u, v, w, and epsilon
 exectry = pwd;
 saSp = 0;
@@ -67,12 +67,12 @@ end
 % also load the trajectory data
 flrfPt = strcat(dirtry,'refPts.txt');
 refXY = table2array(readtable(flrfPt));         % array containing reference grid indices (not co-ordinates) for each trajectory
-% load 
-flPDF = strcat(dirtry,'subvol1_004000_KE-diss-rate_pdf.txt');
-dataPDF = table2array(readtable(flPDF));
-bin = dataPDF(6:end,3);
-PDF = dataPDF(6:end,4);
-samples = dataPDF(6:end,5);
+% % load 
+% flPDF = strcat(dirtry,'subvol1_004000_KE-diss-rate_pdf.txt');
+% dataPDF = table2array(readtable(flPDF));
+% bin = dataPDF(6:end,3);
+% PDF = dataPDF(6:end,4);
+% samples = dataPDF(6:end,5);
 
 %% calculate the grid
 % Calculate the DNS domain extents using Kolmogorov scaling
