@@ -1,0 +1,45 @@
+#!/bin/sh
+#PBS -q transfer
+#PBS -A AFOSR42572501 
+#PBS -l select=1:ncpus=1
+#PBS -l walltime=48:00:00
+#PBS -j oe
+#PBS -m be
+#PBS -M abdo7536@colorado.edu
+
+# cd to wherever your data is located
+cd $WORKDIR
+
+# pack the folders to be archived
+echo "Packing data for archiving:"
+archive put -C muriSim/SHITDNS09/ SHITDNS09/vel.000*
+archive put -C muriSim/SHITDNS09/ SHITDNS09/vel.001*
+archive put -C muriSim/SHITDNS09/ SHITDNS09/vel.002*
+archive put -C muriSim/SHITDNS09/ SHITDNS09/vel.003*
+archive put -C muriSim/SHITDNS09/ SHITDNS09/vel.004*
+archive put -C muriSim/SHITDNS09/ SHITDNS09/vel.005*
+archive put -C muriSim/SHITDNS09/ SHITDNS09/vel.006*
+archive put -C muriSim/SHITDNS09/ SHITDNS09/vel.007*
+archive put -C muriSim/SHITDNS09/ SHITDNS09/vel.008*
+archive put -C muriSim/SHITDNS09/ SHITDNS09/vel.009*
+archive put -C muriSim/SHITDNS09/ SHITDNS09/vel.010*
+archive put -C muriSim/SHITDNS09/ SHITDNS09/vel.011*
+archive put -C muriSim/SHITDNS09/ SHITDNS09/vel.012*
+archive put -C muriSim/SHITDNS09/ SHITDNS09/vel.013*
+archive put -C muriSim/SHITDNS09/ SHITDNS09/vel.014*
+archive put -C muriSim/SHITDNS09/ SHITDNS09/vel.015*
+archive put -C muriSim/SHITDNS09/ SHITDNS09/vel.016*
+archive put -C muriSim/SHITDNS09/ SHITDNS09/vel.016*
+archive put -C muriSim/SHITDNS09/ SHITDNS09/vel.017*
+archive put -C muriSim/SHITDNS09/ SHITDNS09/vel.018*
+archive put -C muriSim/SHITDNS09/ SHITDNS09/vel.019*
+archive put -C muriSim/SHITDNS09/ SHITDNS09/vel.020*
+
+## initiate the next job
+JOBID=`echo $PBS_JOBID | cut -d . -f 1`
+qsub -W depend=afterok:${JOBID} /p/home/abdo7536/muriSim/production/new_DNS/run09/archivevtk.qsub
+
+# print the date in the output file and exit out of the script
+date
+exit
+
