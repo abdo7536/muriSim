@@ -12,18 +12,18 @@ cd $WORKDIR
 
 # pack the folders to be archived
 echo "Packing data for archiving:"
-archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.000*
-archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.001*
-archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.002*
-archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.003*
-archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.004*
-archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.005*
-archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.006*
-archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.007*
-archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.008*
-archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.009*
-archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.010*
-archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.011*
+#archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.000*
+#archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.001*
+#archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.002*
+#archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.003*
+#archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.004*
+#archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.005*
+#archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.006*
+#archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.007*
+#archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.008*
+#archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.009*
+#archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.010*
+#archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.011*
 archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.012*
 archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.013*
 archive put -C muriSim/SHITDNS14/ SHITDNS14/vel.014*

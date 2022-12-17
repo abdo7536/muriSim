@@ -36,8 +36,8 @@ archive put -C muriSim/SHITDNS02/ SHITDNS02/vel.019*
 archive put -C muriSim/SHITDNS02/ SHITDNS02/vel.020*
 
 ## initiate the next job
-JOBID=`echo $PBS_JOBID | cut -d . -f 1`
-qsub -W depend=afterok:${JOBID} /p/home/abdo7536/muriSim/production/new_DNS/run02/archivevtk.qsub
+#JOBID=`echo $PBS_JOBID | cut -d . -f 1`
+#qsub -W depend=afterok:${JOBID} /p/home/abdo7536/muriSim/production/new_DNS/run02/archivevtk.qsub
 
 # print the date in the output file and exit out of the script
 date

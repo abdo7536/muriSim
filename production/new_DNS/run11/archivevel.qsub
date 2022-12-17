@@ -12,14 +12,14 @@ cd $WORKDIR
 
 # pack the folders to be archived
 echo "Packing data for archiving:"
-archive put -C muriSim/SHITDNS11/ SHITDNS11/vel.000*
-archive put -C muriSim/SHITDNS11/ SHITDNS11/vel.001*
-archive put -C muriSim/SHITDNS11/ SHITDNS11/vel.002*
-archive put -C muriSim/SHITDNS11/ SHITDNS11/vel.003*
-archive put -C muriSim/SHITDNS11/ SHITDNS11/vel.004*
-archive put -C muriSim/SHITDNS11/ SHITDNS11/vel.005*
-archive put -C muriSim/SHITDNS11/ SHITDNS11/vel.006*
-archive put -C muriSim/SHITDNS11/ SHITDNS11/vel.007*
+#archive put -C muriSim/SHITDNS11/ SHITDNS11/vel.000*
+#archive put -C muriSim/SHITDNS11/ SHITDNS11/vel.001*
+#archive put -C muriSim/SHITDNS11/ SHITDNS11/vel.002*
+#archive put -C muriSim/SHITDNS11/ SHITDNS11/vel.003*
+#archive put -C muriSim/SHITDNS11/ SHITDNS11/vel.004*
+#archive put -C muriSim/SHITDNS11/ SHITDNS11/vel.005*
+#archive put -C muriSim/SHITDNS11/ SHITDNS11/vel.006*
+#archive put -C muriSim/SHITDNS11/ SHITDNS11/vel.007*
 archive put -C muriSim/SHITDNS11/ SHITDNS11/vel.008*
 archive put -C muriSim/SHITDNS11/ SHITDNS11/vel.009*
 archive put -C muriSim/SHITDNS11/ SHITDNS11/vel.010*
