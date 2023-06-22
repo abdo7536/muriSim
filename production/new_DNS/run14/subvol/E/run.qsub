@@ -1,0 +1,42 @@
+#!/bin/bash
+
+## Required PBS directives ------------------------------
+#PBS -A AFOSR42572501
+#PBS -N SHIT14E
+#PBS -q standard
+#PBS -l select=18:ncpus=64:mpiprocs=64
+#PBS -l walltime=00:10:00
+#PBS -j oe
+#PBS -m be
+#PBS -M abdo7536@colorado.edu
+
+## Execution Block --------------------------------------
+# Environment setup
+# cd to your scratch directory
+cd /p/work1/abdo7536
+cd SHITDNS14
+cd E
+
+# add the required input and executable files into the directory
+cp /p/home/abdo7536/muriSim/production/new_DNS/run14/subvol/E/sam.inp .
+ln -s /p/home/abdo7536/sam/src/vel2subvol .
+
+# run the for loop over the number of files 
+st=13900
+stp=100
+strn="nt_restart   "
+lp_cnt=$(ls vel.0* | wc -l)
+for i in $(seq 0 $(( lp_cnt - 1 )))
+do
+    nm1=$(( st + i*stp ))
+    org_st="$strn$nm1"
+    nm2=$(( st + (i+1)*stp ))
+    rplc_st="$strn$nm2"
+    sed -i "s/$org_st/$rplc_st/g" "sam.inp"
+    mpiexec -np 1152 ./vel2subvol > "SVJOB${nm2}.out" 
+done
+
+for f in *0.vtk
+do
+    mv -- "$f" "${f%.vtk}_E.vtk"
+done
