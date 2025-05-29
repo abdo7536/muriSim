@@ -1,0 +1,33 @@
+#!/bin/bash
+
+## Required PBS directives ------------------------------
+#PBS -A UCUB0163
+#PBS -N ShitDns5303
+#PBS -q main
+#PBS -l job_priority=premium
+#PBS -l select=57:ncpus=64:mpiprocs=64
+#PBS -l walltime=12:00:00
+#PBS -j oe
+#PBS -m be
+#PBS -M abdo7536@colorado.edu
+
+# go to the required directory to run the timerun cases
+cd /glade/derecho/scratch/adoddi/
+rm -r ShitDns5303
+mkdir ShitDns5303
+cd ShitDns5303
+
+## store sam code's git commit tag used for execution ------------------
+cd /glade/u/home/adoddi/sam
+git log -1 > git_commit_tag.out
+mv git_commit_tag.out /glade/derecho/scratch/adoddi/ShitDns5303/
+cd /glade/derecho/scratch/adoddi/ShitDns5303/
+
+# copy the necessary files and the execution programs
+cp /glade/u/home/adoddi/muriSim/production/forced_5_3_production/run03/sam.inp .
+ln -s /glade/derecho/scratch/adoddi/ShitDns5302/header.001400 .
+ln -s /glade/derecho/scratch/adoddi/ShitDns5302/vel.001400 .
+ln -s /glade/u/home/adoddi/sam/src/sam .
+
+## Launch SAM ------------------------------------------
+mpiexec -np 3648 sam > ShitDns5303.out

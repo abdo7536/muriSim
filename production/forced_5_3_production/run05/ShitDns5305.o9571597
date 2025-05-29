@@ -1,0 +1,12 @@
+
+Currently Loaded Modules:
+  1) ncarenv/24.12  (S)   4) ncarcompilers/1.0.0   7) hdf5/1.12.3
+  2) craype/2.7.31        5) libfabric/1.15.2.0    8) netcdf/4.9.2
+  3) intel/2024.2.1       6) cray-mpich/8.1.29
+
+  Where:
+   S:  Module is Sticky, requires --force to unload or purge
+
+ 
+
+rm: cannot remove 'ShitDns5305': No such file or directory

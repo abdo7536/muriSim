@@ -1,0 +1,36 @@
+Nx            3648         number of points in x
+Ny            3648         number of points in y
+Nz            3648         number of points in z
+xL            1            Box size in x
+yL            1            Box size in y
+zL            1            Box size in z
+i_restart     2            0-new field, 1-read restart, 2-remesh restart
+res_max       1.8          The minimum resolution requirement
+nt_restart    1400         Restart field is at this time step
+i_decomp      2
+n_steps       1000         number of time steps
+n_skip_h      025          skip factor for output
+n_skip_p      050          skip factor for output
+n_skip_v      100          skip factor for output
+i_cfl         1            0-fixed dt, 1-fixed cfl
+cfl0          0.90000      cfl, used when cfl flag = 1
+i_strat       1            0-unstratified, 1-stratified, 2-duct(s)
+lapse0        1.00000      Potential temperature Lapse rate
+z0            0.00000      Reference altitude
+To            1.00000      Temperature at reference altitude
+i_prob        1            problem type: see below
+#i_noise_restart 1          add noise on restart
+flct_u        7.5000E-01   Initial velocity fluctuation
+i_force       1            forcing flag: 0-no forcing, 1-forcing
+k_force       2            maximum wavenumber to be forced (for i_force=1)
+grav          1.00000E-00  Gravitational acceleration
+vis           1.50000E-05  Kinematic viscosity
+Pr            0.71000      Prandtl number
+
+# i_prob is the initial condition type
+#   0 - white noise with velocity fluctuation flct_u
+#   1 - k^-5/3 spectrum with velocity fluctuation flct_u
+#   2 - Comte-Bellot and Corrsin spectrum at t=42
+#   3 - Comte-Bellot and Corrsin spectrum at t=99
+#   4 - Comte-Bellot and Corrsin spectrum at t=171
+#   5 - Pao spectrum
