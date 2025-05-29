@@ -14,15 +14,15 @@ clc
 
 %% General Inputs
 diag = 1;                               % switch to turn on program diagnostics
-lean = 1;                               % unwanted figures are not plotted (saves time) 
-Trec = 1;                               % Time record interval [s]
+lean = 0;                               % unwanted figures are not plotted (saves time) 
+Trec = 6;                               % Time record interval [s]
 alp = 1.50;                             % Kolmogorov constant: 1.5 for 3D spectrum; 0.49-0.55 for longitudinal spectrum; 0.65 for transverse spectrum
 alpL = 0.55;                            % Kolmogorov constant: 1.5 for 3D spectrum; 0.49-0.55 for longitudinal spectrum; 0.65 for transverse spectrum
 cf = alpL*(2*pi)^(-2/3);                % Constant used by Frehlich et al 2003 [if derived in cycles/m]
 cf_rad = cf*(2*pi)^(2/3);               % Constant used by Frehlich et al 2003 [if derived in rad/m]
 alpT = 0.65;                            % Kolmogorov constant: 1.5 for 3D spectrum; 0.49-0.55 for longitudinal spectrum; 0.65 for transverse spectrum
-winOn = 1;                              % switch to turn on or off the windowing
-saSp = 0;                               % scitch to turn on or off saving figures and files
+winOn = 0;                              % switch to turn on or off the windowing
+saSp = 1;                               % scitch to turn on or off saving figures and files
 edges = -6:0.05:0;                      % histogram edges and bin widths
 edgesSlp = -6:0.05:0;                   % histogram edges and bin widths for slopes
 ftSz = 16;                              % figure text font size
@@ -52,7 +52,7 @@ muDNS = etaDNS/tauDNS;
 % Scaling parameters applied from measurement [HYFLITS measurement at ~30 km AGL]
 epsMeas = 0.98142e-3;                   % epsMeas = TKE dissipation rate [m^3s^-2]
 nuMeas = 4.0e-4;                        % nu = Kinematic viscosity [m^2s^-1]
-balRt = 07.5;                          % balRt = HYFLITS balloon descent rate [m/s]
+balRt = 002.5;                          % balRt = HYFLITS balloon descent rate [m/s]
 etaMEas = (nuMeas^3/epsMeas)^(1/4);     % Kolmogorov length scale [m]
 tauMeas = (nuMeas/epsMeas)^(1/2);       % Kolmogorov time scale [s]
 muMeas = etaMEas/tauMeas;               % Kolmogorov velocity scale [m/s]
@@ -126,129 +126,6 @@ for i = 1:1:length(PlnW(1,1:end-1))
     Tz(:,i) = PlnT(1:end-1,i).*velScl;
 	epsDNSz(:,i) = log10(PlnE(1:end-1,i).*epsScal);
     TDRDNSz(:,i) = log10(PlnTDR(1:end-1,i).*TDRScal);
-end
-
-%% plot diagnostic figures
-if diag == 1 && lean == 0
-    figure(1)
-    clf
-    sUz = surface(Uz,'FaceColor','flat');
-    sUz.EdgeColor = 'none';
-    colorbar
-    colormap('jet')
-    xlim([1 Ny])
-    ylim([1 Nz])
-    xlabel('Y')
-    ylabel('Z')
-    grid on
-    title('U sampled on YZ plane (at X/2)')
-    set(gca,'FontSize',ftSz)
-    if saSp == 1
-        savefig('YZU.fig')
-        close all
-    end
-    figure(2)
-    clf
-    sVz = surface(Vz,'FaceColor','flat');
-    sVz.EdgeColor = 'none';
-    colorbar
-    colormap('jet')
-    xlim([1 Ny])
-    ylim([1 Nz])
-    xlabel('Y')
-    ylabel('Z')
-    grid on
-    title('V sampled on YZ plane (at X/2)')
-    set(gca,'FontSize',ftSz)
-    if saSp == 1
-        savefig('YZV.fig')
-        close all
-    end
-    figure(3)
-    clf
-    sWz = surface(Wz,'FaceColor','flat');
-    sWz.EdgeColor = 'none';
-    colorbar
-    colormap('jet')
-    xlim([1 Ny])
-    ylim([1 Nz])
-    xlabel('Y')
-    ylabel('Z')
-    grid on
-    title('W sampled on YZ plane (at X/2)')
-    set(gca,'FontSize',ftSz)
-    if saSp == 1
-        savefig('YZW.fig')
-        close all
-    end
-    figure(4)
-    clf
-    sTz = surface(Tz,'FaceColor','flat');
-    sTz.EdgeColor = 'none';
-    colorbar
-    colormap('jet')
-    xlim([1 Ny])
-    ylim([1 Nz])
-    xlabel('Y')
-    ylabel('Z')
-    grid on
-    title('T sampled on YZ plane (at X/2)')
-    set(gca,'FontSize',ftSz)
-    if saSp == 1
-        savefig('YZT.fig')
-        close all
-    end
-    figure(5)
-    clf
-    seps = surface(epsDNSz,'FaceColor','flat');
-    seps.EdgeColor = 'none';
-    colorbar
-    colormap('jet')
-    set(gca,'ColorScale','log')
-    caxis([-5 -1.5])
-    xlim([1 Ny])
-    ylim([1 Nz])
-    xlabel('Y')
-    ylabel('Z')
-    grid on
-    title('log{\epsilon} sampled on YZ plane (at X/2)')
-    set(gca,'FontSize',ftSz)
-    if saSp == 1
-        savefig('YZE.fig')
-        close all
-    end
-    figure(6)
-    clf
-    sTDR = surface(TDRDNSz,'FaceColor','flat');
-    sTDR.EdgeColor = 'none';
-    colorbar
-    colormap('jet')
-    set(gca,'ColorScale','log')
-    caxis([-5 -1.5])
-    xlim([1 Ny])
-    ylim([1 Nz])
-    xlabel('Y')
-    ylabel('Z')
-    grid on
-    title('log{TDR} sampled on YZ plane (at X/2)')
-    set(gca,'FontSize',ftSz)
-    if saSp == 1
-        savefig('YZTDR.fig')
-        close all
-    end
-    % DIAGNOSTIC FIGURE TO CHECK BOX ORIENTATION! DO NOT DELETE
-    %{
-    figure(4)
-    clf
-    sWz = surface(Wz(:,1:Nx/2),'FaceColor','flat');
-    sWz.EdgeColor = 'none';
-    colorbar
-    colormap('jet')
-    caxis([-50*mean(mean(Wz)) 50*mean(mean(Wz))])
-    xlim([1 Ny])
-    ylim([1 Nz])
-    set(gca,'FontSize',ftSz)
-    %}
 end
 
 %% Compute the number of trajectories and sample points per data record
@@ -1146,4 +1023,127 @@ for j = 1:1:(numInts/Trec)
         savefig(['slp_cont_Wz_',num2str(j),'.fig'])
         close all
     end
+end
+
+%% plot the data on sampled plane
+if diag == 1 && lean == 0
+    figure(1)
+    clf
+    sUz = surface(Uz,'FaceColor','flat');
+    sUz.EdgeColor = 'none';
+    colorbar
+    colormap('jet')
+    xlim([1 Ny])
+    ylim([1 Nz])
+    xlabel('Y')
+    ylabel('Z')
+    grid on
+    title('U sampled on YZ plane (at X/2)')
+    set(gca,'FontSize',ftSz)
+    if saSp == 1
+        savefig('YZU.fig')
+        close all
+    end
+    figure(2)
+    clf
+    sVz = surface(Vz,'FaceColor','flat');
+    sVz.EdgeColor = 'none';
+    colorbar
+    colormap('jet')
+    xlim([1 Ny])
+    ylim([1 Nz])
+    xlabel('Y')
+    ylabel('Z')
+    grid on
+    title('V sampled on YZ plane (at X/2)')
+    set(gca,'FontSize',ftSz)
+    if saSp == 1
+        savefig('YZV.fig')
+        close all
+    end
+    figure(3)
+    clf
+    sWz = surface(Wz,'FaceColor','flat');
+    sWz.EdgeColor = 'none';
+    colorbar
+    colormap('jet')
+    xlim([1 Ny])
+    ylim([1 Nz])
+    xlabel('Y')
+    ylabel('Z')
+    grid on
+    title('W sampled on YZ plane (at X/2)')
+    set(gca,'FontSize',ftSz)
+    if saSp == 1
+        savefig('YZW.fig')
+        close all
+    end
+    figure(4)
+    clf
+    sTz = surface(Tz,'FaceColor','flat');
+    sTz.EdgeColor = 'none';
+    colorbar
+    colormap('jet')
+    xlim([1 Ny])
+    ylim([1 Nz])
+    xlabel('Y')
+    ylabel('Z')
+    grid on
+    title('T sampled on YZ plane (at X/2)')
+    set(gca,'FontSize',ftSz)
+    if saSp == 1
+        savefig('YZT.fig')
+        close all
+    end
+    figure(5)
+    clf
+    seps = surface(epsDNSz,'FaceColor','flat');
+    seps.EdgeColor = 'none';
+    colorbar
+    colormap('jet')
+    set(gca,'ColorScale','log')
+    caxis([-5 -1.5])
+    xlim([1 Ny])
+    ylim([1 Nz])
+    xlabel('Y')
+    ylabel('Z')
+    grid on
+    title('log{\epsilon} sampled on YZ plane (at X/2)')
+    set(gca,'FontSize',ftSz)
+    if saSp == 1
+        savefig('YZE.fig')
+        close all
+    end
+    figure(6)
+    clf
+    sTDR = surface(TDRDNSz,'FaceColor','flat');
+    sTDR.EdgeColor = 'none';
+    colorbar
+    colormap('jet')
+    set(gca,'ColorScale','log')
+    caxis([-5 -1.5])
+    xlim([1 Ny])
+    ylim([1 Nz])
+    xlabel('Y')
+    ylabel('Z')
+    grid on
+    title('log{TDR} sampled on YZ plane (at X/2)')
+    set(gca,'FontSize',ftSz)
+    if saSp == 1
+        savefig('YZTDR.fig')
+        close all
+    end
+    % DIAGNOSTIC FIGURE TO CHECK BOX ORIENTATION! DO NOT DELETE
+    %{
+    figure(4)
+    clf
+    sWz = surface(Wz(:,1:Nx/2),'FaceColor','flat');
+    sWz.EdgeColor = 'none';
+    colorbar
+    colormap('jet')
+    caxis([-50*mean(mean(Wz)) 50*mean(mean(Wz))])
+    xlim([1 Ny])
+    ylim([1 Nz])
+    set(gca,'FontSize',ftSz)
+    %}
 end
